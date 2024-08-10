@@ -1,0 +1,1 @@
+# financ-manager-start
