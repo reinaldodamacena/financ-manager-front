@@ -18,8 +18,14 @@ RUN npm run build
 # Etapa de produção
 FROM nginx:alpine
 
+# Remova a configuração padrão do Nginx
+RUN rm /etc/nginx/conf.d/default.conf
+
 # Copie os arquivos do build da etapa anterior para o diretório do Nginx
 COPY --from=build /app/build /usr/share/nginx/html
+
+# Copie a configuração personalizada do Nginx
+COPY config/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
