@@ -3,17 +3,23 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#BF4011',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#BF522A',
     },
     error: {
-      main: '#f44336',
+      main: '#D9805F',
+    },
+    warning: {
+      main: '#F2C6B6',
+    },
+    background: {
+      default: '#F2F2F2',
     },
   },
   typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
+    fontFamily: 'Urbanist, Roboto, sans-serif',
   },
 });
 
