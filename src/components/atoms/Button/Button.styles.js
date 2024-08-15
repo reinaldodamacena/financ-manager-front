@@ -1,46 +1,48 @@
-// src/components/atoms/Button.js
-import React from 'react';
-import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
-import { Button as MuiButton } from '@mui/material';
+import Button from '@mui/material/Button';
 
-const StyledButton = styled(MuiButton)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: '5.43609px 14.4962px',
-  position: 'relative',
-  backgroundColor: theme.palette.primary.main, // Usando a cor primária do tema
-  boxShadow: '0px 0.906015px 4.53008px rgba(0, 0, 0, 0.12), 0px 1.81203px 1.81203px rgba(0, 0, 0, 0.14), 0px 2.71805px 0.906015px -1.81203px rgba(0, 0, 0, 0.2)',
-  borderRadius: '13.5902px',
-  width: '310.76px',
-  height: '57.98px',
-  color: '#FFFFFF', // Cor do texto definida manualmente
-  fontFamily: theme.typography.fontFamily, // Usando a tipografia definida no tema
-  fontStyle: 'normal',
-  fontWeight: 700,
-  fontSize: '28.9925px',
-  lineHeight: '22px',
-  textTransform: 'uppercase',
-  textAlign: 'center',
-  textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-  '&:hover': {
-    backgroundColor: theme.palette.primary.dark, // Simula um efeito de hover usando o tema
-  },
-}));
+const StyledButton = styled(Button)(({ theme, variant }) => {
+  const variantStyles = {
+    primary: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText,
+      '&:hover': {
+        backgroundColor: theme.palette.primary.dark,
+      },
+    },
+    secondary: {
+      backgroundColor: theme.palette.secondary.main,
+      color: theme.palette.secondary.contrastText,
+      '&:hover': {
+        backgroundColor: theme.palette.secondary.dark,
+      },
+    },
+    tertiary: {
+      backgroundColor: theme.palette.grey[500],
+      color: theme.palette.text.primary,
+      '&:hover': {
+        backgroundColor: theme.palette.grey[700],
+      },
+    },
+  };
 
-const Button = ({ children, onClick, ...props }) => {
-  return (
-    <StyledButton onClick={onClick} {...props}>
-      {children}
-    </StyledButton>
-  );
-};
+  return {
+    ...variantStyles[variant],
+    borderRadius: '1.5vw', // Arredondamento responsivo
+    padding: '1vw 2vw', // Padding responsivo utilizando vw
+    fontSize: '2vh', // Tamanho de fonte responsivo utilizando vh
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    boxShadow: '0px 0.3vh 0.6vh rgba(0, 0, 0, 0.1)', // Sombra responsiva utilizando vh
+    '@media (max-width: 600px)': {
+      padding: '1.5vw 3vw', // Ajuste de padding para telas menores
+      fontSize: '1.8vh', // Ajuste de tamanho de fonte para telas menores
+    },
+    '@media (max-width: 400px)': {
+      padding: '2vw 4vw', // Mais ajustes para dispositivos móveis
+      fontSize: '1.6vh',
+    },
+  };
+});
 
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
-  onClick: PropTypes.func,
-};
-
-export default Button;
+export default StyledButton;
