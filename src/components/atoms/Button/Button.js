@@ -13,10 +13,12 @@ const Button = ({ variant, children, ...props }) => {
 Button.propTypes = {
   variant: PropTypes.oneOf(['primary', 'secondary', 'tertiary']),
   children: PropTypes.node.isRequired,
+  
 };
 
 Button.defaultProps = {
   variant: 'primary',
+  
 };
 
 export default Button;

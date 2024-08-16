@@ -1,5 +1,6 @@
 import React from 'react';
-import {LoginForm,PageBackground} from '../../molecules/Index';
+import {PageBackground} from '../../molecules/Index';
+import {LoginForm} from '../../organisms/Index';
 import useFetch from '../../../hooks/useFetch.js';
 
 const LoginPage = () => {

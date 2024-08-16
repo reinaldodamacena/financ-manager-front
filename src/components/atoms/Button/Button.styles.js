@@ -3,7 +3,9 @@ import Button from '@mui/material/Button';
 
 const StyledButton = styled(Button)(({ theme, variant }) => {
   const variantStyles = {
+    
     primary: {
+      fontFamily: theme.typography.fontFamily,
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.primary.contrastText,
       '&:hover': {
@@ -11,6 +13,7 @@ const StyledButton = styled(Button)(({ theme, variant }) => {
       },
     },
     secondary: {
+      fontFamily: theme.typography.fontFamily,
       backgroundColor: theme.palette.secondary.main,
       color: theme.palette.secondary.contrastText,
       '&:hover': {
@@ -18,6 +21,7 @@ const StyledButton = styled(Button)(({ theme, variant }) => {
       },
     },
     tertiary: {
+      fontFamily: theme.typography.fontFamily,
       backgroundColor: theme.palette.grey[500],
       color: theme.palette.text.primary,
       '&:hover': {
@@ -28,6 +32,7 @@ const StyledButton = styled(Button)(({ theme, variant }) => {
 
   return {
     ...variantStyles[variant],
+    fontFamily: theme.typography.fontFamily,
     borderRadius: '1.5vw', // Arredondamento responsivo
     padding: '1vw 2vw', // Padding responsivo utilizando vw
     fontSize: '2vh', // Tamanho de fonte responsivo utilizando vh
@@ -35,10 +40,12 @@ const StyledButton = styled(Button)(({ theme, variant }) => {
     textTransform: 'uppercase',
     boxShadow: '0px 0.3vh 0.6vh rgba(0, 0, 0, 0.1)', // Sombra responsiva utilizando vh
     '@media (max-width: 600px)': {
+      fontFamily: theme.typography.fontFamily,
       padding: '1.5vw 3vw', // Ajuste de padding para telas menores
       fontSize: '1.8vh', // Ajuste de tamanho de fonte para telas menores
     },
     '@media (max-width: 400px)': {
+      fontFamily: theme.typography.fontFamily,
       padding: '2vw 4vw', // Mais ajustes para dispositivos móveis
       fontSize: '1.6vh',
     },
