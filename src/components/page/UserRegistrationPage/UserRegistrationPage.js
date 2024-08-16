@@ -1,8 +1,6 @@
 import React from 'react';
-import PageBackground from '../../molecules/PageBackground/Index.js';
-import UserRegistrationForm from '../../molecules/UserRegistrationForm/Index.js';
-import { Typography,  } from '@mui/material';
-import { Logo } from 'components/atoms/Index.js';
+import {PageBackground,UserRegistrationForm} from '../../organisms/Index.js';
+import { Logo } from '../../atoms/Index.js';
 
 const UserRegistrationPage = () => {
   return (

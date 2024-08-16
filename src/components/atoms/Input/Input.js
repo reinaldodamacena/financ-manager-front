@@ -1,50 +1,96 @@
+// Input.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TextField, InputAdornment } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
+const StyledTextField = styled(TextField)(({ theme, borderRadius, borderWidth, borderColor, focusBorderColor, hoverBorderColor }) => ({
   '& .MuiInputBase-root': {
-    backgroundColor: '#FFFFFF',
-    boxShadow: '0px 0.9vh 4.5vh rgba(0, 0, 0, 0.12), 0px 1.8vh 1.8vh rgba(0, 0, 0, 0.14), 0px 2.7vh 0.9vh -1.8vh rgba(0, 0, 0, 0.2)',
-    borderRadius: '2vh',
-    padding: '1vh 0.7vw',
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[1], // Usando a sombra do theme
+    borderRadius: borderRadius || theme.shape.borderRadius,
+    padding: '0vh 1vw',
     fontFamily: theme.typography.fontFamily,
-    fontSize: '2vh',
-    color: 'rgba(110, 119, 129, 0.7)',
-    width: 'calc(100% - 1vw)', // Ajusta a largura para garantir alinhamento
-    maxWidth: '100%', // Limita o tamanho máximo para ocupar o espaço do container
-    height: '6.5vh', // Altura responsiva do campo
-    margin: '0 auto', // Centraliza o campo
+    fontSize: '3vh',
+    color: theme.palette.text.primary,
+    width: '100%',
+    transition: 'box-shadow 0.3s ease, transform 0.3s ease',
+    '&:hover': {
+      boxShadow: theme.shadows[2], // Usando a sombra do theme
+      transform: 'scale(1.01)',
+    },
+    '&.Mui-focused': {
+      boxShadow: theme.shadows[3], // Usando a sombra do theme
+    },
     [theme.breakpoints.down('sm')]: {
-      fontSize: '2vh',
-      padding: '0.8vh 1.5vw',
-      width: 'calc(100% - 2vw)', // Ajusta a largura para telas menores
-      height: '5vh', // Ajuste de altura para telas menores
+      fontSize: '1.6vh',
+      padding: '0vh 0.8vw',
     },
   },
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
-      border: 'none',
+      borderColor: borderColor || theme.palette.divider,
+      borderRadius: borderRadius || theme.shape.borderRadius,
+      borderWidth: borderWidth || '1px',
+    },
+    '&:hover fieldset': {
+      borderColor: hoverBorderColor || theme.palette.primary.main,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: focusBorderColor || theme.palette.primary.dark,
     },
   },
   '& .MuiInputAdornment-root': {
-    marginRight: '0.5vw', // Garante que o ícone não encoste no texto
-  }
+    marginRight: '0.5vw',
+    color: theme.palette.primary.main,
+    transition: 'color 0.3s ease',
+    fontSize: '2.5vh',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '2vh',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    fontFamily: theme.typography.fontFamily,
+    top: '50%', // Posição centralizada inicial
+    left: '0.7vw', // Distância da borda esquerda
+    transform: 'translate(0, -100%) scale(1.25)', // Mantém o label centralizado verticalmente
+    transformOrigin: 'top left',
+    transition: 'color 0.3s ease, transform 0.2s ease-out',
+    fontSize: '2vh',
+    color: theme.palette.text.secondary,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '2vh',
+      left: '1.5vw',
+    },
+    '&.Mui-focused': {
+      color: theme.palette.primary.main,
+    },
+    '&.MuiInputLabel-shrink': {
+      top: '1.4vh', // Posição ao encolher (label sobe)
+      fontSize: '2vh',
+      color: theme.palette.primary.main,
+    },
+  },
 }));
 
-const Input = ({ label, icon: Icon, ...props }) => {
+const Input = ({ label, icon: Icon, borderRadius, borderWidth, borderColor, focusBorderColor, hoverBorderColor, ...props }) => {
   return (
     <StyledTextField
       label={label}
       variant="outlined"
       InputProps={{
         startAdornment: Icon ? (
-          <InputAdornment position="start">
-            <Icon style={{ fontSize: '3vh' }} /> {/* Ícone responsivo */}
+          <InputAdornment position="start" aria-label={label}>
+            <Icon />
           </InputAdornment>
         ) : null,
       }}
+      aria-label={label}
+      borderRadius={borderRadius}
+      borderWidth={borderWidth}
+      borderColor={borderColor}
+      focusBorderColor={focusBorderColor}
+      hoverBorderColor={hoverBorderColor}
       {...props}
     />
   );
@@ -52,7 +98,12 @@ const Input = ({ label, icon: Icon, ...props }) => {
 
 Input.propTypes = {
   label: PropTypes.string.isRequired,
-  icon: PropTypes.elementType, // Tipo do ícone, se houver
+  icon: PropTypes.elementType,
+  borderRadius: PropTypes.string,
+  borderWidth: PropTypes.string,
+  borderColor: PropTypes.string,
+  focusBorderColor: PropTypes.string,
+  hoverBorderColor: PropTypes.string,
 };
 
 export default Input;

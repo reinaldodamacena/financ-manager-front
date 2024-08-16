@@ -1,9 +1,8 @@
 import React from 'react';
-import LoginForm from '../../molecules/LoginForm/Index';
-import useFetch from '../../../hooks/useFetch';
-import PageBackground from '../../molecules/PageBackground/Index.js';
+import {LoginForm,PageBackground} from '../../molecules/Index';
+import useFetch from '../../../hooks/useFetch.js';
 
-const HomePage = () => {
+const LoginPage = () => {
   const { data, loading } = useFetch('https://jsonplaceholder.typicode.com/posts');
   return (
     <PageBackground>
@@ -14,4 +13,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default LoginPage;

@@ -36,7 +36,7 @@ Icon.propTypes = {
 };
 
 Icon.defaultProps = {
-  size: '24px',
+  size: '24wh',
   color: 'inherit', // Default to inheriting color from parent
 };
 

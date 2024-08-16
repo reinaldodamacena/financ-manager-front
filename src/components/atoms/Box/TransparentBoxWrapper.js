@@ -21,10 +21,12 @@ const TransparentBoxWrapper = styled('div')(({ theme, justifyContent, top, left,
   '@media (max-width: 768px)': {
     padding: '3vw', // Reduz o padding em telas menores
     margin: '5vh auto',
+    display: 'flex'
   },
   '@media (max-width: 480px)': {
     padding: '4vw', // Padding reduzido para telas muito pequenas
     margin: '2vh auto',
+    display: 'flex'
   },
 }));
 
