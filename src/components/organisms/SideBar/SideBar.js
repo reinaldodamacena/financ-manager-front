@@ -1,22 +1,11 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
-import { Typography } from '@mui/material'; // Importando Typography
-import { Logo, TransparentBoxWrapper } from '../../atoms/Index';
+import { Typography } from '@mui/material';
+import { Logo, ConfigurableBoxWrapper } from '../../atoms/Index';
 import PropTypes from 'prop-types';
 import { SideBarSection } from '../../molecules/Index';
 
-const SideBarWrapper = styled(TransparentBoxWrapper)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  padding: '2vh 2vw',
-  backgroundColor: theme.palette.background.paper,
-  boxShadow: theme.shadows[2],
-  height: '100vh',
-}));
-
 const SideBar = ({ sections }) => (
-  <SideBarWrapper>
+  <ConfigurableBoxWrapper position= 'fixed'top='8vh' borderRadius = '12' bottom='5vh' width="20vw" left="0vw" height="100vh" padding="2vh 2vw" >
     <Logo top="2vh" left="2vw" width="100px" height="100px" />
     {sections && sections.length > 0 ? (
       sections.map((section, index) => (
@@ -27,7 +16,7 @@ const SideBar = ({ sections }) => (
         Nenhuma seção disponível.
       </Typography>
     )}
-  </SideBarWrapper>
+  </ConfigurableBoxWrapper>
 );
 
 SideBar.propTypes = {

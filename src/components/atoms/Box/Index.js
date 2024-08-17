@@ -1,3 +1,1 @@
-export { default} from './TransparentBoxWrapper';
-
-
+export {default} from './ConfigurableBoxWrapper'; // Importando ConfigurableBoxWrapper
