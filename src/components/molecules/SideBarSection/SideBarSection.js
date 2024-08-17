@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
-import SidebarItem from './SidebarItem';
+import { SideBarItem } from '../../molecules/Index';
 import { Typography, Divider } from '@mui/material';
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
@@ -12,17 +12,17 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   textTransform: 'uppercase',
 }));
 
-const SidebarSection = ({ title, items }) => (
+const SideBarSection = ({ title, items }) => (
   <div>
     <SectionTitle>{title}</SectionTitle>
     {items.map((item, index) => (
-      <SidebarItem key={index} {...item} />
+      <SideBarItem key={index} {...item} />
     ))}
     <Divider style={{ margin: '2vh 0' }} />
   </div>
 );
 
-SidebarSection.propTypes = {
+SideBarSection.propTypes = {
   title: PropTypes.string.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
@@ -34,4 +34,4 @@ SidebarSection.propTypes = {
   ).isRequired,
 };
 
-export default SidebarSection;
+export default SideBarSection;

@@ -70,8 +70,9 @@ const theme = createTheme({
   shadows: [
     'none',
     '0px 0.2vh 0.6vh rgba(0, 0, 0, 0.05), 0px 0.4vh 0.8vh rgba(0, 0, 0, 0.1)', // Sombra leve para nível 1
-    '0px 0.2vh 1vh rgba(0, 0, 0, 0.1), 0px 0.4vh 1.2vh rgba(0, 0, 0, 0.15)', // Sombra leve para nível 2
+    '0px 0.2vh 1vh rgba(0, 0, 0, 0.1), 0px 0.4vh 1.2vh rgba(0, 0, 0, 0.15)',   // Sombra leve para nível 2
     '0px 0.2vh 1.2vh rgba(0, 0, 0, 0.15), 0px 0.4vh 1.4vh rgba(0, 0, 0, 0.2)', // Sombra leve para nível 3
+    '0px 0.3vh 1.5vh rgba(0, 0, 0, 0.15), 0px 0.6vh 1.8vh rgba(0, 0, 0, 0.2)',  // Sombra para nível 4
     // Adicione mais níveis conforme necessário
   ],
   components: {

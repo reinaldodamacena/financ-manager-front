@@ -1,10 +1,10 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
-import Icon from './Icon';
+import { Icon } from '../../atoms/Index';
 import PropTypes from 'prop-types';
 import { Typography } from '@mui/material';
 
-const SidebarItemWrapper = styled('div')(({ theme }) => ({
+const SideBarItemWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: '1vh 0',
@@ -16,24 +16,24 @@ const SidebarItemWrapper = styled('div')(({ theme }) => ({
   },
 }));
 
-const SidebarText = styled(Typography)(({ theme }) => ({
+const SideBarText = styled(Typography)(({ theme }) => ({
   marginLeft: '1vw',
   fontSize: '1rem',
   color: theme.palette.text.primary,
 }));
 
-const SidebarItem = ({ label, icon, color, onClick }) => (
-  <SidebarItemWrapper onClick={onClick}>
+const SideBarItem = ({ label, icon, color, onClick }) => (
+  <SideBarItemWrapper onClick={onClick}>
     <Icon name={icon} size="24px" color={color || 'inherit'} />
-    <SidebarText>{label}</SidebarText>
-  </SidebarItemWrapper>
+    <SideBarText>{label}</SideBarText>
+  </SideBarItemWrapper>
 );
 
-SidebarItem.propTypes = {
+SideBarItem.propTypes = {
   label: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   color: PropTypes.string,
 };
 
-export default SidebarItem;
+export default SideBarItem;

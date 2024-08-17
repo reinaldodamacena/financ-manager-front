@@ -1,1 +1,1 @@
-export {default} from './SideBarsection';
+export {default} from './SideBarSection';
