@@ -24,7 +24,7 @@ const ConfigurableBoxWrapper = styled('div')(
     left: left || 'auto',
     right: right || 'auto',
     bottom: bottom || 'auto',
-    width: width || '100%',
+    width: width || 'auto',
     height: height || 'auto',
     padding: padding || '2vw',
     backgroundColor: backgroundColor || theme.palette.background.paper,

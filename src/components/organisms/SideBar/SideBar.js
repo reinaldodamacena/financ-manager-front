@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { SideBarSection } from '../../molecules/Index';
 
 const SideBar = ({ sections }) => (
-  <ConfigurableBoxWrapper position= 'fixed'top='8vh' borderRadius = '12' bottom='5vh' width="20vw" left="0vw" height="100vh" padding="2vh 2vw" >
+  <ConfigurableBoxWrapper position= 'fixed'top='0vh' borderRadius = '12' bottom='5vh' width="15vw" height="100vh" padding="2vh 2vw" >
     <Logo top="2vh" left="2vw" width="100px" height="100px" />
     {sections && sections.length > 0 ? (
       sections.map((section, index) => (

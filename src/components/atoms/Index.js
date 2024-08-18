@@ -9,3 +9,4 @@ export { default as Logo } from './Logo/Index';
 export { default as UserIcon } from './UserIcon/Index';
 export { default as Icon } from './Icon/Index';
 export { default as ConfigurableBoxWrapper } from './Box/Index';
+export { default as Dropdown } from './Dropdown/Index';

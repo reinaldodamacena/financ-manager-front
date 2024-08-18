@@ -1,4 +1,3 @@
-// Input.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TextField, InputAdornment } from '@mui/material';
@@ -7,7 +6,7 @@ import { styled } from '@mui/material/styles';
 const StyledTextField = styled(TextField)(({ theme, borderRadius, borderWidth, borderColor, focusBorderColor, hoverBorderColor }) => ({
   '& .MuiInputBase-root': {
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[1], // Usando a sombra do theme
+    boxShadow: theme.shadows[1], // Usando a sombra do tema
     borderRadius: borderRadius || theme.shape.borderRadius,
     padding: '0vh 1vw',
     fontFamily: theme.typography.fontFamily,
@@ -16,11 +15,11 @@ const StyledTextField = styled(TextField)(({ theme, borderRadius, borderWidth, b
     width: '100%',
     transition: 'box-shadow 0.3s ease, transform 0.3s ease',
     '&:hover': {
-      boxShadow: theme.shadows[2], // Usando a sombra do theme
+      boxShadow: theme.shadows[2], // Usando a sombra do tema
       transform: 'scale(1.01)',
     },
     '&.Mui-focused': {
-      boxShadow: theme.shadows[3], // Usando a sombra do theme
+      boxShadow: theme.shadows[3], // Usando a sombra do tema
     },
     [theme.breakpoints.down('sm')]: {
       fontSize: '1.6vh',
@@ -73,15 +72,15 @@ const StyledTextField = styled(TextField)(({ theme, borderRadius, borderWidth, b
   },
 }));
 
-const Input = ({ label, icon: Icon, borderRadius, borderWidth, borderColor, focusBorderColor, hoverBorderColor, ...props }) => {
+const Input = ({ label, icon: IconComponent, borderRadius, borderWidth, borderColor, focusBorderColor, hoverBorderColor, ...props }) => {
   return (
     <StyledTextField
       label={label}
       variant="outlined"
       InputProps={{
-        startAdornment: Icon ? (
+        startAdornment: IconComponent ? (
           <InputAdornment position="start" aria-label={label}>
-            <Icon />
+            <IconComponent />
           </InputAdornment>
         ) : null,
       }}
@@ -98,7 +97,7 @@ const Input = ({ label, icon: Icon, borderRadius, borderWidth, borderColor, focu
 
 Input.propTypes = {
   label: PropTypes.string.isRequired,
-  icon: PropTypes.elementType,
+  icon: PropTypes.elementType, // Agora é um componente que será renderizado
   borderRadius: PropTypes.string,
   borderWidth: PropTypes.string,
   borderColor: PropTypes.string,
