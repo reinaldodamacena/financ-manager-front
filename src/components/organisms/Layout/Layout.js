@@ -1,81 +1,105 @@
-import React from 'react';
-import { styled } from '@mui/material/styles';
+import React, { useState } from 'react';
+import { styled, useTheme } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { NavBar, SideBar } from '../Index';
 
-const GridWrapper = styled('div')(({ theme }) => ({
+const GridWrapper = styled('div')(({ theme, collapsed }) => ({
   display: 'grid',
+  gridTemplateRows: 'auto 1fr auto',
+  gridTemplateColumns: collapsed ? `${theme.spacing(4)} 1fr` : `${theme.spacing(10)} 1fr`,
   height: '100vh',
-  overflow: 'hidden', // Evita overflow do conteúdo
-  gridTemplateRows: 'auto 1fr', // NavBar (se exibido) e conteúdo principal
-  gridTemplateColumns: '1fr', // Apenas uma coluna por padrão
   gridTemplateAreas: `
-    "content"
+    "navbar navbar"
+    "sidebar content"
   `,
-  ...(theme.breakpoints.down('md') && {
-    gridTemplateColumns: '1fr', // Ajuste para telas médias e pequenas
+  overflow: 'auto',
+  transition: theme.transitions.create('grid-template-columns', {
+    duration: theme.transitions.duration.standard,
+    easing: theme.transitions.easing.easeInOut,
   }),
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: collapsed ? `${theme.spacing(6)} 1fr` : `${theme.spacing(20)} 1fr`,
+  },
+  [theme.breakpoints.down('sm')]: {
+    gridTemplateColumns: '1fr',
+    gridTemplateAreas: `
+      "navbar"
+      "content"
+      "sidebar"
+    `,
+  },
+  [theme.breakpoints.down('xs')]: {
+    gridTemplateColumns: '1fr',
+    gridTemplateRows: 'auto 1fr auto',
+    gridTemplateAreas: `
+      "navbar"
+      "content"
+      "sidebar"
+    `,
+  },
 }));
 
-const NavBarWrapper = styled('div')(({ theme }) => ({
+const NavBarWrapper = styled('div')(({ theme, collapsed }) => ({
   gridArea: 'navbar',
-  width: '100%',
-  zIndex: 2, // Garante que o NavBar fique sobre outros elementos
-  ...(theme.breakpoints.down('md') && {
-    padding: '0 1vw',
+  width: collapsed ? `calc(100% - ${theme.spacing(4)})` : `calc(100% - ${theme.spacing(0)})`,
+  zIndex: theme.zIndex.appBar,
+  transition: theme.transitions.create('width', {
+    duration: theme.transitions.duration.standard,
+    easing: theme.transitions.easing.easeInOut,
   }),
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+  },
 }));
 
-const SideBarWrapper = styled('div')(({ theme }) => ({
+const SideBarWrapper = styled('div')(({ theme, collapsed }) => ({
   gridArea: 'sidebar',
-  zIndex: 1, // Garante que o SideBar fique sobre o conteúdo, mas abaixo do NavBar
-  ...(theme.breakpoints.down('sm') && {
-    position: 'fixed',
-    width: '70vw',
+  zIndex: theme.zIndex.drawer,
+  width: collapsed ? theme.spacing(5) : theme.spacing(16),
+  transition: theme.transitions.create('width', {
+    duration: theme.transitions.duration.standard,
+    easing: theme.transitions.easing.easeInOut,
+  }),
+  [theme.breakpoints.down('sm')]: {
+    position: 'absolute',
+    width: '100%',
     height: '100vh',
     bottom: 0,
     left: 0,
     backgroundColor: theme.palette.background.paper,
-    zIndex: 3,
-    transform: 'translateX(-100%)',
-    transition: 'transform 0.3s ease-in-out',
-  }),
+  },
 }));
 
 const ContentWrapper = styled('div')(({ theme }) => ({
   gridArea: 'content',
   overflowY: 'auto',
-  padding: '2vh 2vw',
-  ...(theme.breakpoints.down('sm') && {
-    padding: '1vh 1vw',
+  padding: `${theme.spacing(1)} ${theme.spacing(8)}`,
+  transition: theme.transitions.create('padding', {
+    duration: theme.transitions.duration.standard,
+    easing: theme.transitions.easing.easeInOut,
   }),
+  [theme.breakpoints.down('sm')]: {
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
+  },
 }));
 
-const Layout = ({ children, showNavBar = true, showSideBar = true }) => {
-  const gridTemplateColumns = showSideBar ? (showNavBar ? '20vw 1fr' : '15vw 1fr') : '1fr';
-  
+const Layout = ({ children }) => {
+  const theme = useTheme(); // Obtém o tema atual
+  const [collapsed, setCollapsed] = useState(false); // Estado único para controlar o colapso da sidebar
+
+  const toggleSidebar = () => {
+    setCollapsed(!collapsed);
+  };
+
   return (
-    <GridWrapper
-      sx={{
-        gridTemplateRows: showNavBar ? 'auto 1fr' : '1fr',
-        gridTemplateColumns: gridTemplateColumns,
-        gridTemplateAreas: `
-          ${showNavBar ? '"navbar navbar"' : ''}
-          ${showSideBar ? '"sidebar content"' : '"content content"'}
-        `,
-      }}
-    >
-      {showNavBar && (
-        <NavBarWrapper>
-          <NavBar />
-        </NavBarWrapper>
-      )}
-      {showSideBar && (
-        <SideBarWrapper>
-          <SideBar />
-        </SideBarWrapper>
-      )}
-      <ContentWrapper>
+    <GridWrapper theme={theme} collapsed={collapsed}>
+      <NavBarWrapper theme={theme} collapsed={collapsed}>
+        <NavBar onToggleSidebar={toggleSidebar} />
+      </NavBarWrapper>
+      <SideBarWrapper theme={theme} collapsed={collapsed}>
+        <SideBar collapsed={collapsed} />
+      </SideBarWrapper>
+      <ContentWrapper theme={theme}>
         {children}
       </ContentWrapper>
     </GridWrapper>
@@ -84,13 +108,6 @@ const Layout = ({ children, showNavBar = true, showSideBar = true }) => {
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
-  showNavBar: PropTypes.bool,
-  showSideBar: PropTypes.bool,
-};
-
-Layout.defaultProps = {
-  showNavBar: true,
-  showSideBar: true,
 };
 
 export default Layout;

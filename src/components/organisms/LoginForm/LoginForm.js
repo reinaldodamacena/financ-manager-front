@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import { Grid, Typography, Box } from '@mui/material';
 import {
   Logo,
   UserIcon,
   Input,
   Button,
-  SmallTransparentBoxWrapper,
-  TransparentBoxWrapper} from '../../atoms/Index';
-import { Typography } from '@mui/material';
+  SmallTransparentBox,
+  TransparentBox,
+  Icon,
+} from '../../atoms/Index';
 
 const LoginForm = ({ onSubmit }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Utilize useNavigate para navegação
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,54 +22,86 @@ const LoginForm = ({ onSubmit }) => {
   };
 
   const handleSignUp = () => {
-    navigate('/cadastro'); // Redireciona para a página de cadastro
+    navigate('/cadastro');
   };
 
   return (
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      sx={{ height: '100vh', backgroundColor: 'background.default' }}
+    >
+      <TransparentBox
+        right="auto"
+        left="auto"
+        alignContent="flex-end"
+        top="5vh"
+        bottom="6vh"
+        height="auto"
+        width="30%" // Tornando o box responsivo
+        maxWidth="600px" // Largura máxima para garantir que não fique muito grande em telas grandes
+      >
+        <Logo bottom="60%" />
 
-    <TransparentBoxWrapper alignContent="flex-end" top='6vh' bottom='6vh' height='center' >
-      <Logo style={{ marginTop: '20vh' }} />
-
-      <SmallTransparentBoxWrapper height='center' >
-        <UserIcon />
-        <Typography variant="h6" align="center" style={{ marginTop: '4vh', color: '#6E7781' }}>
-          ENTRAR
-        </Typography>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.5vh', marginTop: '0vh' }}>
-          <Input
-            label="Usuário"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            icon={PersonOutlineIcon}
-          />
-          <Input
-            label="Senha"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            icon={LockOutlinedIcon}
-          />
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1vh' , }}>
-            <Typography variant="body2" color="textSecondary">
-              <a href="#" style={{ color: '#6E7781', textDecoration: 'none' }}>Recuperar senha</a>
-            </Typography>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0vh' }}>
-          <Button type="submit" variant="contained" style={{ width: '15vw', padding: '1vh 0' }}>
-                <Typography variant="button">
-                 Login
+        <SmallTransparentBox width="90%" height="60%" justifyContent="center" right="auto"
+        left="auto"  maxWidth="300px" padding='10%'>
+          <UserIcon />
+          <Typography variant="h6" align="center" sx={{ mt: 8, color: '#6E7781' }}>
+            ENTRAR
+          </Typography>
+          <Box component="form"  onSubmit={handleSubmit} sx={{ mt: 0  }}>
+            <Grid container spacing={1}  justifyContent='center'>
+              <Grid item xs={12}>
+                <Input  
+                  label="Usuário"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  icon={() => <Icon name="PersonOutline" />}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Input  
+                  label="Senha"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  icon={() => <Icon name="LockOutlined" />}
+                />
+              </Grid>
+              <Grid item xs={10} sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0 }}>
+                <Typography variant="body2" color="textSecondary">
+                  <a href="#" style={{ color: '#6E7781', textDecoration: 'none' }}>
+                    Recuperar senha
+                  </a>
                 </Typography>
-          </Button>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0vh' }}>
-            <Typography variant="body2" color="textSecondary">
-              <button onClick={handleSignUp} style={{ color: '#F17A65', cursor: 'pointer', border: 'none', background: 'none' }}>Realizar cadastro</button>
-            </Typography>
-          </div>
-        </form>
-      </SmallTransparentBoxWrapper>
-    </TransparentBoxWrapper>
+              </Grid>
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', mt: 0 }}>
+                <Button type="submit" variant="contained" sx={{ width: '50%', py: 1 }}>
+                  <Typography variant="button">Login</Typography>
+                </Button>
+              </Grid>
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', mt: 0 }}>
+                <Typography variant="body2" color="textSecondary">
+                  <button
+                    onClick={handleSignUp}
+                    style={{
+                      color: '#F17A65',
+                      cursor: 'pointer',
+                      border: 'none',
+                      background: 'none',
+                    }}
+                  >
+                    Realizar cadastro
+                  </button>
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+        </SmallTransparentBox>
+      </TransparentBox>
+    </Grid>
   );
 };
 

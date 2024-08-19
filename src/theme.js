@@ -65,47 +65,103 @@ const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 12, // Cantos ligeiramente arredondados para um visual moderno
+    borderRadius: 12,
   },
   shadows: [
     'none',
-    '0px 0.2vh 0.6vh rgba(0, 0, 0, 0.05), 0px 0.4vh 0.8vh rgba(0, 0, 0, 0.1)', // Sombra leve para nível 1
-    '0px 0.2vh 1vh rgba(0, 0, 0, 0.1), 0px 0.4vh 1.2vh rgba(0, 0, 0, 0.15)',   // Sombra leve para nível 2
-    '0px 0.2vh 1.2vh rgba(0, 0, 0, 0.15), 0px 0.4vh 1.4vh rgba(0, 0, 0, 0.2)', // Sombra leve para nível 3
-    '0px 0.3vh 1.5vh rgba(0, 0, 0, 0.15), 0px 0.6vh 1.8vh rgba(0, 0, 0, 0.2)',  // Sombra para nível 4
-    // Adicione mais níveis conforme necessário
+    '0px 1px 3px rgba(0, 0, 0, 0.05), 0px 1px 2px rgba(0, 0, 0, 0.1)',
+    '0px 3px 6px rgba(0, 0, 0, 0.1), 0px 3px 6px rgba(0, 0, 0, 0.15)',
+    '0px 10px 20px rgba(0, 0, 0, 0.15), 0px 6px 6px rgba(0, 0, 0, 0.2)',
+    '0px 14px 28px rgba(0, 0, 0, 0.15), 0px 10px 10px rgba(0, 0, 0, 0.2)',
   ],
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          padding: '0.8rem 1.5rem',
-          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Usando sombras padrão do nível 2
-          '&:hover': {
-            boxShadow: '0px 6px 18px rgba(0, 0, 0, 0.15)', // Usando sombras padrão do nível 3
-          },
-        },
-      },
+  spacing: 8,
+  transitions: {
+    duration: {
+      shortest: 150,
+      shorter: 200,
+      short: 250,
+      standard: 300,
+      complex: 375,
+      enteringScreen: 225,
+      leavingScreen: 195,
     },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          marginBottom: '1vh',
-          boxShadow: theme => theme.shadows[1], // Usando sombras padrão do nível 1
-        },
-      },
+    easing: {
+      easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      easeOut: 'cubic-bezier(0.0, 0, 0.2, 1)',
+      easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+      sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
     },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          padding: '1.5rem',
-          boxShadow: theme => theme.shadows[2], // Usando sombras padrão do nível 2
-          backgroundColor: '#FFFFFF',
-          borderRadius: '12px',
+  },
+  zIndex: {
+    mobileStepper: 1000,
+    speedDial: 1050,
+    appBar: 1100,
+    drawer: 1200,
+    modal: 1300,
+    snackbar: 1400,
+    tooltip: 1500,
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
+});
+
+// Após a inicialização do `theme`, agora você pode adicionar as propriedades adicionais que dependem dele
+theme.components = {
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        padding: theme.spacing(2, 3),
+        borderRadius: theme.shape.borderRadius,
+        boxShadow: theme.shadows[2],
+        '&:hover': {
+          boxShadow: theme.shadows[3],
+        },
+        [theme.breakpoints.down('sm')]: {
+          padding: theme.spacing(1.5, 2.5),
         },
       },
     },
   },
-});
+  MuiTextField: {
+    styleOverrides: {
+      root: {
+        marginBottom: theme.spacing(2),
+        boxShadow: theme.shadows[1],
+        [theme.breakpoints.down('sm')]: {
+          marginBottom: theme.spacing(1),
+        },
+      },
+    },
+  },
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        padding: theme.spacing(3),
+        boxShadow: theme.shadows[2],
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: theme.shape.borderRadius,
+        [theme.breakpoints.down('sm')]: {
+          padding: theme.spacing(2),
+        },
+      },
+    },
+  },
+  MuiCssBaseline: {
+    styleOverrides: {
+      body: {
+        backgroundColor: theme.palette.background.default,
+        fontFamily: theme.typography.fontFamily,
+        fontSize: '16px',
+      },
+    },
+  },
+};
 
 export default theme;

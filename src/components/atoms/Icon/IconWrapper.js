@@ -3,13 +3,12 @@ import * as Icons from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 
-// Wrapper styled component for additional styling if needed
 const IconWrapper = styled('div')(({ theme }) => ({
   display: 'inline-flex',
   justifyContent: 'center',
   alignItems: 'center',
-  fontSize: 'inherit', // inherit font size from parent
-  color: 'inherit', // inherit color from parent
+  fontSize: 'inherit', // Inherit font size from parent
+  color: 'inherit', // Inherit color from parent
 }));
 
 const Icon = ({ name, size, color, ...props }) => {
@@ -18,13 +17,13 @@ const Icon = ({ name, size, color, ...props }) => {
 
   // If the icon does not exist, return null
   if (!IconComponent) {
-    console.warn(`Icon "${name}" not found in @mui/icons-material`);
+    console.warn(`Icon "${name}" not found in @mui/icons-material. Please check the icon name.`);
     return null;
   }
 
   return (
     <IconWrapper {...props}>
-      <IconComponent style={{ fontSize: size, color: color }} />
+      <IconComponent style={{ fontSize: size || '24px', color: color || 'inherit' }} />
     </IconWrapper>
   );
 };
@@ -36,7 +35,7 @@ Icon.propTypes = {
 };
 
 Icon.defaultProps = {
-  size: '24wh',
+  size: '24px',
   color: 'inherit', // Default to inheriting color from parent
 };
 

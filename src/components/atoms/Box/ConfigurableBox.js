@@ -17,16 +17,16 @@ const ConfigurableBoxWrapper = styled('div')(
     boxShadow,
     borderRadius,
     padding,
-    position
+    position,
   }) => ({
     position: position || 'relative', // Valor padrão para a posição
     top: top || 'auto',
-    left: left || 'auto',
-    right: right || 'auto',
+    left: left || theme.spacing(0),
+    right: right || theme.spacing(0),
     bottom: bottom || 'auto',
     width: width || 'auto',
     height: height || 'auto',
-    padding: padding || '2vw',
+    padding: padding || theme.spacing(0), // Usando o spacing do tema por padrão
     backgroundColor: backgroundColor || theme.palette.background.paper,
     boxShadow: boxShadow || 'none',
     borderRadius: borderRadius || theme.shape.borderRadius,
@@ -35,13 +35,21 @@ const ConfigurableBoxWrapper = styled('div')(
     flexDirection: 'column',
     justifyContent: justifyContent || 'flex-start',
     alignItems: alignItems || 'stretch',
+    transition: theme.transitions.create(['width', 'height', 'padding'], {
+      duration: theme.transitions.duration.standard,
+      easing: theme.transitions.easing.easeInOut,
+    }), // Adicionando transições suaves
     '@media (max-width: 768px)': {
-      padding: '3vw', // Reduz o padding em telas menores
-      margin: '5vh auto',
+      padding: theme.spacing(2),
+      margin: theme.spacing(1, 'auto'),
+      width: '50%',
+      height: 'auto',
     },
     '@media (max-width: 480px)': {
-      padding: '4vw', // Padding reduzido para telas muito pequenas
-      margin: '2vh auto',
+      padding: theme.spacing(3),
+      margin: theme.spacing(1, 'auto'),
+      width: '50%',
+      height: 'auto',
     },
   })
 );
@@ -60,7 +68,7 @@ const ConfigurableBox = ({
   boxShadow,
   borderRadius,
   padding,
-  position
+  position,
 }) => {
   return (
     <ConfigurableBoxWrapper

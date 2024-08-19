@@ -3,20 +3,19 @@ import PropTypes from 'prop-types';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TablePagination } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-const StyledTableContainer = styled(TableContainer)(({ theme, customWidth, customHeight }) => ({
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[3],
   overflow: 'hidden',
-  width: customWidth || '100%',  // Permite ajuste de largura
-  height: customHeight || 'auto', // Permite ajuste de altura
+  width: '100%',
 }));
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  fontWeight: 'bold',
+  fontWeight: theme.typography.fontWeightBold,
   backgroundColor: theme.palette.background.paper,
   color: theme.palette.text.primary,
-  borderBottom: `0vh solid ${theme.palette.divider}`,
-  padding: '1rem',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  padding: theme.spacing(2),
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -28,23 +27,22 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const TableWrapper = styled('div')(({ theme, customWidth, customHeight }) => ({
-  padding: '2rem',
+const TableWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(4),
   backgroundColor: theme.palette.background.default,
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[3],
   overflow: 'hidden',
-  width: customWidth || '100%',  // Permite ajuste de largura
-  height: customHeight || 'auto', // Permite ajuste de altura
+  width: '100%',
 }));
 
 const Title = styled(Typography)(({ theme }) => ({
-  marginBottom: '1rem',
+  marginBottom: theme.spacing(2),
   textAlign: 'center',
   color: theme.palette.primary.main,
 }));
 
-const CustomTable = ({ columns, data = [], title, rowsPerPageOptions, defaultRowsPerPage, customWidth, customHeight }) => {
+const CustomTable = ({ columns, data = [], title, rowsPerPageOptions, defaultRowsPerPage }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(defaultRowsPerPage || 5);
 
@@ -60,11 +58,9 @@ const CustomTable = ({ columns, data = [], title, rowsPerPageOptions, defaultRow
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   return (
-    <TableWrapper customWidth={customWidth} customHeight={customHeight}>
-      {title && (
-        <Title variant="h5">{title}</Title>
-      )}
-      <StyledTableContainer component={Paper} customWidth={customWidth} customHeight={customHeight}>
+    <TableWrapper>
+      {title && <Title variant="h5">{title}</Title>}
+      <StyledTableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -117,17 +113,15 @@ const CustomTable = ({ columns, data = [], title, rowsPerPageOptions, defaultRow
 CustomTable.propTypes = {
   columns: PropTypes.arrayOf(
     PropTypes.shape({
-      field: PropTypes.string.isRequired, // Chave do campo nos dados
-      headerName: PropTypes.string.isRequired, // Nome exibido na cabeça da tabela
-      align: PropTypes.oneOf(['left', 'right', 'center']), // Alinhamento opcional das células
+      field: PropTypes.string.isRequired,
+      headerName: PropTypes.string.isRequired,
+      align: PropTypes.oneOf(['left', 'right', 'center']),
     })
   ).isRequired,
-  data: PropTypes.arrayOf(PropTypes.object), // Array de objetos contendo os dados
-  title: PropTypes.string, // Título da tabela
-  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number), // Opções para o número de linhas por página
-  defaultRowsPerPage: PropTypes.number, // Número padrão de linhas por página
-  customWidth: PropTypes.string, // Permite ajuste de largura do componente
-  customHeight: PropTypes.string, // Permite ajuste de altura do componente
+  data: PropTypes.arrayOf(PropTypes.object),
+  title: PropTypes.string,
+  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
+  defaultRowsPerPage: PropTypes.number,
 };
 
 CustomTable.defaultProps = {
@@ -135,4 +129,3 @@ CustomTable.defaultProps = {
 };
 
 export default CustomTable;
-4

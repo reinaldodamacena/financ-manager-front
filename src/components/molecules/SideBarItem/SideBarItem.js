@@ -4,28 +4,32 @@ import { Icon } from '../../atoms/Index';
 import PropTypes from 'prop-types';
 import { Typography } from '@mui/material';
 
-const SideBarItemWrapper = styled('div')(({ theme }) => ({
+const SideBarItemWrapper = styled('div')(({ theme, collapsed }) => ({
   display: 'flex',
-  alignItems: 'center',
-  padding: '1vh 0',
+  alignItems: 'auto',
+  padding: theme.spacing(1), // Usando o sistema de espaçamento do tema
   color: theme.palette.text.primary,
   cursor: 'pointer',
-  transition: 'background-color 0.3s ease',
+  transition: theme.transitions.create(['background-color', 'justify-content'], {
+    duration: theme.transitions.duration.shortest,
+  }),
+  justifyContent: collapsed ? 'center' : 'flex-start',
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
   },
 }));
 
-const SideBarText = styled(Typography)(({ theme }) => ({
-  marginLeft: '1vw',
-  fontSize: '1rem',
+const SideBarText = styled(Typography)(({ theme, collapsed }) => ({
+  marginLeft: theme.spacing(1), // Usando o sistema de espaçamento do tema
+  fontSize: theme.typography.fontSize, // Usando a tipografia do tema
   color: theme.palette.text.primary,
+  display: collapsed ? 'none' : 'block',
 }));
 
-const SideBarItem = ({ label, icon, color, onClick }) => (
-  <SideBarItemWrapper onClick={onClick}>
+const SideBarItem = ({ label, icon, color, onClick, collapsed }) => (
+  <SideBarItemWrapper onClick={onClick} collapsed={collapsed} aria-label={label}>
     <Icon name={icon} size="24px" color={color || 'inherit'} />
-    <SideBarText>{label}</SideBarText>
+    <SideBarText collapsed={collapsed}>{label}</SideBarText>
   </SideBarItemWrapper>
 );
 
@@ -34,6 +38,11 @@ SideBarItem.propTypes = {
   icon: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   color: PropTypes.string,
+  collapsed: PropTypes.bool,
+};
+
+SideBarItem.defaultProps = {
+  collapsed: false,
 };
 
 export default SideBarItem;

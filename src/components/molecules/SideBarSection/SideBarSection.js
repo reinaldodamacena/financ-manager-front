@@ -4,22 +4,32 @@ import { styled } from '@mui/material/styles';
 import { SideBarItem } from '../../molecules/Index';
 import { Typography, Divider } from '@mui/material';
 
-const SectionTitle = styled(Typography)(({ theme }) => ({
-  margin: '2vh 0 1vh',
-  fontSize: '0.875rem',
-  fontWeight: 600,
-  color: theme.palette.text.secondary,
-  textTransform: 'uppercase',
+const SectionTitle = styled(Typography, { shouldForwardProp: (prop) => prop !== 'collapsed' })(
+  ({ theme, collapsed }) => ({
+    margin: theme.spacing(collapsed ? 1 : 2, 0, 1),
+    fontSize: theme.typography.pxToRem(14),
+    fontWeight: 600,
+    color: theme.palette.text.secondary,
+    textTransform: 'uppercase',
+    display: collapsed ? 'none' : 'block',
+    transition: theme.transitions.create(['margin', 'display'], {
+      duration: theme.transitions.duration.shortest,
+    }),
+  })
+);
+
+const SideBarSectionWrapper = styled('div')(({ theme }) => ({
+  marginBottom: theme.spacing(2),
 }));
 
-const SideBarSection = ({ title, items }) => (
-  <div>
-    <SectionTitle>{title}</SectionTitle>
+const SideBarSection = ({ title, items, collapsed }) => (
+  <SideBarSectionWrapper>
+    <SectionTitle collapsed={collapsed}>{title}</SectionTitle>
     {items.map((item, index) => (
-      <SideBarItem key={index} {...item} />
+      <SideBarItem key={index} {...item} collapsed={collapsed} />
     ))}
-    <Divider style={{ margin: '2vh 0' }} />
-  </div>
+    <Divider sx={{ margin: (theme) => theme.spacing(2, 0) }} />
+  </SideBarSectionWrapper>
 );
 
 SideBarSection.propTypes = {
@@ -32,6 +42,11 @@ SideBarSection.propTypes = {
       color: PropTypes.string,
     })
   ).isRequired,
+  collapsed: PropTypes.bool,
+};
+
+SideBarSection.defaultProps = {
+  collapsed: false,
 };
 
 export default SideBarSection;

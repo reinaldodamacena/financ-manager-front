@@ -2,12 +2,12 @@ import React from 'react';
 import { styled } from '@mui/material/styles';
 import logo from 'assets/images/Logo.png';
 
-const LogoWrapper = styled('div')(({ top, left, right, bottom, width, height }) => ({
+const LogoWrapper = styled('div')(({ theme, top, left, right, bottom, width, height }) => ({
   position: 'absolute',
-  top: top || '-6vw', 
-  left: left || '11vh', 
-  right: right || '11vh', 
-  bottom: bottom || '20vw', 
+  top: top || theme.spacing(-6), 
+  left: left || theme.spacing(11), 
+  right: right || theme.spacing(11), 
+  bottom: bottom || theme.spacing(20), 
   backgroundImage: `url(${logo})`,
   backgroundSize: 'contain',
   backgroundRepeat: 'no-repeat',
@@ -15,8 +15,12 @@ const LogoWrapper = styled('div')(({ top, left, right, bottom, width, height }) 
   backgroundPosition: 'center',
   width: width || 'auto', // Define a largura, se fornecida
   height: height || 'auto', // Define a altura, se fornecida
+  transition: theme.transitions.create(['top', 'left', 'width', 'height'], {
+    duration: theme.transitions.duration.standard,
+    easing: theme.transitions.easing.easeInOut,
+  }),
   '@media (max-width: 768px)': {
-    top: '10px', 
+    top: theme.spacing(1.25), 
     bottom: 'unset',
     left: '50%',
     transform: 'translateX(-50%)',

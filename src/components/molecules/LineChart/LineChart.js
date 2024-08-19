@@ -2,15 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend, Filler } from 'chart.js';
+import { styled } from '@mui/material/styles';
 
 // Registering necessary components from chart.js
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend, Filler);
 
+const ChartContainer = styled('div')(({ theme, width, height }) => ({
+  width: width || '100%',
+  height: height || '20vh',
+  padding: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    height: '30vh', // Aumenta a altura em telas menores
+  },
+}));
+
 const LineChart = ({ data, options, width, height }) => {
   return (
-    <div style={{ width: width, height: height }}>
+    <ChartContainer width={width} height={height}>
       <Line data={data} options={options} />
-    </div>
+    </ChartContainer>
   );
 };
 
@@ -42,6 +52,21 @@ LineChart.defaultProps = {
       },
       y: {
         beginAtZero: true,
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          color: '#000', // Pode ser ajustado para corresponder ao tema
+        },
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: '#333', // Pode ser ajustado para corresponder ao tema
+        titleColor: '#fff',
+        bodyColor: '#fff',
       },
     },
   },

@@ -1,1 +1,1 @@
-export {default} from './BackgroundWrapper';
+export {default} from './Background'; // Importando Background

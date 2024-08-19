@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTheme } from '@mui/material/styles'; // Importa o tema
 import { Background } from '../../atoms/Index';
 import useFetch from '../../../hooks/useFetch.js';
-import { Layout, StatsSection,SalesSection } from '../../organisms/Index';
-
+import { Layout, StatsSection, SalesSection } from '../../organisms/Index';
 
 const HomePage = () => {
+  const theme = useTheme(); // Acessa o tema para uso nos estilos
+
   const { data, loading } = useFetch('https://jsonplaceholder.typicode.com/posts');
 
   const salesData = [
@@ -25,8 +27,8 @@ const HomePage = () => {
       {
         label: 'Progressão anual de vendas (R$)',
         data: [0, 200, 500, 1000, 1500, 2000, 2500, 3000],
-        borderColor: 'rgba(191, 66, 17, 0.7)',
-        backgroundColor: 'rgba(191, 66, 17, 0.3)',
+        borderColor: theme.palette.primary.main, // Usando a cor principal do tema
+        backgroundColor: theme.palette.primary.light, // Usando a variação da cor principal do tema
         fill: true,
       },
     ],

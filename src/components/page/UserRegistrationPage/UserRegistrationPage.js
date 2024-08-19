@@ -6,7 +6,7 @@ import {Logo} from '../../atoms/Index.js';
 const UserRegistrationPage = () => {
   return (
     <PageBackground>    
-        <Logo top="5vh" left="-50vw" right="10vw" bottom="15vh" />    
+        <Logo top="5vh" right='50vw' width="auto" height="auto" />  
         <UserRegistrationForm />
     </PageBackground>
   );

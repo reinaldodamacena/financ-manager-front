@@ -1,3 +1,3 @@
-export { default} from './TransparentBoxWrapper';
+export { default} from './TransparentBox';
 
 

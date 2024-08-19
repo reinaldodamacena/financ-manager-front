@@ -1,11 +1,37 @@
 import React from 'react';
-import { ConfigurableBoxWrapper } from '../../atoms/Index';
+import { useTheme } from '@mui/material/styles';
+import { ConfigurableBox } from '../../atoms/Index';
 import { Typography } from '@mui/material';
 
-const NavBar = () => (
-  <ConfigurableBoxWrapper top='1' borderRadius='10' padding='1.4vh 1.4vw' height='6vh' >
-    <Typography variant="h6" >Meu Aplicativo</Typography>
-  </ConfigurableBoxWrapper>
-);
+const NavBar = () => {
+  const theme = useTheme(); // Obtém o tema atual
+
+  return (
+    <ConfigurableBox
+      sx={{
+        position: 'fixed',
+        top: 0,
+        borderRadius: 0,
+        padding: {
+          xs: theme.spacing(1, 2), // Usando theme.spacing para ajuste de padding
+          sm: theme.spacing(1.4, 1.4),
+        },
+        height: {
+          xs: '8vh',
+          sm: '6vh',
+        },
+        boxShadow: theme.shadows[3], // Usando a sombra do tema
+        backgroundColor: theme.palette.background.paper, // Cor de fundo usando o tema
+        zIndex: theme.zIndex.appBar, // Garantindo que a NavBar fique acima dos outros elementos
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <Typography variant="h6" color="textPrimary">
+        Meu Aplicativo
+      </Typography>
+    </ConfigurableBox>
+  );
+};
 
 export default NavBar;

@@ -11,21 +11,18 @@ const SalesPage = () => {
 
   return (
     <Background>
-      <Layout>
+      <Layout >
         <Grid container spacing={4}>
-          <Grid item xs={8}>
+          <Grid item xs={8} md={8}>
             <ClientSection />
           </Grid>
-          {/* Divider between ClientSection and ProductList */}
           <Grid item xs={8}>
             <Divider />
           </Grid>
           <Grid item xs={8} md={8}>
             <ProductList data={salesData} />
           </Grid>
-          {/* Divider between ProductList and SummaryCard */}
           <Grid item xs={8} md={4}>
-            <Divider  />
             <SummaryCard total={634.66} paymentOptions={["Dinheiro", "Cartão"]} />
           </Grid>
         </Grid>

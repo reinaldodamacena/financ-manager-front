@@ -21,25 +21,21 @@ const SalesSection = ({ salesData, topProductsData, chartData }) => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={9}>
-        <LineChart data={chartData} />
+      <Grid item xs={12} md={9}>
+        <LineChart data={chartData} height="40vh" />
       </Grid>
-      <Grid item xs={11} md={6}>
+      <Grid item xs={12} md={6}>
         <CustomTable 
           columns={salesColumns} 
           data={salesData} 
           title="Últimas vendas" 
-          customWidth="auto" 
-          customHeight="auto" 
         />
       </Grid>
-      <Grid item xs={11} md={6}>
+      <Grid item xs={12} md={6}>
         <CustomTable 
           columns={topProductsColumns} 
           data={topProductsData} 
           title="Top produtos mais vendidos" 
-          customWidth="auto" 
-          customHeight="auto" 
         />
       </Grid>
     </Grid>
