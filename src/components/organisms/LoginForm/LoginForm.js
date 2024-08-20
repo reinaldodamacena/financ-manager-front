@@ -36,16 +36,17 @@ const LoginForm = ({ onSubmit }) => {
         right="auto"
         left="auto"
         alignContent="flex-end"
-        top="5vh"
-        bottom="6vh"
-        height="auto"
+        top="auto"
+        bottom="auto"
+        height="80%"
         width="30%" // Tornando o box responsivo
+        padding='1.5%'
         maxWidth="600px" // Largura máxima para garantir que não fique muito grande em telas grandes
       >
         <Logo bottom="60%" />
 
         <SmallTransparentBox width="90%" height="60%" justifyContent="center" right="auto"
-        left="auto"  maxWidth="300px" padding='10%'>
+        left="auto"  maxWidth="300px" padding='15%'>
           <UserIcon />
           <Typography variant="h6" align="center" sx={{ mt: 8, color: '#6E7781' }}>
             ENTRAR

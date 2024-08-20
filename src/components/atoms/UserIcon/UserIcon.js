@@ -18,6 +18,7 @@ const UserIconWrapper = styled('div')(({ theme }) => ({
 }));
 
 const UserIconInnerWrapper = styled('div')(({ theme }) => ({
+  position: 'absolute',
   width: '8vw',  // Largura responsiva utilizando vw
   height: '8vw', // Altura responsiva utilizando vw
   maxWidth: theme.spacing(10.25),  // Largura máxima em px
