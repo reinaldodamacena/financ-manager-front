@@ -8,7 +8,7 @@ const ClientSection = () => {
       <Typography variant="h5" color="textPrimary">
         Cliente
       </Typography>
-      <Divider sx={{ borderColor: 'primary.main', marginBottom: 2, width: '100%' }} />
+      <Divider sx={{ borderColor: 'primary.main', marginBottom: 2, width: '121%' }} />
       <Grid container spacing={4} alignItems="flex-start">
         <Grid item xs={12} sm={6} md={4}>
           <Input

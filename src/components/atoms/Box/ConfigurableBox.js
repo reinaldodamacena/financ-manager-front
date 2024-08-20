@@ -39,18 +39,6 @@ const ConfigurableBoxWrapper = styled('div')(
       duration: theme.transitions.duration.standard,
       easing: theme.transitions.easing.easeInOut,
     }), // Adicionando transições suaves
-    '@media (max-width: 768px)': {
-      padding: theme.spacing(2),
-      margin: theme.spacing(1, 'auto'),
-      width: '50%',
-      height: 'auto',
-    },
-    '@media (max-width: 480px)': {
-      padding: theme.spacing(3),
-      margin: theme.spacing(1, 'auto'),
-      width: '50%',
-      height: 'auto',
-    },
   })
 );
 

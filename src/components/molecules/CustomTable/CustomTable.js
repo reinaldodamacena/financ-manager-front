@@ -1,21 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, TablePagination } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[3],
+  boxShadow: theme.shadows[1],
   overflow: 'hidden',
   width: '100%',
+  border: `1px solid ${theme.palette.divider}`,
 }));
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  fontWeight: theme.typography.fontWeightBold,
+  fontWeight: theme.typography.fontWeightMedium,
   backgroundColor: theme.palette.background.paper,
   color: theme.palette.text.primary,
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  padding: theme.spacing(2),
+  borderBottom: `2px solid ${theme.palette.divider}`,
+  padding: theme.spacing(0),
+  '&:nth-of-type(1)': {
+    width: '5%',
+    textAlign: 'center',
+  },
+  '&:nth-of-type(2)': {
+    width: '10%',
+    textAlign: 'center',
+  },
+  '&:nth-of-type(3)': {
+    width: '40%',
+  },
+  '&:nth-of-type(4)': {
+    width: '10%',
+    textAlign: 'center',
+  },
+  '&:nth-of-type(5), &:nth-of-type(6), &:nth-of-type(7)': {
+    width: '10%',
+    textAlign: 'right',
+  },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -25,88 +45,41 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(even)': {
     backgroundColor: theme.palette.background.default,
   },
+  '& td, & th': {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    color: theme.palette.text.primary,  // Define a cor do texto conforme o tema
+  },
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,  // Cor de fundo ao passar o mouse sobre a linha
+  },
 }));
 
-const TableWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(4),
-  backgroundColor: theme.palette.background.default,
-  borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[3],
-  overflow: 'hidden',
-  width: '100%',
-}));
-
-const Title = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  textAlign: 'center',
-  color: theme.palette.primary.main,
-}));
-
-const CustomTable = ({ columns, data = [], title, rowsPerPageOptions, defaultRowsPerPage }) => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(defaultRowsPerPage || 5);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
+const CustomTable = ({ columns, data = [] }) => {
   return (
-    <TableWrapper>
-      {title && <Title variant="h5">{title}</Title>}
-      <StyledTableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
+    <StyledTableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {columns.map((column) => (
+              <StyledTableCell key={column.field} align={column.align || 'left'}>
+                {column.headerName}
+              </StyledTableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((row, index) => (
+            <StyledTableRow key={index}>
               {columns.map((column) => (
-                <StyledTableCell key={column.field} align={column.align || 'left'}>
-                  {column.headerName}
-                </StyledTableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.length > 0 ? (
-              data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                <StyledTableRow key={index}>
-                  {columns.map((column) => (
-                    <TableCell key={`${index}-${column.field}`} align={column.align || 'left'}>
-                      {row[column.field]}
-                    </TableCell>
-                  ))}
-                </StyledTableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} align="center">
-                  Nenhum dado disponível
+                <TableCell key={`${index}-${column.field}`} align={column.align || 'left'}>
+                  {row[column.field]}
                 </TableCell>
-              </TableRow>
-            )}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={columns.length} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </StyledTableContainer>
-      <TablePagination
-        rowsPerPageOptions={rowsPerPageOptions || [5, 10, 25]}
-        component="div"
-        count={data.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </TableWrapper>
+              ))}
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </StyledTableContainer>
   );
 };
 
@@ -119,9 +92,6 @@ CustomTable.propTypes = {
     })
   ).isRequired,
   data: PropTypes.arrayOf(PropTypes.object),
-  title: PropTypes.string,
-  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
-  defaultRowsPerPage: PropTypes.number,
 };
 
 CustomTable.defaultProps = {

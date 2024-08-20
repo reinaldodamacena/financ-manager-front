@@ -112,7 +112,6 @@ const theme = createTheme({
   },
 });
 
-// Após a inicialização do `theme`, agora você pode adicionar as propriedades adicionais que dependem dele
 theme.components = {
   MuiButton: {
     styleOverrides: {
@@ -159,6 +158,9 @@ theme.components = {
         backgroundColor: theme.palette.background.default,
         fontFamily: theme.typography.fontFamily,
         fontSize: '16px',
+        [theme.breakpoints.down('sm')]: {
+          fontSize: '14px',
+        },
       },
     },
   },

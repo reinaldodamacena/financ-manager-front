@@ -7,15 +7,36 @@ const IconWrapper = styled('div')(({ theme }) => ({
   display: 'inline-flex',
   justifyContent: 'center',
   alignItems: 'center',
-  fontSize: 'inherit', // Inherit font size from parent
-  color: 'inherit', // Inherit color from parent
+  fontSize: 'inherit',
+  color: 'inherit',
 }));
 
-const Icon = ({ name, size, color, ...props }) => {
-  // Retrieve the appropriate icon from MUI icons
-  const IconComponent = Icons[name];
+const BarcodeIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    width="24px"
+    height="24px"
+  >
+    <rect x="3" y="4" width="2" height="16" />
+    <rect x="6" y="4" width="1" height="16" />
+    <rect x="8" y="4" width="2" height="16" />
+    <rect x="11" y="4" width="1" height="16" />
+    <rect x="13" y="4" width="1" height="16" />
+    <rect x="15" y="4" width="2" height="16" />
+    <rect x="18" y="4" width="1" height="16" />
+  </svg>
+);
 
-  // If the icon does not exist, return null
+const Icon = ({ name, size, color, ...props }) => {
+  const icons = {
+    ...Icons,
+    Barcode: BarcodeIcon, // Adicionando o ícone de código de barras personalizado
+  };
+
+  const IconComponent = icons[name];
+
   if (!IconComponent) {
     console.warn(`Icon "${name}" not found in @mui/icons-material. Please check the icon name.`);
     return null;
@@ -29,14 +50,14 @@ const Icon = ({ name, size, color, ...props }) => {
 };
 
 Icon.propTypes = {
-  name: PropTypes.string.isRequired, // Name of the icon, e.g., 'Home', 'Search'
-  size: PropTypes.string, // Size of the icon, e.g., '24px', '2em'
-  color: PropTypes.string, // Color of the icon
+  name: PropTypes.string.isRequired,
+  size: PropTypes.string,
+  color: PropTypes.string,
 };
 
 Icon.defaultProps = {
   size: '24px',
-  color: 'inherit', // Default to inheriting color from parent
+  color: 'inherit',
 };
 
 export default Icon;

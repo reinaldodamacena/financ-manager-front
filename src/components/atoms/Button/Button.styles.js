@@ -38,14 +38,6 @@ const StyledButton = styled(Button)(({ theme, variant }) => {
     transition: theme.transitions.create(['background-color', 'box-shadow', 'border-color', 'color'], {
       duration: theme.transitions.duration.short,
     }),
-    '@media (max-width: 600px)': {
-      padding: theme.spacing(1.5, 3), // Ajuste de padding para telas menores
-      fontSize: theme.typography.button.fontSize * 0.9, // Ajuste de tamanho de fonte para telas menores
-    },
-    '@media (max-width: 400px)': {
-      padding: theme.spacing(2, 4), // Mais ajustes para dispositivos móveis
-      fontSize: theme.typography.button.fontSize * 0.8, // Ajuste de tamanho de fonte para dispositivos móveis
-    },
   };
 });
 

@@ -7,7 +7,7 @@ const UserRegistrationForm = () => {
   const { formData, handleChange, handleSubmit } = useContext(UserFormContext);
 
   return (
-    <TransparentBox top="6vh" bottom="6vh" height="center" left="50vw" width="45vw">
+    <TransparentBox  left='0%' top="auto" bottom="auto" height="center"  width="auto">
       <Typography variant="h6" align="left" sx={{ mb: 2, color: 'text.secondary' }}>
         CADASTRO DE USUÁRIO
       </Typography>

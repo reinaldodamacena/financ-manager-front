@@ -8,10 +8,10 @@ const NavBar = () => {
 
   return (
     <ConfigurableBox
+      borderRadius= "0"
       sx={{
         position: 'fixed',
         top: 0,
-        borderRadius: 0,
         padding: {
           xs: theme.spacing(1, 2), // Usando theme.spacing para ajuste de padding
           sm: theme.spacing(1.4, 1.4),
@@ -20,7 +20,6 @@ const NavBar = () => {
           xs: '8vh',
           sm: '6vh',
         },
-        boxShadow: theme.shadows[3], // Usando a sombra do tema
         backgroundColor: theme.palette.background.paper, // Cor de fundo usando o tema
         zIndex: theme.zIndex.appBar, // Garantindo que a NavBar fique acima dos outros elementos
         display: 'flex',

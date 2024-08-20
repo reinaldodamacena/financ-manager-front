@@ -4,6 +4,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { Logo, ConfigurableBox } from '../../atoms/Index';
 import PropTypes from 'prop-types';
 import { SideBarSection } from '../../molecules/Index';
+import { useTheme } from '@mui/material/styles'; // Importa o hook useTheme
 
 const sections = [
   {
@@ -45,27 +46,12 @@ const sections = [
 ];
 
 const SideBar = ({ collapsed, toggleCollapsed }) => {
+  const theme = useTheme(); // Usa o hook useTheme para acessar o tema
+
   return (
     <ConfigurableBox
-      sx={({ theme }) => ({
-        width: collapsed ? '5%' : '20%',
-        height: '100%',
-        padding: collapsed ? theme.spacing(0, 1) : theme.spacing(1),
-        borderRadius: 0,
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: theme.shadows[3],
-        transition: theme.transitions.create(['width', 'padding'], {
-          duration: theme.transitions.duration.standard,
-          easing: theme.transitions.easing.easeInOut,
-        }),
-      })}
+    borderRadius= "0"
     >
-      <Logo
-        top={({ theme }) => theme.spacing(2)}
-        left={({ theme }) => theme.spacing(2)}
-        width={collapsed ? '10%' : '20%'}
-        height={collapsed ? '10%' : '20%'}
-      />
       <IconButton onClick={toggleCollapsed} sx={{ margin: 'auto', display: 'block' }}>
         <MenuIcon />
       </IconButton>
@@ -78,7 +64,7 @@ const SideBar = ({ collapsed, toggleCollapsed }) => {
 
 SideBar.propTypes = {
   collapsed: PropTypes.bool.isRequired,
-  toggleCollapsed: PropTypes.func.isRequired, // Nova prop para alternar o estado
+  toggleCollapsed: PropTypes.func.isRequired,
 };
 
 export default SideBar;

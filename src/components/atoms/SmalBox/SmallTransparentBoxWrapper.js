@@ -37,18 +37,7 @@ const SmallTransparentBoxWrapper = styled('div')(
       duration: theme.transitions.duration.standard,
       easing: theme.transitions.easing.easeInOut,
     }),
-    '@media (max-width: 768px)': {
-      padding: theme.spacing(2),
-      margin: theme.spacing(1, 'auto'),
-      width: '90%',
-      height: 'auto',
-    },
-    '@media (max-width: 480px)': {
-      padding: theme.spacing(2),
-      margin: theme.spacing(1, 'auto'),
-      width: '90%',
-      height: 'auto',
-    },
+
   })
 );
 

@@ -4,23 +4,19 @@ import { Typography, Box } from '@mui/material';
 import { Icon, ConfigurableBox } from '../../atoms/Index';
 
 const StatCard = ({ icon, label, value, sx }) => (
-  <ConfigurableBox
-    sx={{
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: 2, // Usando o sistema de espaçamento do tema
-      boxShadow: 2, // Usando a sombra predefinida do tema
-      borderRadius: 2, // Usando o borderRadius predefinido do tema
-      backgroundColor: 'background.paper', // Usando a cor de fundo do tema
-      gap: 2, // Espaçamento entre os elementos
-      ...sx,
+  <ConfigurableBox 
+    sx={{ 
+      width: "80%", 
+      height: "100%", 
+      justifyContent: "center", 
+      maxWidth: "none", 
+      padding: 1, // Reduz o padding
+      ...sx 
     }}
   >
-    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-      <Icon name={icon} size="2rem" color="primary" />
-      <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: 2 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', padding: 1 }}>
+      <Icon name={icon} size="2rem" />
+      <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: 1 }}>
         <Typography variant="body2" color="textSecondary">
           {label}
         </Typography>

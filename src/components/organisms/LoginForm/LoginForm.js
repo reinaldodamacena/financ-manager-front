@@ -38,7 +38,7 @@ const LoginForm = ({ onSubmit }) => {
         alignContent="flex-end"
         top="auto"
         bottom="auto"
-        height="80%"
+        height="95%"
         width="30%" // Tornando o box responsivo
         padding='1.5%'
         maxWidth="600px" // Largura máxima para garantir que não fique muito grande em telas grandes
@@ -52,7 +52,7 @@ const LoginForm = ({ onSubmit }) => {
             ENTRAR
           </Typography>
           <Box component="form"  onSubmit={handleSubmit} sx={{ mt: 0  }}>
-            <Grid container spacing={1}  justifyContent='center'>
+            <Grid container spacing={1}   justifyContent='center'>
               <Grid item xs={12}>
                 <Input  
                   label="Usuário"

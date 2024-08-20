@@ -19,14 +19,6 @@ const LogoWrapper = styled('div')(({ theme, top, left, right, bottom, width, hei
     duration: theme.transitions.duration.standard,
     easing: theme.transitions.easing.easeInOut,
   }),
-  '@media (max-width: 768px)': {
-    top: theme.spacing(1.25), 
-    bottom: 'unset',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: width ? `calc(${width} * 0.8)` : 'auto', // Ajusta a largura para telas menores
-    height: height ? `calc(${height} * 0.8)` : 'auto', // Ajusta a altura para telas menores
-  },
 }));
 
 const Logo = ({ top, left, right, bottom, width, height }) => {

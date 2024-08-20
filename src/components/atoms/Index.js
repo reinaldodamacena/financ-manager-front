@@ -9,3 +9,6 @@ export { default as UserIcon } from './UserIcon/Index';
 export { default as Icon } from './Icon/Index';
 export { default as ConfigurableBox } from './Box/Index';
 export { default as Dropdown } from './Dropdown/Index';
+export { default as Modal } from './Modal/Index';
+export { default as IconButton } from './IconButton/Index';
+export { default as Divider } from './Divider/Index';

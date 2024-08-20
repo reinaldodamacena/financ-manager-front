@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TextField, InputAdornment } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import InputMask from 'react-input-mask';
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-root': {
@@ -11,7 +12,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(0, 2),
     fontFamily: theme.typography.fontFamily,
-    fontSize: '2.6vh',
+    fontSize: '3.5vh',
     color: theme.palette.text.primary,
     width: '100%',
     transition: theme.transitions.create(['box-shadow', 'transform'], {
@@ -82,26 +83,30 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const Input = ({ label, icon: IconComponent, ...props }) => {
+const Input = ({ label, mask, icon: IconComponent, ...props }) => {
   return (
-    <StyledTextField
-      label={label}
-      variant="outlined"
-      InputProps={{
-        startAdornment: IconComponent ? (
-          <InputAdornment position="start" aria-label={label}>
-            <IconComponent />
-          </InputAdornment>
-        ) : null,
-      }}
-      aria-label={label}
-      {...props}
-    />
+    <InputMask mask={mask} {...props}>
+      {() => (
+        <StyledTextField
+          label={label}
+          variant="outlined"
+          InputProps={{
+            startAdornment: IconComponent ? (
+              <InputAdornment position="start" aria-label={label}>
+                <IconComponent />
+              </InputAdornment>
+            ) : null,
+          }}
+          aria-label={label}
+        />
+      )}
+    </InputMask>
   );
 };
 
 Input.propTypes = {
   label: PropTypes.string.isRequired,
+  mask: PropTypes.string, // Adicionado suporte para máscara
   icon: PropTypes.elementType, // Agora é um componente que será renderizado
 };
 

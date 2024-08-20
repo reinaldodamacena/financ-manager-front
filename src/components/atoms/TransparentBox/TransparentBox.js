@@ -16,8 +16,9 @@ const TransparentBoxWrapper = styled('div')(
     borderRadius,
     boxShadow,
     padding,
+    position,
   }) => ({
-    position: 'absolute',
+    position: position || 'absolute',
     top: top || '0',
     left: left || theme.spacing(20),
     right: right || theme.spacing(10),
@@ -30,23 +31,12 @@ const TransparentBoxWrapper = styled('div')(
     padding: padding || theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     justifyContent: justifyContent || 'flex-start',
     transition: theme.transitions.create(['padding', 'margin', 'width', 'height', 'background-color'], {
       duration: theme.transitions.duration.standard,
       easing: theme.transitions.easing.easeInOut,
     }),
-    '@media (max-width: 768px)': {
-      padding: theme.spacing(2),
-      margin: theme.spacing(1, 'auto'),
-      width: '50%',
-      height: 'auto',
-    },
-    '@media (max-width: 480px)': {
-      padding: theme.spacing(3),
-      margin: theme.spacing(1, 'auto'),
-      width: '50%',
-      height: 'auto',
-    },
   })
 );
 
@@ -63,6 +53,7 @@ const TransparentBox = ({
   borderRadius,
   boxShadow,
   padding,
+  position,
 }) => {
   return (
     <TransparentBoxWrapper
@@ -77,6 +68,7 @@ const TransparentBox = ({
       borderRadius={borderRadius}
       boxShadow={boxShadow}
       padding={padding}
+      position={position}
     >
       {children}
     </TransparentBoxWrapper>
@@ -96,6 +88,7 @@ TransparentBox.propTypes = {
   borderRadius: PropTypes.number, // BorderRadius customizável
   boxShadow: PropTypes.string, // Sombra customizável
   padding: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), // Padding customizável
+  position: PropTypes.string,
 };
 
 export default TransparentBox;
