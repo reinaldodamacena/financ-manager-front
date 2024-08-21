@@ -7,4 +7,5 @@ export { default as StatCard } from './StatCard/Index';
 export { default as PaymentSection } from './PaymentSection/Index';
 export { default as ClientSection } from './ClientSection/Index';
 export { default as ProductList} from './ProductList/Index';
-
+export { default as ProductForm } from './ProductForm/Index';
+export { default as ProductCard } from './ProductCard/Index';

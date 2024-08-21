@@ -8,6 +8,7 @@ const GridWrapper = styled('div')(({ theme, collapsed }) => ({
   gridTemplateRows: 'auto 1fr auto',
   gridTemplateColumns: collapsed ? `${theme.spacing(4)} 1fr` : `${theme.spacing(10)} 1fr`,
   height: '100%',
+  width: '100%',
   gridTemplateAreas: `
     "navbar navbar"
     "sidebar content"

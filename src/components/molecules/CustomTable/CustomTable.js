@@ -16,7 +16,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   color: theme.palette.text.primary,
   borderBottom: `2px solid ${theme.palette.divider}`,
-  padding: theme.spacing(0),
+  padding: theme.spacing(1),
   '&:nth-of-type(1)': {
     width: '5%',
     textAlign: 'center',
@@ -47,10 +47,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
   '& td, & th': {
     borderBottom: `1px solid ${theme.palette.divider}`,
-    color: theme.palette.text.primary,  // Define a cor do texto conforme o tema
+    color: theme.palette.text.primary,
   },
   '&:hover': {
-    backgroundColor: theme.palette.action.selected,  // Cor de fundo ao passar o mouse sobre a linha
+    backgroundColor: theme.palette.action.hover, // Mantém o hover consistente
   },
 }));
 

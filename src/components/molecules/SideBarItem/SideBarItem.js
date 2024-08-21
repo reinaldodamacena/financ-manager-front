@@ -1,13 +1,13 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
-import { Icon } from '../../atoms/Index';
 import PropTypes from 'prop-types';
+import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
+import { Icon } from '../../atoms/Index';
 
 const SideBarItemWrapper = styled('div')(({ theme, collapsed }) => ({
   display: 'flex',
-  alignItems: 'auto',
-  padding: theme.spacing(1), // Usando o sistema de espaçamento do tema
+  alignItems: 'center',
+  padding: theme.spacing(1.5),
   color: theme.palette.text.primary,
   cursor: 'pointer',
   transition: theme.transitions.create(['background-color', 'justify-content'], {
@@ -20,9 +20,8 @@ const SideBarItemWrapper = styled('div')(({ theme, collapsed }) => ({
 }));
 
 const SideBarText = styled(Typography)(({ theme, collapsed }) => ({
-  marginLeft: theme.spacing(1), // Usando o sistema de espaçamento do tema
-  fontSize: theme.typography.fontSize, // Usando a tipografia do tema
-  color: theme.palette.text.primary,
+  marginLeft: theme.spacing(2),
+  fontSize: theme.typography.pxToRem(14),
   display: collapsed ? 'none' : 'block',
 }));
 

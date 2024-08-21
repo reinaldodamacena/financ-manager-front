@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Box } from '@mui/material';
 import { CustomTable } from '../../molecules/Index';
-import { Icon, Input } from '../../atoms/Index'; // Importando o átomo de ícones
+import { Icon, Input } from '../../atoms/Index';
 
 const ProductList = ({ products = [] }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,8 +55,8 @@ const ProductList = ({ products = [] }) => {
 
   return (
     <Box>
-      <Grid container spacing={2} sx={{ marginBottom: 2 }}>
-        <Grid item xs={6}>
+      <Grid container spacing={2} sx={{ marginBottom: 3, justifyContent: 'space-between' }}>
+        <Grid item xs={12} sm={6}>
           <Input
             label="Pesquisar por nome ou código"
             variant="outlined"
@@ -66,7 +66,7 @@ const ProductList = ({ products = [] }) => {
             icon={() => <Icon name="PersonSearch" size="2rem" color="primary.main" />} 
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <Input
             label="Código de barras"
             variant="outlined"

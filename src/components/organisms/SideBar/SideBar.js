@@ -1,10 +1,10 @@
 import React from 'react';
-import { Typography, IconButton } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
-import { Logo, ConfigurableBox } from '../../atoms/Index';
 import PropTypes from 'prop-types';
+import {  IconButton } from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
+import {  ConfigurableBox } from '../../atoms/Index';
 import { SideBarSection } from '../../molecules/Index';
-import { useTheme } from '@mui/material/styles'; // Importa o hook useTheme
+import { useTheme } from '@mui/material/styles'; 
 
 const sections = [
   {
@@ -46,11 +46,18 @@ const sections = [
 ];
 
 const SideBar = ({ collapsed, toggleCollapsed }) => {
-  const theme = useTheme(); // Usa o hook useTheme para acessar o tema
+  const theme = useTheme();
 
   return (
     <ConfigurableBox
-    borderRadius= "0"
+      sx={{
+        width: collapsed ? theme.spacing(7) : theme.spacing(28),
+        transition: theme.transitions.create(['width'], {
+          duration: theme.transitions.duration.standard,
+        }),
+        borderRadius: 0,
+        overflowX: 'hidden',
+      }}
     >
       <IconButton onClick={toggleCollapsed} sx={{ margin: 'auto', display: 'block' }}>
         <MenuIcon />

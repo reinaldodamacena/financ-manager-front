@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
-import { SideBarItem } from '../../molecules/Index';
 import { Typography, Divider } from '@mui/material';
+import { SideBarItem } from '../../molecules/Index';
 
 const SectionTitle = styled(Typography, { shouldForwardProp: (prop) => prop !== 'collapsed' })(
   ({ theme, collapsed }) => ({
