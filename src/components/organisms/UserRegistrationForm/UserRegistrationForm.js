@@ -1,13 +1,33 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Grid, Typography, Box } from '@mui/material';
 import { TransparentBox, Button, Icon, Input } from '../../atoms/Index';
-import { UserFormContext } from '../../../context/UserFormContext';
+import { useUserServiceContext } from '../../../context/User/userContext';
 
 const UserRegistrationForm = () => {
-  const { formData, handleChange, handleSubmit } = useContext(UserFormContext);
+  const { createData, loading, error } = useUserServiceContext(); // Acessando métodos do contexto de serviço de usuário
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    repeatPassword: '',
+    email: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.repeatPassword) {
+      alert('As senhas não correspondem');
+      return;
+    }
+    createData(formData); // Usa o método do contexto para criar o usuário
+  };
 
   return (
-    <TransparentBox  left='0%' top="auto" bottom="auto" height="center"  width="auto">
+    <TransparentBox left='0%' top="auto" bottom="auto" height="center" width="auto">
       <Typography variant="h6" align="left" sx={{ mb: 2, color: 'text.secondary' }}>
         CADASTRO DE USUÁRIO
       </Typography>
@@ -56,6 +76,8 @@ const UserRegistrationForm = () => {
               <Typography variant="button">Cadastrar</Typography>
             </Button>
           </Grid>
+          {loading && <Typography variant="body2">Carregando...</Typography>}
+          {error && <Typography variant="body2" color="error">{error}</Typography>}
         </Grid>
       </Box>
     </TransparentBox>
