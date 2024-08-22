@@ -1,15 +1,21 @@
 import React from 'react';
 import { PageBackground } from 'components/molecules/Index';
 import { LoginForm } from '../../organisms/Index';
-import useFetch from '../../../hooks/useFetch.js';
-import { Box } from '@mui/material';
+import { useAuthContext } from '../../../context/authContext'; // Certifique-se de que o caminho esteja correto
+import { Typography } from '@mui/material';
 
 const LoginPage = () => {
-  const { data, loading } = useFetch('https://jsonplaceholder.typicode.com/posts');
+  const { login, loading, error } = useAuthContext();
+
+  const handleLogin = async (credentials) => {
+    await login(credentials);
+  };
 
   return (
     <PageBackground>
-        <LoginForm onSubmit={(data) => console.log(data)} />
+      <LoginForm onSubmit={handleLogin} />
+      {loading && <Typography variant="body2">Carregando...</Typography>}
+      {error && <Typography variant="body2" color="error">{error}</Typography>}
     </PageBackground>
   );
 };

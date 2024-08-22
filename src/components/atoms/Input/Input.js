@@ -83,13 +83,16 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const Input = ({ label, mask, icon: IconComponent, ...props }) => {
+const Input = ({ label, mask, icon: IconComponent, value, onChange, type }) => {
   return (
-    <InputMask mask={mask} {...props}>
+    <InputMask mask={mask} value={value} onChange={onChange}>
       {() => (
         <StyledTextField
           label={label}
           variant="outlined"
+          type={type}
+          value={value}
+          onChange={onChange}
           InputProps={{
             startAdornment: IconComponent ? (
               <InputAdornment position="start" aria-label={label}>
@@ -106,8 +109,11 @@ const Input = ({ label, mask, icon: IconComponent, ...props }) => {
 
 Input.propTypes = {
   label: PropTypes.string.isRequired,
-  mask: PropTypes.string, // Adicionado suporte para máscara
-  icon: PropTypes.elementType, // Agora é um componente que será renderizado
+  mask: PropTypes.string,
+  icon: PropTypes.elementType,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 export default Input;

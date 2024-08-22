@@ -1,24 +1,24 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Atualizado para usar createRoot
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import App from './components/App';
 import theme from './theme';
-import { UserProvider } from './context/userContext';
+import { AuthProvider } from './context/authContext'; // Certifique-se de que este é o caminho correto
 import GlobalStyles from './GlobalStyles';
-import { UserFormProvider } from './context/UserFormContext';
 
-const root = ReactDOM.createRoot(document.getElementById('root')); // Cria uma raiz no DOM
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <UserProvider>
-      <UserFormProvider>
-        <GlobalStyles />
-        <App />
-      </UserFormProvider>
-    </UserProvider>
-  </ThemeProvider>
-</React.StrictMode>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <AuthProvider>
+          <GlobalStyles />
+          <App />
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
+  </React.StrictMode>
 );

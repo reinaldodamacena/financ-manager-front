@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import {
   Logo,
   UserIcon,
@@ -12,13 +13,22 @@ import {
 } from '../../atoms/Index';
 
 const LoginForm = ({ onSubmit }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ email, password });
+    // Adicionando console.log para verificar os valores de username e password
+    console.log('Username:', username);
+    console.log('Password:', password);
+
+    if (username && password) {
+      onSubmit({ username, password });
+    } else {
+      console.error('Username and password must not be empty.');
+    }
   };
 
   const handleSignUp = () => {
@@ -39,36 +49,48 @@ const LoginForm = ({ onSubmit }) => {
         top="auto"
         bottom="auto"
         height="95%"
-        width="30%" // Tornando o box responsivo
-        padding='1.5%'
-        maxWidth="600px" // Largura máxima para garantir que não fique muito grande em telas grandes
+        width="30%"
+        padding="1.5%"
+        maxWidth="600px"
       >
         <Logo bottom="60%" />
 
-        <SmallTransparentBox width="90%" height="60%" justifyContent="center" right="auto"
-        left="auto"  maxWidth="300px" padding='15%'>
+        <SmallTransparentBox
+          width="90%"
+          height="60%"
+          justifyContent="center"
+          right="auto"
+          left="auto"
+          maxWidth="300px"
+          padding="15%"
+        >
           <UserIcon />
           <Typography variant="h6" align="center" sx={{ mt: 8, color: '#6E7781' }}>
             ENTRAR
           </Typography>
-          <Box component="form"  onSubmit={handleSubmit} sx={{ mt: 0  }}>
-            <Grid container spacing={1}   justifyContent='center'>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 0 }}>
+            <Grid container spacing={1} justifyContent="center">
               <Grid item xs={12}>
-                <Input  
+                <Input
                   label="Usuário"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   icon={() => <Icon name="PersonOutline" />}
                 />
               </Grid>
               <Grid item xs={12}>
-                <Input  
+                <Input
                   label="Senha"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  icon={() => <Icon name="LockOutlined" />}
+                  icon={() => (
+                    <Icon
+                      name={showPassword ? "Visibility" : "VisibilityOff"}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  )}
                 />
               </Grid>
               <Grid item xs={10} sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0 }}>
@@ -104,6 +126,11 @@ const LoginForm = ({ onSubmit }) => {
       </TransparentBox>
     </Grid>
   );
+};
+
+// Definindo propTypes para validação
+LoginForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
