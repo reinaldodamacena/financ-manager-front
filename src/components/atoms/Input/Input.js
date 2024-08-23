@@ -10,18 +10,19 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[1],
     borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(0, 2),
+    padding: theme.spacing(0, 1),
     fontFamily: theme.typography.fontFamily,
     fontSize: '3.5vh',
     color: theme.palette.text.primary,
     width: '100%',
+    height: '100%',
     transition: theme.transitions.create(['box-shadow', 'transform'], {
       duration: theme.transitions.duration.standard,
       easing: theme.transitions.easing.easeInOut,
     }),
     '&:hover': {
       boxShadow: theme.shadows[2],
-      transform: 'scale(1.01)',
+      transform: 'scale(1.0)',
     },
     '&.Mui-focused': {
       boxShadow: theme.shadows[3],

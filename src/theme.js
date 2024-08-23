@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-const theme = createTheme({
+const themeOptions = {
   palette: {
     primary: {
       main: '#BF4011',
@@ -110,7 +110,9 @@ const theme = createTheme({
       xl: 1920,
     },
   },
-});
+};
+
+const theme = createTheme(themeOptions);
 
 theme.components = {
   MuiButton: {
@@ -160,6 +162,22 @@ theme.components = {
         fontSize: '16px',
         [theme.breakpoints.down('sm')]: {
           fontSize: '14px',
+        },
+        '*::-webkit-scrollbar': {
+          width: '8px',
+        },
+        '*::-webkit-scrollbar-track': {
+          backgroundColor: theme.palette.background.default,
+        },
+        '*::-webkit-scrollbar-thumb': {
+          backgroundColor: theme.palette.primary.main,
+          borderRadius: theme.shape.borderRadius,
+          '&:hover': {
+            backgroundColor: theme.palette.primary.dark,
+          },
+        },
+        '*::-webkit-scrollbar-corner': {
+          backgroundColor: theme.palette.background.default,
         },
       },
     },

@@ -12,3 +12,4 @@ export { default as Dropdown } from './Dropdown/Index';
 export { default as Modal } from './Modal/Index';
 export { default as IconButton } from './IconButton/Index';
 export { default as Divider } from './Divider/Index';
+export { default as UserNameDisplay } from './UserNameDisplay/Index';

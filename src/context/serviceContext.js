@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import useService from '../hooks/useService';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 
 export const createServiceContext = (service) => {
   const ServiceContext = createContext();
@@ -9,6 +10,7 @@ export const createServiceContext = (service) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // Hook de navegação
 
     useEffect(() => {
       const token = localStorage.getItem('authToken');
@@ -26,6 +28,7 @@ export const createServiceContext = (service) => {
         localStorage.setItem('authToken', response.token);
         console.log(response);
         setUser({ username: credentials.username, token: response.token });
+        navigate('/home'); // Navega para a página Home após o login bem-sucedido
       } catch (err) {
         setError('Login failed. Please try again.');
       } finally {
@@ -37,6 +40,7 @@ export const createServiceContext = (service) => {
       service.logout?.(); // Certifique-se de que o serviço tem um método logout
       setUser(null);
       localStorage.removeItem('authToken');
+      navigate('/login'); // Redireciona para a página de login após o logout
     };
 
     return (

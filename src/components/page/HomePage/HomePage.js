@@ -1,9 +1,10 @@
 import React from 'react';
+import { useTheme } from '@mui/material/styles'; // Importe o useTheme
 import { Background } from '../../atoms/Index';
 import { Layout, StatsSection, SalesSection } from '../../organisms/Index';
 
 const HomePage = () => {
-
+  const theme = useTheme(); // Use o hook useTheme para acessar o tema
 
   const salesData = [
     { date: '01/08/2024', product: 'Celular', quantity: 1, total: 'R$ 3.000,00', client: 'João' },

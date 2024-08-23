@@ -1,0 +1,1 @@
+export {default} from './UserNameDisplay'; // Importa o componente UserNameDisplay e exporta como padrão
