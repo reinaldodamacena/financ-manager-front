@@ -1,3 +1,4 @@
+import { defaults } from 'chart.js';
 export { default as Button } from './Button/Index';
 export { default as Input } from './Input/Index';
 export { default as Background } from './Background/Index';
@@ -13,3 +14,4 @@ export { default as Modal } from './Modal/Index';
 export { default as IconButton } from './IconButton/Index';
 export { default as Divider } from './Divider/Index';
 export { default as UserNameDisplay } from './UserNameDisplay/Index';
+export { default as UserIconNavBar} from './UserIconNavBar/Index';

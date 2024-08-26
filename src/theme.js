@@ -45,12 +45,6 @@ const themeOptions = {
       lineHeight: 1.3,
       color: '#1F1F1F',
     },
-    body1: {
-      fontFamily: 'Urbanist',
-      fontSize: '1rem',
-      lineHeight: 1.5,
-      color: '#4F4F4F',
-    },
     button: {
       fontFamily: 'Urbanist',
       fontWeight: 600,

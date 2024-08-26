@@ -1,57 +1,60 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {  IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import {  ConfigurableBox } from '../../atoms/Index';
+import { ConfigurableBox } from '../../atoms/Index';
 import { SideBarSection } from '../../molecules/Index';
 import { useTheme } from '@mui/material/styles'; 
-
-const sections = [
-  {
-    title: 'Produtos',
-    items: [
-      { label: 'Produtos', icon: 'Inventory', onClick: () => {} },
-      { label: 'Cadastrar Produto', icon: 'AddBox', onClick: () => {} },
-      { label: 'Inventário', icon: 'ListAlt', onClick: () => {} },
-    ],
-  },
-  {
-    title: 'Vendas',
-    items: [
-      { label: 'Venda', icon: 'AttachMoney', onClick: () => {} },
-      { label: 'Histórico de Vendas', icon: 'History', onClick: () => {} },
-    ],
-  },
-  {
-    title: 'Clientes',
-    items: [
-      { label: 'Lista de clientes cadastrados', icon: 'People', onClick: () => {} },
-      { label: 'Cadastrar novo cliente', icon: 'PersonAdd', onClick: () => {} },
-    ],
-  },
-  {
-    title: 'Fornecedores',
-    items: [
-      { label: 'Lista de fornecedores cadastrados', icon: 'LocalShipping', onClick: () => {} },
-      { label: 'Cadastrar novo fornecedor', icon: 'PersonAddAlt', onClick: () => {} },
-    ],
-  },
-  {
-    title: 'Geral',
-    items: [
-      { label: 'Configurações', icon: 'Settings', onClick: () => {} },
-      { label: 'Sair', icon: 'ExitToApp', onClick: () => {} },
-    ],
-  },
-];
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 
 const SideBar = ({ collapsed, toggleCollapsed }) => {
   const theme = useTheme();
+  const navigate = useNavigate(); // Inicializa o hook useNavigate
+
+  const sections = [
+    {
+      title: 'Produtos',
+      items: [
+        { label: 'Produtos', icon: 'Inventory', onClick: () => navigate('/produtos') },
+        { label: 'Cadastrar Produto', icon: 'AddBox', onClick: () => console.log('Cadastrar Produto clicked') },
+        { label: 'Inventário', icon: 'ListAlt', onClick: () => console.log('Inventário clicked') },
+      ],
+    },
+    {
+      title: 'Vendas',
+      items: [
+        { label: 'Venda', icon: 'AttachMoney', onClick: () => navigate('/vendas') }, // Redireciona para /vendas
+        { label: 'Histórico de Vendas', icon: 'History', onClick: () => console.log('Histórico de Vendas clicked') },
+      ],
+    },
+    {
+      title: 'Clientes',
+      items: [
+        { label: 'Listar Clientes', icon: 'People', onClick: () => console.log('Lista de clientes cadastrados clicked') },
+        { label: 'Cadastrar Cliente', icon: 'PersonAdd', onClick: () => console.log('Cadastrar novo cliente clicked') },
+      ],
+    },
+    {
+      title: 'Fornecedores',
+      items: [
+        { label: 'Fornecedores cadastrados', icon: 'LocalShipping', onClick: () => console.log('Lista de fornecedores cadastrados clicked') },
+        { label: 'Cadastrar fornecedor', icon: 'PersonAddAlt', onClick: () => console.log('Cadastrar novo fornecedor clicked') },
+      ],
+    },
+    {
+      title: 'Geral',
+      items: [
+        { label: 'Configurações', icon: 'Settings', onClick: () => console.log('Configurações clicked') },
+        { label: 'Sair', icon: 'ExitToApp', onClick: () => console.log('Sair clicked') },
+      ],
+    },
+  ];
 
   return (
     <ConfigurableBox
+      borderRadius="0"
       sx={{
-        width: collapsed ? theme.spacing(7) : theme.spacing(28),
+        width: collapsed ? theme.spacing(6) : theme.spacing(30),
         transition: theme.transitions.create(['width'], {
           duration: theme.transitions.duration.standard,
         }),
@@ -60,7 +63,6 @@ const SideBar = ({ collapsed, toggleCollapsed }) => {
       }}
     >
       <IconButton onClick={toggleCollapsed} sx={{ margin: 'auto', display: 'block' }}>
-        <MenuIcon />
       </IconButton>
       {sections.map((section, index) => (
         <SideBarSection key={index} {...section} collapsed={collapsed} />

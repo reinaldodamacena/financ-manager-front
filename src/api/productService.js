@@ -18,4 +18,9 @@ export const productService = {
 
     return api.get('/products/search', { params });
   },
+  fetchByDescription: (description) => {
+    return api.get('/products/search-by-description', {
+      params: { description },
+    });
+  },
 };

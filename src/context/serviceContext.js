@@ -12,10 +12,12 @@ export const createServiceContext = (service) => {
     const [error, setError] = useState(null);
     const navigate = useNavigate(); // Hook de navegação
 
+    // Recupera o estado do usuário ao carregar o componente
     useEffect(() => {
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        setUser({ token }); // Simplificação do estado do usuário
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser)); // Restaura o estado do usuário
+        console.log("Usuário recuperado do localStorage:", JSON.parse(storedUser));
       }
       setLoading(false);
     }, []);
@@ -25,12 +27,14 @@ export const createServiceContext = (service) => {
       setError(null);
       try {
         const response = await service.login(credentials);
-        localStorage.setItem('authToken', response.token);
-        console.log(response);
-        setUser({ username: credentials.username, token: response.token });
+        const userData = { username: credentials.username, token: response.token };
+        localStorage.setItem('user', JSON.stringify(userData)); // Armazena o usuário no localStorage
+        setUser(userData);
+        console.log("Usuário logado:", userData);
         navigate('/home'); // Navega para a página Home após o login bem-sucedido
       } catch (err) {
-        setError('Login failed. Please try again.');
+        setError('Falha no login. Por favor, tente novamente.');
+        console.error("Erro ao fazer login:", err);
       } finally {
         setLoading(false);
       }
@@ -39,7 +43,8 @@ export const createServiceContext = (service) => {
     const logout = () => {
       service.logout?.(); // Certifique-se de que o serviço tem um método logout
       setUser(null);
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('user'); // Remove os dados do usuário do localStorage
+      console.log("Usuário deslogado e redirecionado para login");
       navigate('/login'); // Redireciona para a página de login após o logout
     };
 
@@ -62,7 +67,7 @@ export const createServiceContext = (service) => {
   const useServiceContext = () => {
     const context = useContext(ServiceContext);
     if (!context) {
-      throw new Error('useServiceContext must be used within a ServiceProvider');
+      throw new Error('useServiceContext deve ser usado dentro de um ServiceProvider');
     }
     return context;
   };

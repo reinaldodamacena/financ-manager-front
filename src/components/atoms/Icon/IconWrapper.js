@@ -30,12 +30,7 @@ const BarcodeIcon = () => (
 );
 
 const Icon = ({ name, size, color, ...props }) => {
-  const icons = {
-    ...Icons,
-    Barcode: BarcodeIcon, // Adicionando o ícone de código de barras personalizado
-  };
-
-  const IconComponent = icons[name];
+  const IconComponent = Icons[name] || (name === 'Barcode' ? BarcodeIcon : null);
 
   if (!IconComponent) {
     console.warn(`Icon "${name}" not found in @mui/icons-material. Please check the icon name.`);
