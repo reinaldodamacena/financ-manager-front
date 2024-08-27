@@ -6,20 +6,20 @@ const api = axios.create({
 });
 
 export const productService = {
-  create: (data) => api.post('/products', data),
-  update: (data) => api.put('/products', data),
-  delete: (id) => api.delete(`/products/${id}`),
-  fetchById: (id) => api.get(`/products/${id}`),
-  fetchAll: () => api.get('/products'),
+  create: (data) => api.post('/Product', data),
+  update: (data) => api.put('/Product', data),
+  delete: (id) => api.delete(`/Product/${id}`),
+  fetchById: (id) => api.get(`/Product/${id}`),
+  fetchAll: () => api.get('/Product'),
   fetchByCode: (manufacturerCode, barcode) => {
     const params = {};
     if (manufacturerCode) params.manufacturerCode = manufacturerCode;
     if (barcode) params.barcode = barcode;
 
-    return api.get('/products/search', { params });
+    return api.get('/Product/search', { params });
   },
   fetchByDescription: (description) => {
-    return api.get('/products/search-by-description', {
+    return api.get('/Product/search-by-description', {
       params: { description },
     });
   },

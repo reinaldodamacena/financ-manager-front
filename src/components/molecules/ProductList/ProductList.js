@@ -10,49 +10,48 @@ const ProductList = () => {
   const { data: products, fetchData } = useService(productService);
   const [searchQuery, setSearchQuery] = useState('');
   const [barcodeQuery, setBarcodeQuery] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
-    // Trigger a search whenever the searchQuery or barcodeQuery changes
-    if (searchQuery) {
-      fetchData(productService.fetchByDescription, searchQuery);
-    } else if (barcodeQuery) {
-      fetchData(productService.fetchByCode, { barcode: barcodeQuery });
+    if (searchQuery || barcodeQuery) {
+      // Trigger a search whenever the searchQuery or barcodeQuery changes
+      if (searchQuery) {
+        fetchData(productService.fetchByDescription, searchQuery);
+      } else if (barcodeQuery) {
+        fetchData(productService.fetchByCode, { barcode: barcodeQuery });
+      }
     } else {
-      fetchData(); // Fetch all if no query is present
+      setFilteredProducts([]); // Clear the table if no query is present
     }
   }, [searchQuery, barcodeQuery, fetchData]);
 
-  const columns = [
-    { field: 'item', headerName: 'Item' },
-    { field: 'code', headerName: 'Código' },
-    { field: 'name', headerName: 'Produto' },
-    { field: 'quantity', headerName: 'Quantidade' },
-    { 
-      field: 'unitPrice', 
-      headerName: 'Unitário', 
-      align: 'right',
-      format: (value) => value.toFixed(2),
-    },
-    { 
-      field: 'offerPrice', 
-      headerName: 'Oferta', 
-      align: 'right',
-      format: (value) => value.toFixed(2),
-    },
-    { 
-      field: 'totalPrice', 
-      headerName: 'Total', 
-      align: 'right',
-      format: (value) => value.toFixed(2),
-    },
-  ];
+  useEffect(() => {
+    if (products) {
+      const formattedData = products.map((product) => ({
+        productId: product.productId,
+        manufacturerCode: product.manufacturerCode,
+        description: product.description,
+        barcode: product.barcode,
+        quantityInStock: product.quantityInStock,
+        price: (product.price !== undefined ? product.price : 0).toFixed(2),
+      }));
+      setFilteredProducts(formattedData);
+    }
+  }, [products]);
 
-  const formattedData = products?.map((product) => ({
-    ...product,
-    unitPrice: columns.find(col => col.field === 'unitPrice').format(product.unitPrice),
-    offerPrice: columns.find(col => col.field === 'offerPrice').format(product.offerPrice),
-    totalPrice: columns.find(col => col.field === 'totalPrice').format(product.totalPrice),
-  })) || [];
+  const columns = [
+    { field: 'productId', headerName: 'ID' },
+    { field: 'manufacturerCode', headerName: 'Código' },
+    { field: 'description', headerName: 'Produto' },
+    { field: 'barcode', headerName: 'Código de Barras' },
+    { field: 'quantityInStock', headerName: 'Quantidade' },
+    { 
+      field: 'price', 
+      headerName: 'Preço', 
+      align: 'right',
+      format: (value) => value.toFixed(2),
+    }
+  ];
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -88,7 +87,7 @@ const ProductList = () => {
           />
         </Grid>
       </Grid>
-      <CustomTable columns={columns} data={formattedData} title="Itens" />
+      <CustomTable columns={columns} data={filteredProducts} title="Itens" />
     </Box>
   );
 };
