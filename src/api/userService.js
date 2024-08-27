@@ -15,4 +15,9 @@ export const userService = {
   delete: (id) => api.delete(`/User/${id}`),
   fetchById: (id) => api.get(`/User/${id}`),
   fetchAll: () => api.get('/User'),
+  fetchByKeycloakId: (keycloakUserId) => {
+    return api.get(`/User/getByKeycloakId`, {
+      params: { keycloakUserId },
+    });
+  },
 };

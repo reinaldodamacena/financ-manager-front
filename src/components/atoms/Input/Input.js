@@ -85,27 +85,34 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 }));
 
 const Input = ({ label, mask, icon: IconComponent, value, onChange, type }) => {
-  return (
-    <InputMask mask={mask} value={value} onChange={onChange}>
-      {() => (
-        <StyledTextField
-          label={label}
-          variant="outlined"
-          type={type}
-          value={value}
-          onChange={onChange}
-          InputProps={{
-            startAdornment: IconComponent ? (
-              <InputAdornment position="start" aria-label={label}>
-                <IconComponent />
-              </InputAdornment>
-            ) : null,
-          }}
-          aria-label={label}
-        />
-      )}
-    </InputMask>
+  const renderTextField = (inputProps) => (
+    <StyledTextField
+      {...inputProps}
+      label={label}
+      variant="outlined"
+      type={type}
+      InputProps={{
+        startAdornment: IconComponent ? (
+          <InputAdornment position="start" aria-label={label}>
+            <IconComponent />
+          </InputAdornment>
+        ) : null,
+      }}
+      aria-label={label}
+    />
   );
+
+  // Se uma máscara foi fornecida, usar InputMask
+  if (mask) {
+    return (
+      <InputMask mask={mask} value={value} onChange={onChange}>
+        {(inputProps) => renderTextField(inputProps)}
+      </InputMask>
+    );
+  }
+
+  // Caso contrário, renderizar o TextField diretamente
+  return renderTextField({ value, onChange });
 };
 
 Input.propTypes = {

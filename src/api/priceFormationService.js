@@ -6,9 +6,18 @@ const api = axios.create({
 });
 
 export const priceFormationService = {
-  create: (data) => api.post('/priceformations', data),
-  update: (data) => api.put('/priceformations', data),
-  delete: (id) => api.delete(`/priceformations/${id}`),
-  fetchById: (id) => api.get(`/priceformations/${id}`),
-  fetchAll: () => api.get('/priceformations'),
+  create: (data) => api.post('/PriceFormation', data),
+  update: (data) => api.put('/PriceFormation', data),
+  delete: (id) => api.delete(`/PriceFormation/${id}`),
+  fetchById: (id) => api.get(`/PriceFormation/${id}`),
+  fetchAll: () => api.get('/PriceFormation'),
+};
+export const priceService = {
+  calculateFinalPrice: async ({ costPrice, markupPercentage }) => {
+      const response = await  api.post('/PriceFormation/calculate-final-price', {
+          costPrice,
+          markupPercentage
+      });
+      return response.data;
+  }
 };

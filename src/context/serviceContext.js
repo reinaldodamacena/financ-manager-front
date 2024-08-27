@@ -27,7 +27,14 @@ export const createServiceContext = (service) => {
       setError(null);
       try {
         const response = await service.login(credentials);
-        const userData = { username: credentials.username, token: response.token };
+        
+        // Supondo que o response já contenha o userId do Keycloak
+        const userData = {
+          username: credentials.username,
+          token: response.token,
+          userId: response.userId // Aqui você captura o userId do Keycloak
+        };
+    
         localStorage.setItem('user', JSON.stringify(userData)); // Armazena o usuário no localStorage
         setUser(userData);
         console.log("Usuário logado:", userData);

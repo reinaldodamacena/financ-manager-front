@@ -4,26 +4,28 @@ import { IconButton } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { ConfigurableBox } from '../../atoms/Index';
 import { SideBarSection } from '../../molecules/Index';
-import { useTheme } from '@mui/material/styles'; 
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../../../context/Auth/AuthServiceProvider'; // Importe o contexto de autenticação
 
 const SideBar = ({ collapsed, toggleCollapsed }) => {
   const theme = useTheme();
-  const navigate = useNavigate(); // Inicializa o hook useNavigate
+  const navigate = useNavigate();
+  const { logout } = useAuthContext(); // Obtenha a função logout do contexto
 
   const sections = [
     {
       title: 'Produtos',
       items: [
-        { label: 'Produtos', icon: 'Inventory', onClick: () => navigate('/produtos') },
-        { label: 'Cadastrar Produto', icon: 'AddBox', onClick: () => console.log('Cadastrar Produto clicked') },
+        { label: 'Produtos', icon: 'Inventory', onClick: () => navigate('/produto') },
+        { label: 'Cadastrar Produto', icon: 'AddBox', onClick: () => navigate('/registroproduto') },
         { label: 'Inventário', icon: 'ListAlt', onClick: () => console.log('Inventário clicked') },
       ],
     },
     {
       title: 'Vendas',
       items: [
-        { label: 'Venda', icon: 'AttachMoney', onClick: () => navigate('/vendas') }, // Redireciona para /vendas
+        { label: 'Venda', icon: 'AttachMoney', onClick: () => navigate('/vendas') },
         { label: 'Histórico de Vendas', icon: 'History', onClick: () => console.log('Histórico de Vendas clicked') },
       ],
     },
@@ -45,7 +47,7 @@ const SideBar = ({ collapsed, toggleCollapsed }) => {
       title: 'Geral',
       items: [
         { label: 'Configurações', icon: 'Settings', onClick: () => console.log('Configurações clicked') },
-        { label: 'Sair', icon: 'ExitToApp', onClick: () => console.log('Sair clicked') },
+        { label: 'Sair', icon: 'ExitToApp', onClick: logout }, // Chama a função logout aqui
       ],
     },
   ];
@@ -63,6 +65,7 @@ const SideBar = ({ collapsed, toggleCollapsed }) => {
       }}
     >
       <IconButton onClick={toggleCollapsed} sx={{ margin: 'auto', display: 'block' }}>
+        <MenuIcon />
       </IconButton>
       {sections.map((section, index) => (
         <SideBarSection key={index} {...section} collapsed={collapsed} />
