@@ -1,23 +1,23 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import useService from '../hooks/useService';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useNavigate } from 'react-router-dom';
+import { userService } from '../api/userService'; // Importa o userService
+import { jwtDecode } from 'jwt-decode';
 
 export const createServiceContext = (service) => {
   const ServiceContext = createContext();
 
   const ServiceProvider = ({ children }) => {
-    const serviceData = useService(service); // Operações CRUD
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate(); // Hook de navegação
+    const navigate = useNavigate();
 
     // Recupera o estado do usuário ao carregar o componente
     useEffect(() => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
-        setUser(JSON.parse(storedUser)); // Restaura o estado do usuário
-        console.log("Usuário recuperado do localStorage:", JSON.parse(storedUser));
+        setUser(JSON.parse(storedUser));
+        console.log('Usuário recuperado do localStorage:', JSON.parse(storedUser));
       }
       setLoading(false);
     }, []);
@@ -27,12 +27,23 @@ export const createServiceContext = (service) => {
       setError(null);
       try {
         const response = await service.login(credentials);
-        
-        // Supondo que o response já contenha o userId do Keycloak
+        console.log('Login Response:', response);
+    
+        const decodedToken = jwtDecode(response.token); // Decodifica o token JWT
+        const keycloakUserId = decodedToken.sub; // O ID do Keycloak geralmente está no campo 'sub' (subject)
+        console.log('Keycloak User ID:', keycloakUserId);
+    
+        if (!keycloakUserId) {
+          throw new Error("Keycloak User ID not found in the decoded token.");
+        }
+    
+        // Chame a API para buscar o UserId do banco de dados correspondente ao KeycloakUserId
+        const userResponse = await userService.fetchByKeycloakId(keycloakUserId);
+    
         const userData = {
           username: credentials.username,
           token: response.token,
-          userId: response.userId // Aqui você captura o userId do Keycloak
+          userId: userResponse.data.userId, // Aqui está o UserId do banco de dados
         };
     
         localStorage.setItem('user', JSON.stringify(userData)); // Armazena o usuário no localStorage
@@ -46,19 +57,19 @@ export const createServiceContext = (service) => {
         setLoading(false);
       }
     };
+    
 
     const logout = () => {
       service.logout?.(); // Certifique-se de que o serviço tem um método logout
       setUser(null);
       localStorage.removeItem('user'); // Remove os dados do usuário do localStorage
-      console.log("Usuário deslogado e redirecionado para login");
+      console.log('Usuário deslogado e redirecionado para login');
       navigate('/login'); // Redireciona para a página de login após o logout
     };
 
     return (
       <ServiceContext.Provider
         value={{
-          ...serviceData,
           user,
           loading,
           error,

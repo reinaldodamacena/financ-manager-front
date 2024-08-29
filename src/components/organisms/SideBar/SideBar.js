@@ -65,7 +65,6 @@ const SideBar = ({ collapsed, toggleCollapsed }) => {
       }}
     >
       <IconButton onClick={toggleCollapsed} sx={{ margin: 'auto', display: 'block' }}>
-        <MenuIcon />
       </IconButton>
       {sections.map((section, index) => (
         <SideBarSection key={index} {...section} collapsed={collapsed} />
