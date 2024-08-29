@@ -3,13 +3,13 @@ import { Grid, Typography, Box, Modal } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { TransparentBox, Button, Input, Icon } from '../../atoms/Index';
 import { useEnhancedProductService } from '../../../context/Product/ProductServiceProvider';
-import { useAuthContext } from '../../../context/Auth/AuthServiceProvider'; // Importe o contexto de autenticação
-import { priceService } from '../../../api/priceFormationService';
-import { prepareProductForAPI } from 'api/productService';
+import { useAuthContext } from '../../../context/Auth/AuthServiceProvider';
+import usePriceCalculation from '../../../hooks/usePriceCalculation/usePriceCalculation';
 
 const ProductForm = () => {
-  const { handleSaveProduct, loading, error } = useEnhancedProductService();
-  const { user } = useAuthContext(); // Obtenha o usuário logado do contexto de autenticação
+  const { handleSaveProduct, loading: saving, error: saveError } = useEnhancedProductService();
+  const { user } = useAuthContext();
+  const { finalPrice, calculatePrice, loading: priceLoading, error: priceError } = usePriceCalculation();
   const [description, setDescription] = useState('');
   const [manufacturerCode, setManufacturerCode] = useState('');
   const [barcode, setBarcode] = useState('');
@@ -17,39 +17,27 @@ const ProductForm = () => {
   const [categoryId, setCategoryId] = useState(0);
   const [price, setPrice] = useState('');
   const [costPrice, setCostPrice] = useState('');
-  const [finalPrice, setFinalPrice] = useState('');
   const [markupPercentage, setMarkupPercentage] = useState('');
   const [isPriceModalOpen, setPriceModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Usuário logado:', user); // Verifique o usuário logado
+    console.log('Usuário logado:', user);
   }, [user]);
 
-  const calculatePrice = async () => {
-    if (costPrice && markupPercentage && !isNaN(costPrice) && !isNaN(markupPercentage)) {
-      try {
-        const response = await priceService.calculateFinalPrice({
-          costPrice: parseFloat(costPrice),
-          markupPercentage: parseFloat(markupPercentage),
-        });
-
-        const calculatedFinalPrice = response;
-        setFinalPrice(calculatedFinalPrice);
-        setPrice(calculatedFinalPrice);
-      } catch (error) {
-        console.error('Erro ao calcular o preço final:', error);
-      }
-    }
-  };
+  useEffect(() => {
+    calculatePrice(costPrice, markupPercentage);
+  }, [costPrice, markupPercentage, calculatePrice]);
 
   useEffect(() => {
-    calculatePrice();
-  }, [costPrice, markupPercentage]);
+    if (finalPrice !== null) {
+      setPrice(finalPrice);
+    }
+  }, [finalPrice]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const productToCreate = {
       description,
       manufacturerCode,
@@ -58,15 +46,16 @@ const ProductForm = () => {
       categoryId,
       price: parseFloat(price),
       createdBy: user?.userId,
-      updatedBy: user?.userId,      
+      updatedBy: user?.userId,
     };
-
+  
     const priceFormationToCreate = {
       costPrice: parseFloat(costPrice),
       finalPrice: parseFloat(finalPrice),
       markupPercentage: parseFloat(markupPercentage),
+      // Outros campos necessários
     };
-
+  
     try {
       await handleSaveProduct(productToCreate, priceFormationToCreate);
       navigate('/registroproduto');
@@ -74,6 +63,7 @@ const ProductForm = () => {
       console.error('Erro ao criar o produto:', err);
     }
   };
+  
 
   const togglePriceModal = () => {
     if (isPriceModalOpen) {
@@ -82,13 +72,9 @@ const ProductForm = () => {
     setPriceModalOpen(!isPriceModalOpen);
   };
 
-  useEffect(() => {
-    console.log('FinalPrice atualizado antes de salvar:', finalPrice);
-  }, [finalPrice]);
-
   return (
     <TransparentBox
-      position='absolute'
+      position="absolute"
       right="auto"
       left="50%"
       top="5%"
@@ -168,8 +154,16 @@ const ProductForm = () => {
               <Typography variant="button">Cadastrar</Typography>
             </Button>
           </Grid>
-          {loading && <Typography variant="body2" align="center" color="text.secondary">Carregando...</Typography>}
-          {error && <Typography variant="body2" align="center" color="error">{error}</Typography>}
+          {(saving || priceLoading) && (
+            <Typography variant="body2" align="center" color="text.secondary">
+              Carregando...
+            </Typography>
+          )}
+          {(saveError || priceError) && (
+            <Typography variant="body2" align="center" color="error">
+              {saveError?.message || priceError?.message || 'Ocorreu um erro ao processar sua solicitação.'}
+            </Typography>
+          )}
         </Grid>
       </Box>
 

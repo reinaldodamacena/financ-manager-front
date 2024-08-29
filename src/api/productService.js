@@ -25,22 +25,4 @@ export const productService = {
   },
 };
 
-// services/productService.js
-export const prepareProductForAPI = (product, priceFormation, userId) => {
-  return {
-    product: {
-      ...product,
-      createdBy: product.createdBy || userId,
-      updatedBy: product.updatedBy || userId,
-      dateOfRegistration: new Date().toISOString(),
-      dateOfLastChange: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    priceFormation: {
-      ...priceFormation,
-      date: new Date().toISOString(),
-    }
-  };
-};
 

@@ -62,9 +62,9 @@ const useService = (service) => {
     loading,
     error,
     fetchData,
-    createData,
-    updateData,
-    deleteData,
+    create: createData,  // Aqui é onde `createData` é exposto como `create`
+    update: updateData,
+    delete: deleteData,
   };
 };
 

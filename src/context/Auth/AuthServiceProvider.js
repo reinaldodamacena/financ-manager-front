@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../api/authService';
-import { jwtDecode } from 'jwt-decode';
+
 
 const AuthContext = createContext();
 
@@ -24,9 +24,6 @@ export const AuthServiceProvider = ({ children }) => {
     setError(null);
     try {
       const response = await authService.login(credentials);
-
-      // Decodificar o token, se necessário
-      const decodedToken = jwtDecode(response.token);
 
       const userData = {
         username: response.username,
