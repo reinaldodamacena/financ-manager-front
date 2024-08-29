@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Box, Modal } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { TransparentBox, Button, Input, Icon } from '../../atoms/Index';
-import { useEnhancedProductService } from '../../../context/Product/ProductProvider';
+import { useEnhancedProductService } from '../../../context/Product/ProductServiceProvider';
 import { useAuthContext } from '../../../context/Auth/AuthServiceProvider'; // Importe o contexto de autenticação
 import { priceService } from '../../../api/priceFormationService';
 import { prepareProductForAPI } from 'api/productService';

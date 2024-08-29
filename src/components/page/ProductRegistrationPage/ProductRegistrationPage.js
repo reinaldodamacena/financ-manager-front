@@ -2,8 +2,8 @@ import React from 'react';
 import { Grid} from '@mui/material';
 import { ProductForm } from '../../molecules/Index';
 import { Layout } from '../../organisms/Index';
-import { ProductServiceProvider, useEnhancedProductService } from '../../../context/Product/ProductProvider';
-import { Background } from '../../atoms/Index';
+import { ProductServiceProvider, useEnhancedProductService } from '../../../context/Product/ProductServiceProvider';
+import { ConfigurableBox, Background } from '../../atoms/Index';
 
 const ProductRegistrationPage = () => {
   const { data: productData } = useEnhancedProductService(); // Opcional: pode ser usado para preencher o formulário com dados existentes, se necessário

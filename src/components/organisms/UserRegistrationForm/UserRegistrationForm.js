@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Grid, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { TransparentBox, Button, Icon, Input } from '../../atoms/Index';
-import { useUserServiceContext } from 'context/User/userContext';
+import { useUserServiceContext } from 'context/User/UserServiceProvider';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline'; // Importar ícones corretamente
 import EmailIcon from '@mui/icons-material/Email';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
