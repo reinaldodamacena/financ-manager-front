@@ -57,8 +57,8 @@ const ProductForm = () => {
       brand,
       categoryId,
       price: parseFloat(price),
-      createdBy: user?.id || 0, // Adiciona o ID do usuário logado como criador
-      updatedBy: user?.id || 0, // Adiciona o ID do usuário logado como atualizador
+      createdBy: user?.userId,
+      updatedBy: user?.userId,      
     };
 
     const priceFormationToCreate = {
@@ -67,13 +67,9 @@ const ProductForm = () => {
       markupPercentage: parseFloat(markupPercentage),
     };
 
-    const preparedData = prepareProductForAPI(productToCreate, priceFormationToCreate);
-
-    console.log('Dados prontos para envio:', preparedData);
-
     try {
-      await handleSaveProduct(preparedData.product, preparedData.priceFormation);
-      navigate('/home');
+      await handleSaveProduct(productToCreate, priceFormationToCreate);
+      navigate('/registroproduto');
     } catch (err) {
       console.error('Erro ao criar o produto:', err);
     }

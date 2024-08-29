@@ -6,7 +6,7 @@ import { priceService } from '../../api/priceFormationService'; // Importe o ser
 const { ServiceProvider: ProductServiceProvider, useServiceContext: useProductServiceContext } = createServiceContext(productService);
 
 const useEnhancedProductService = () => {
-  const { createData, ...serviceMethods } = useProductServiceContext();
+  const { create, ...serviceMethods } = useProductServiceContext();
 
   const handleSaveProduct = async (product, priceFormation) => {
     // Calcular o preço final usando o serviço de formação de preços
@@ -23,7 +23,7 @@ const useEnhancedProductService = () => {
       const preparedData = prepareProductForAPI(product, priceFormation);
 
       // Salvar os dados
-      await createData(preparedData);
+      await create(preparedData);
     } catch (error) {
       console.error('Erro ao calcular o preço final:', error);
     }
