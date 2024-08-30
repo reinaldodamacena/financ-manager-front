@@ -9,4 +9,5 @@ export { default as ClientSection } from './ClientSection/Index';
 export { default as ProductList} from './ProductList/Index';
 export { default as ProductForm } from './ProductForm/Index';
 export { default as ProductCard } from './ProductCard/Index';
-
+export { default as CashRegisterForm} from "./CashRegisterForm/Index";
+export { default as CashRegisterDetails} from "./CashRegisterDetails/Index";

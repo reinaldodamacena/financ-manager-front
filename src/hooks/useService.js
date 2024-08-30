@@ -5,12 +5,16 @@ const useService = (service) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchData = useCallback(async (fetchFunction = service.fetchAll, params = null) => {
+  const fetchData = useCallback(async (fetchFunction = service.fetchData, params = null) => {
+    if (typeof fetchFunction !== 'function') {
+      console.error("fetchFunction is not a function. Please provide a valid function.");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const result = await (params ? fetchFunction(params) : fetchFunction());
-      setData(result.data);
+      setData(result);
     } catch (err) {
       setError(err);
     } finally {
@@ -48,7 +52,7 @@ const useService = (service) => {
     setLoading(true);
     setError(null);
     try {
-      await service.delete(id);
+      await service.delete(id); // Assegure-se de que o serviço tenha essa função ou ajuste conforme necessário
       await fetchData(); // Refresh after delete
     } catch (err) {
       setError(err);
@@ -62,7 +66,7 @@ const useService = (service) => {
     loading,
     error,
     fetchData,
-    create: createData,  // Aqui é onde `createData` é exposto como `create`
+    create: createData,
     update: updateData,
     delete: deleteData,
   };

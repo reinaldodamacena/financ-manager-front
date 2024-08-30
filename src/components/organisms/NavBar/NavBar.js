@@ -14,6 +14,14 @@ const NavBar = ({ onToggleSidebar }) => {
     navigate('/home'); // Redireciona para a rota /home ao clicar no logo
   };
 
+  const handleBackClick = () => {
+    navigate(-1); // Navega para a página anterior
+  };
+
+  const handleForwardClick = () => {
+    navigate(1); // Navega para a próxima página na pilha de navegação
+  };
+
   return (
     <Box
       sx={{
@@ -35,9 +43,18 @@ const NavBar = ({ onToggleSidebar }) => {
         <IconButton onClick={onToggleSidebar}>
           <Icon name="Menu" size="24px" />
         </IconButton>
-        <Box sx={{ ml: 3, display: 'flex', alignItems: 'center' }}>
+
+        {/* Ícones de Navegação */}
+        <IconButton onClick={handleBackClick}>
+          <Icon name="ArrowBack" size="24px" />
+        </IconButton>
+        <IconButton onClick={handleForwardClick}>
+          <Icon name="ArrowForward" size="24px" />
+        </IconButton>
+
+        <Box padding='1%'sx={{ ml: 3, display: 'flex', alignItems: 'center' }}>
           <Box onClick={handleLogoClick} sx={{ cursor: 'pointer' }}>
-            <Logo width="auto" right="85%" bottom="-70%" />
+            <Logo width="10%" left="10%"right="60%" bottom="-80%"  />
           </Box>
         </Box>
       </Box>

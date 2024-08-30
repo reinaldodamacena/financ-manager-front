@@ -15,42 +15,62 @@ const SideBar = ({ collapsed, toggleCollapsed }) => {
 
   const sections = [
     {
-      title: 'Produtos',
+      title: 'Vendas',
       items: [
-        { label: 'Produtos', icon: 'Inventory', onClick: () => navigate('/produto') },
-        { label: 'Cadastrar Produto', icon: 'AddBox', onClick: () => navigate('/registroproduto') },
-        { label: 'Inventário', icon: 'ListAlt', onClick: () => console.log('Inventário clicked') },
+        { label: 'Realizar Venda', icon: 'AttachMoney', onClick: () => navigate('/vendas') },
+        { label: 'Histórico de Vendas', icon: 'History', onClick: () => navigate('/vendas/historico') },
+        { label: 'Auditoria de Vendas', icon: 'FactCheck', onClick: () => navigate('/vendas/auditoria') },
       ],
     },
     {
-      title: 'Vendas',
+      title: 'Caixa',
       items: [
-        { label: 'Venda', icon: 'AttachMoney', onClick: () => navigate('/vendas') },
-        { label: 'Histórico de Vendas', icon: 'History', onClick: () => console.log('Histórico de Vendas clicked') },
+        { label: 'Abertura de Caixa', icon: 'OpenInNew', onClick: () => navigate('/caixa') },
+        { label: 'Registro de Movimentações', icon: 'Receipt', onClick: () => navigate('/caixa/movimentacoes') },
+        { label: 'Fechamento de Caixa', icon: 'Close', onClick: () => navigate('/caixa/fechamento') },
+        { label: 'Relatório de Caixa', icon: 'Assessment', onClick: () => navigate('/caixa/relatorio') },
+      ],
+    },
+    {
+      title: 'Produtos',
+      items: [
+        { label: 'Listar Produtos', icon: 'Inventory', onClick: () => navigate('/produtos') },
+        { label: 'Cadastrar Produto', icon: 'AddBox', onClick: () => navigate('/produtos/cadastrar') },
+        { label: 'Inventário', icon: 'ListAlt', onClick: () => navigate('/inventario') },
       ],
     },
     {
       title: 'Clientes',
       items: [
-        { label: 'Listar Clientes', icon: 'People', onClick: () => console.log('Lista de clientes cadastrados clicked') },
-        { label: 'Cadastrar Cliente', icon: 'PersonAdd', onClick: () => console.log('Cadastrar novo cliente clicked') },
+        { label: 'Listar Clientes', icon: 'People', onClick: () => navigate('/clientes') },
+        { label: 'Cadastrar Cliente', icon: 'PersonAdd', onClick: () => navigate('/clientes/cadastrar') },
       ],
     },
     {
       title: 'Fornecedores',
       items: [
-        { label: 'Fornecedores cadastrados', icon: 'LocalShipping', onClick: () => console.log('Lista de fornecedores cadastrados clicked') },
-        { label: 'Cadastrar fornecedor', icon: 'PersonAddAlt', onClick: () => console.log('Cadastrar novo fornecedor clicked') },
+        { label: 'Listar Fornecedores', icon: 'LocalShipping', onClick: () => navigate('/fornecedores') },
+        { label: 'Cadastrar Fornecedor', icon: 'PersonAddAlt', onClick: () => navigate('/fornecedores/cadastrar') },
       ],
     },
     {
-      title: 'Geral',
+      title: 'Promoções',
       items: [
-        { label: 'Configurações', icon: 'Settings', onClick: () => console.log('Configurações clicked') },
-        { label: 'Sair', icon: 'ExitToApp', onClick: logout }, // Chama a função logout aqui
+        { label: 'Listar Promoções', icon: 'LocalOffer', onClick: () => navigate('/promocoes') },
+        { label: 'Cadastrar Promoção', icon: 'AddAlert', onClick: () => navigate('/promocoes/cadastrar') },
+      ],
+    },
+    {
+      title: 'Configurações',
+      items: [
+        { label: 'Gerenciar Usuários', icon: 'AdminPanelSettings', onClick: () => navigate('/usuarios') },
+        { label: 'Gerenciar Roles', icon: 'Security', onClick: () => navigate('/roles') },
+        { label: 'Configurações Gerais', icon: 'Settings', onClick: () => navigate('/configuracoes') },
+        { label: 'Sair', icon: 'ExitToApp', onClick: logout },
       ],
     },
   ];
+  
 
   return (
     <ConfigurableBox
