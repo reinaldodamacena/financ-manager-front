@@ -7,27 +7,27 @@ const api = axios.create({
 
 const CashRegisterService = {
     abrirCaixa: async (data) => {
-      const response = await api.post('/cashregister/open', data);
+      const response = await api.post('/CashRegister/open', data);
       return response.data;
     },
   
     fecharCaixa: async (data) => {
-      const response = await api.post('/cashregister/close', data);
+      const response = await api.post('/CashRegister/close', data);
       return response.data;
     },
   
     obterCaixaPorId: async (id) => {
-      const response = await api.get(`/cashregister/${id}`);
+      const response = await api.get(`/CashRegister/${id}`);
       return response.data;
     },
   
     obterAuditoriasPorCaixaId: async (id) => {
-      const response = await api.get(`/cashregister/${id}/audits`);
+      const response = await api.get(`/CashRegister/${id}/audits`);
       return response.data;
     },
   
     obterCaixasAbertos: async () => {
-      const response = await api.get('/cashregister/open');
+      const response = await api.get('/CashRegister/open');
       return response.data;
     },
   };

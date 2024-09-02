@@ -6,9 +6,24 @@ const api = axios.create({
 });
 
 export const saleService = {
-  create: (data) => api.post('/sales', data),
-  update: (data) => api.put('/sales', data),
-  delete: (id) => api.delete(`/sales/${id}`),
-  fetchById: (id) => api.get(`/sales/${id}`),
-  fetchAll: () => api.get('/sales'),
+  // Iniciar uma nova venda
+  start: (data) => api.post('/sale/start', data),
+
+  // Adicionar um detalhe à venda
+  addDetail: (data) => api.post('/sale/add-detail', data),
+
+  // Completar uma venda existente
+  complete: (data) => api.post('/sale/complete', data),
+
+  // Atualizar uma venda existente
+  update: (data) => api.put('/sale/update', data),
+
+  // Excluir uma venda
+  delete: (id) => api.delete(`/sale/delete/${id}`),
+
+  // Buscar uma venda por ID
+  fetchById: (id) => api.get(`/sale/${id}`),
+
+  // Buscar todas as vendas
+  fetchAll: () => api.get('/sale'),
 };

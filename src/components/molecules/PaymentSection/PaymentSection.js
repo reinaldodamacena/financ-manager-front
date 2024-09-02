@@ -1,119 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Grid, Box } from '@mui/material';
-import { TransparentBox, Button, Input, Dropdown, Icon, SmallTransparentBox } from '../../atoms/Index';
-import { Typography } from '@mui/material';
+import { CustomTable } from '../../molecules/Index';
+import { Icon, Input } from '../../atoms/Index';
+import { productService } from '../../../api/productService';
+import useService from '../../../hooks/useService';
 
-const PaymentSection = () => {
-  const [paymentMethod, setPaymentMethod] = useState('Dinheiro');
-  const [receivedAmount, setReceivedAmount] = useState('');
-  const [discountAmount, setDiscountAmount] = useState('');
-  const [discountPercent, setDiscountPercent] = useState('');
-  const [total, setTotal] = useState(634.66); // Valor total de exemplo
-  const [change, setChange] = useState(0);
+const ProductList = ({ onAddProduct }) => {
+  const { data: products, fetchData } = useService(productService);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [barcodeQuery, setBarcodeQuery] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
-  const handlePaymentMethodChange = (event) => {
-    setPaymentMethod(event.target.value);
+  useEffect(() => {
+    if (searchQuery || barcodeQuery) {
+      if (searchQuery) {
+        fetchData(productService.fetchByDescription, searchQuery);
+      } else if (barcodeQuery) {
+        fetchData(productService.fetchByCode, { barcode: barcodeQuery });
+      }
+    } else {
+      setFilteredProducts([]);
+    }
+  }, [searchQuery, barcodeQuery, fetchData]);
+
+  useEffect(() => {
+    if (products) {
+      const formattedData = products.map((product) => ({
+        productId: product.productId,
+        manufacturerCode: product.manufacturerCode,
+        description: product.description,
+        barcode: product.barcode,
+        quantityInStock: product.quantityInStock,
+        price: (product.price !== undefined ? product.price : 0).toFixed(2),
+      }));
+      setFilteredProducts(formattedData);
+    }
+  }, [products]);
+
+  const columns = [
+    { field: 'productId', headerName: 'ID' },
+    { field: 'manufacturerCode', headerName: 'Código' },
+    { field: 'description', headerName: 'Produto' },
+    { field: 'barcode', headerName: 'Código de Barras' },
+    { field: 'quantityInStock', headerName: 'Quantidade' },
+    { field: 'price', headerName: 'Preço', align: 'right', format: (value) => value.toFixed(2) },
+  ];
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setBarcodeQuery('');
   };
 
-  const handleReceivedAmountChange = (event) => {
-    const value = parseFloat(event.target.value) || 0;
-    setReceivedAmount(value);
-    setChange(value - total);
+  const handleBarcodeChange = (event) => {
+    setBarcodeQuery(event.target.value);
+    setSearchQuery('');
   };
 
   return (
-    <TransparentBox alignContent="center" position="relative" left="0%" height="100%" width="100%">
-      <SmallTransparentBox width="90%" height="10%" justifyContent="center" right="auto"
-        left="auto"  maxWidth="300px" padding='10%' top="5%">
-            <Typography variant="body1" color="primary" align="left">
-              Total R$
-            </Typography>
-            <Typography variant="h4" color="textPrimary" align="center">
-              {total.toFixed(2)}
-            </Typography>
-          </SmallTransparentBox>
-      <Grid marginTop="25%" container spacing={3}>
-        <Grid item xs={6}>
+    <Box>
+      <Grid container spacing={2} sx={{ marginBottom: 3, justifyContent: 'space-between' }}>
+        <Grid item xs={12} sm={6}>
           <Input
-            label="Desconto R$"
+            label="Pesquisar por nome"
             variant="outlined"
-            size="small"
-            value={discountAmount}
-            onChange={(e) => setDiscountAmount(e.target.value)}
             fullWidth
+            value={searchQuery}
+            onChange={handleSearchChange}
+            icon={() => <Icon name="PersonSearch" size="2rem" color="primary.main" />}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <Input
-            label="Desconto %"
+            label="Código de barras"
             variant="outlined"
-            size="small"
-            value={discountPercent}
-            onChange={(e) => setDiscountPercent(e.target.value)}
             fullWidth
+            value={barcodeQuery}
+            onChange={handleBarcodeChange}
+            icon={() => <Icon name="Barcode" size="2rem" color="primary.main" />}
           />
-        </Grid>
-
-        <Grid item xs={12}>
-          <Dropdown
-            label="Pagamento"
-            value={paymentMethod}
-            onChange={handlePaymentMethodChange}
-            options={[
-              { value: 'Dinheiro', label: 'Dinheiro' },
-              { value: 'Cartão de Crédito', label: 'Cartão de Crédito' },
-              { value: 'Cartão de Débito', label: 'Cartão de Débito' },
-              { value: 'Pix', label: 'Pix' },
-            ]}
-            fullWidth
-          />
-        </Grid>
-
-        <Grid item xs={6}>
-          <Input
-            label="Valor recebido R$"
-            variant="outlined"
-            size="small"
-            value={receivedAmount}
-            onChange={handleReceivedAmountChange}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Input
-            label="Troco R$"
-            variant="outlined"
-            size="small"
-            value={change.toFixed(2)}
-            InputProps={{
-              readOnly: true,
-            }}
-            fullWidth
-          />
-        </Grid>
-
-        <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            endIcon={<Icon name="CheckCircle" />}
-            sx={{ marginBottom: 2 }}
-          >
-            Finalizar venda
-          </Button>
-          <Button
-            variant="text"
-            color="secondary"
-            fullWidth
-            endIcon={<Icon name="Cancel" />}
-          >
-            Cancelar
-          </Button>
         </Grid>
       </Grid>
-    </TransparentBox>
+      <CustomTable
+        columns={columns}
+        data={filteredProducts}
+        title="Itens"
+        onRowClick={(row) => onAddProduct(row)}
+      />
+    </Box>
   );
 };
 
-export default PaymentSection;
+ProductList.propTypes = {
+  onAddProduct: PropTypes.func.isRequired,
+};
+
+export default ProductList;

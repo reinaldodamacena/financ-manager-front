@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../api/authService';
 
-
 const AuthContext = createContext();
 
 export const AuthServiceProvider = ({ children }) => {
@@ -14,17 +13,21 @@ export const AuthServiceProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      console.log('User loaded from localStorage:', parsedUser);
+    } else {
+      console.log('No user found in localStorage. Redirecting to login.');
+      navigate('/login');
     }
     setLoading(false);
-  }, []);
+  }, [navigate]);
 
   const login = async (credentials) => {
     setLoading(true);
     setError(null);
     try {
       const response = await authService.login(credentials);
-
       const userData = {
         username: response.username,
         token: response.token,
@@ -33,16 +36,18 @@ export const AuthServiceProvider = ({ children }) => {
 
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
+      console.log('User logged in and data saved:', userData);
       navigate('/home');
     } catch (err) {
       setError('Falha no login. Por favor, tente novamente.');
-      console.error(err);
+      console.error('Login failed:', err);
     } finally {
       setLoading(false);
     }
   };
 
   const logout = () => {
+    console.log('User logging out:', user);
     setUser(null);
     localStorage.removeItem('user');
     navigate('/login');
