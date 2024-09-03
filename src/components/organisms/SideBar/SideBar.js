@@ -34,7 +34,7 @@ const SideBar = ({ collapsed, toggleCollapsed }) => {
     {
       title: 'Produtos',
       items: [
-        { label: 'Listar Produtos', icon: 'Inventory', onClick: () => navigate('/produtos') },
+        { label: 'Listar Produtos', icon: 'Inventory', onClick: () => navigate('/registroproduto') },
         { label: 'Cadastrar Produto', icon: 'AddBox', onClick: () => navigate('/produtos/cadastrar') },
         { label: 'Inventário', icon: 'ListAlt', onClick: () => navigate('/inventario') },
       ],
