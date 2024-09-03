@@ -14,7 +14,7 @@ const useService = (service) => {
     setError(null);
     try {
       const result = await (params ? fetchFunction(params) : fetchFunction());
-      setData(result);
+      setData(result.data); // Certifique-se de que `result.data` é um array
     } catch (err) {
       setError(err);
     } finally {

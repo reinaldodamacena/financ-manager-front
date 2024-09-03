@@ -1,98 +1,118 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { Grid, Box } from '@mui/material';
-import { CustomTable } from '../../molecules/Index';
-import { Icon, Input } from '../../atoms/Index';
-import { productService } from '../../../api/productService';
-import useService from '../../../hooks/useService';
+import { Grid, Box, Typography } from '@mui/material';
+import { TransparentBox, Button, Input, Dropdown, Icon, SmallTransparentBox } from '../../atoms/Index';
 
-const ProductList = ({ onAddProduct }) => {
-  const { data: products, fetchData } = useService(productService);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [barcodeQuery, setBarcodeQuery] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState([]);
+const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale }) => {
+  const [paymentMethod, setPaymentMethod] = useState('Dinheiro');
+  const [receivedAmount, setReceivedAmount] = useState(0);
+  const [change, setChange] = useState(0);
 
   useEffect(() => {
-    if (searchQuery || barcodeQuery) {
-      if (searchQuery) {
-        fetchData(productService.fetchByDescription, searchQuery);
-      } else if (barcodeQuery) {
-        fetchData(productService.fetchByCode, { barcode: barcodeQuery });
-      }
-    } else {
-      setFilteredProducts([]);
-    }
-  }, [searchQuery, barcodeQuery, fetchData]);
+    setChange(receivedAmount - totalNet);
+  }, [receivedAmount, totalNet]);
 
-  useEffect(() => {
-    if (products) {
-      const formattedData = products.map((product) => ({
-        productId: product.productId,
-        manufacturerCode: product.manufacturerCode,
-        description: product.description,
-        barcode: product.barcode,
-        quantityInStock: product.quantityInStock,
-        price: (product.price !== undefined ? product.price : 0).toFixed(2),
-      }));
-      setFilteredProducts(formattedData);
-    }
-  }, [products]);
-
-  const columns = [
-    { field: 'productId', headerName: 'ID' },
-    { field: 'manufacturerCode', headerName: 'Código' },
-    { field: 'description', headerName: 'Produto' },
-    { field: 'barcode', headerName: 'Código de Barras' },
-    { field: 'quantityInStock', headerName: 'Quantidade' },
-    { field: 'price', headerName: 'Preço', align: 'right', format: (value) => value.toFixed(2) },
-  ];
-
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-    setBarcodeQuery('');
+  const handlePaymentMethodChange = (event) => {
+    setPaymentMethod(event.target.value);
   };
 
-  const handleBarcodeChange = (event) => {
-    setBarcodeQuery(event.target.value);
-    setSearchQuery('');
+  const handleReceivedAmountChange = (event) => {
+    const value = parseFloat(event.target.value) || 0;
+    setReceivedAmount(value);
   };
 
   return (
-    <Box>
-      <Grid container spacing={2} sx={{ marginBottom: 3, justifyContent: 'space-between' }}>
-        <Grid item xs={12} sm={6}>
+    <TransparentBox alignContent="center" position="relative" left="0%" height="100%" width="100%">
+      <SmallTransparentBox width="90%" height="10%" justifyContent="center" right="auto" left="auto" maxWidth="300px" padding='10%' top="5%">
+        <Typography variant="body1" color="primary" align="left">
+          Total R$
+        </Typography>
+        <Typography variant="h4" color="textPrimary" align="center">
+          {totalNet.toFixed(2)}
+        </Typography>
+      </SmallTransparentBox>
+      <Grid marginTop="25%" container spacing={3}>
+        <Grid item xs={6}>
           <Input
-            label="Pesquisar por nome"
+            label="Desconto R$"
             variant="outlined"
+            size="small"
+            value={totalDiscount.toFixed(2)}
             fullWidth
-            value={searchQuery}
-            onChange={handleSearchChange}
-            icon={() => <Icon name="PersonSearch" size="2rem" color="primary.main" />}
+            readOnly
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={6}>
           <Input
-            label="Código de barras"
+            label="Total Bruto R$"
             variant="outlined"
+            size="small"
+            value={totalGross.toFixed(2)}
             fullWidth
-            value={barcodeQuery}
-            onChange={handleBarcodeChange}
-            icon={() => <Icon name="Barcode" size="2rem" color="primary.main" />}
+            readOnly
           />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Dropdown
+            label="Pagamento"
+            value={paymentMethod}
+            onChange={handlePaymentMethodChange}
+            options={[
+              { value: 'Dinheiro', label: 'Dinheiro' },
+              { value: 'Cartão de Crédito', label: 'Cartão de Crédito' },
+              { value: 'Cartão de Débito', label: 'Cartão de Débito' },
+              { value: 'Pix', label: 'Pix' },
+            ]}
+            fullWidth
+          />
+        </Grid>
+
+        <Grid item xs={6}>
+          <Input
+            label="Valor recebido R$"
+            variant="outlined"
+            size="small"
+            value={receivedAmount}
+            onChange={handleReceivedAmountChange}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Input
+            label="Troco R$"
+            variant="outlined"
+            size="small"
+            value={change.toFixed(2)}
+            InputProps={{
+              readOnly: true,
+            }}
+            fullWidth
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            endIcon={<Icon name="CheckCircle" />}
+            sx={{ marginBottom: 2 }}
+            onClick={onFinalizeSale}
+          >
+            Finalizar venda
+          </Button>
+          <Button
+            variant="text"
+            color="secondary"
+            fullWidth
+            endIcon={<Icon name="Cancel" />}
+          >
+            Cancelar
+          </Button>
         </Grid>
       </Grid>
-      <CustomTable
-        columns={columns}
-        data={filteredProducts}
-        title="Itens"
-        onRowClick={(row) => onAddProduct(row)}
-      />
-    </Box>
+    </TransparentBox>
   );
 };
 
-ProductList.propTypes = {
-  onAddProduct: PropTypes.func.isRequired,
-};
-
-export default ProductList;
+export default PaymentSection;

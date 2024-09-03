@@ -2,41 +2,33 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Box } from '@mui/material';
 import { CustomTable } from '../../molecules/Index';
-import { Icon, Input } from '../../atoms/Index';
-import { productService } from '../../../api/productService';
-import useService from '../../../hooks/useService';
+import { Icon, Input, Button } from '../../atoms/Index';
+import { useEnhancedProductService } from '../../../context/Product/ProductServiceProvider';
 
-const ProductList = ({ onAddProduct }) => {
-  const { data: products, fetchData } = useService(productService);
+const ProductList = ({ onAddToCart }) => {
+  const { fetchByDescription, fetchByCode } = useEnhancedProductService();
   const [searchQuery, setSearchQuery] = useState('');
   const [barcodeQuery, setBarcodeQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
-    if (searchQuery || barcodeQuery) {
-      if (searchQuery) {
-        fetchData(productService.fetchByDescription, searchQuery);
-      } else if (barcodeQuery) {
-        fetchData(productService.fetchByCode, { barcode: barcodeQuery });
+    const fetchData = async () => {
+      try {
+        let products = [];
+        if (searchQuery) {
+          products = await fetchByDescription(searchQuery);
+        } else if (barcodeQuery) {
+          products = await fetchByCode(barcodeQuery);
+        }
+        setFilteredProducts(products);
+      } catch (error) {
+        console.error('Erro ao buscar produtos:', error);
+        setFilteredProducts([]);
       }
-    } else {
-      setFilteredProducts([]);
-    }
-  }, [searchQuery, barcodeQuery, fetchData]);
+    };
 
-  useEffect(() => {
-    if (products) {
-      const formattedData = products.map((product) => ({
-        productId: product.productId,
-        manufacturerCode: product.manufacturerCode,
-        description: product.description,
-        barcode: product.barcode,
-        quantityInStock: product.quantityInStock,
-        price: (product.price !== undefined ? product.price : 0).toFixed(2),
-      }));
-      setFilteredProducts(formattedData);
-    }
-  }, [products]);
+    fetchData();
+  }, [searchQuery, barcodeQuery, fetchByDescription, fetchByCode]);
 
   const columns = [
     { field: 'productId', headerName: 'ID' },
@@ -44,17 +36,35 @@ const ProductList = ({ onAddProduct }) => {
     { field: 'description', headerName: 'Produto' },
     { field: 'barcode', headerName: 'Código de Barras' },
     { field: 'quantityInStock', headerName: 'Quantidade' },
-    { field: 'price', headerName: 'Preço', align: 'right', format: (value) => value.toFixed(2) },
+    { 
+      field: 'price', 
+      headerName: 'Preço', 
+      align: 'right',
+      format: (value) => value.toFixed(2),
+    },
+    {
+      field: 'actions',
+      headerName: 'Ações',
+      renderCell: (product) => (
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={() => onAddToCart(product)}
+        >
+          Adicionar
+        </Button>
+      ),
+    },
   ];
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
-    setBarcodeQuery('');
+    setBarcodeQuery(''); // Limpar a consulta de código de barras ao pesquisar por descrição
   };
 
   const handleBarcodeChange = (event) => {
     setBarcodeQuery(event.target.value);
-    setSearchQuery('');
+    setSearchQuery(''); // Limpar a consulta de descrição ao pesquisar por código de barras
   };
 
   return (
@@ -67,7 +77,7 @@ const ProductList = ({ onAddProduct }) => {
             fullWidth
             value={searchQuery}
             onChange={handleSearchChange}
-            icon={() => <Icon name="PersonSearch" size="2rem" color="primary.main" />}
+            icon={() => <Icon name="PersonSearch" size="2rem" color="primary.main" />} 
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -77,22 +87,21 @@ const ProductList = ({ onAddProduct }) => {
             fullWidth
             value={barcodeQuery}
             onChange={handleBarcodeChange}
-            icon={() => <Icon name="Barcode" size="2rem" color="primary.main" />}
+            icon={() => <Icon name="Barcode" size="2rem" color="primary.main" />} 
           />
         </Grid>
       </Grid>
-      <CustomTable
-        columns={columns}
-        data={filteredProducts}
-        title="Itens"
-        onRowClick={(row) => onAddProduct(row)}
-      />
+      {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
+        <CustomTable columns={columns} data={filteredProducts} title="Itens" />
+      ) : (
+        <p>Nenhum produto disponível</p>
+      )}
     </Box>
   );
 };
 
 ProductList.propTypes = {
-  onAddProduct: PropTypes.func.isRequired,
+  onAddToCart: PropTypes.func.isRequired,
 };
 
 export default ProductList;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Grid, Typography, Divider } from '@mui/material';
 import { Input, Icon } from '../../atoms/Index';
-import { useSaleServiceContext } from '../../../context/SaleServiceProvider';
+import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider';
 
 const ClientSection = () => {
   const { updateSale } = useSaleServiceContext();

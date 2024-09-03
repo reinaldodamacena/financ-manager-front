@@ -12,7 +12,7 @@ export const SaleServiceProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await saleService.create(saleInfo);
+      const result = await saleService.startSale(saleInfo);
       setSaleData(result.data);
     } catch (err) {
       setError(err);
@@ -25,9 +25,8 @@ export const SaleServiceProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const updatedSale = { ...saleData, saleDetails: [...saleData.saleDetails, saleDetail] };
-      await saleService.update(updatedSale);
-      setSaleData(updatedSale);
+      const result = await saleService.addSaleDetail(saleData.saleId, saleDetail);
+      setSaleData(result.data);
     } catch (err) {
       setError(err);
     } finally {
@@ -39,7 +38,7 @@ export const SaleServiceProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await saleService.update(saleInfo);
+      const result = await saleService.completeSale(saleData.saleId, saleInfo);
       setSaleData(result.data);
     } catch (err) {
       setError(err);
