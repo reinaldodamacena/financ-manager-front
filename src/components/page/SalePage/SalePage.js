@@ -44,8 +44,22 @@ const SalesPage = () => {
         return [...prevCart, { ...product, quantity: 1 }];
       });
     } catch (error) {
-      console.error("Failed to add product to sale:", error);
+      console.error("Failed to add product to cart:", error);
     }
+  };
+
+  const handleQuantityChange = (productId, quantity) => {
+    setCart((prevCart) =>
+      prevCart.map(item =>
+        item.productId === productId
+          ? { ...item, quantity: parseInt(quantity) }
+          : item
+      )
+    );
+  };
+
+  const handleRemoveFromCart = (productId) => {
+    setCart((prevCart) => prevCart.filter(item => item.productId !== productId));
   };
 
   const handleFinalizeSale = async () => {
