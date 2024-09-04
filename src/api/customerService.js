@@ -6,9 +6,10 @@ const api = axios.create({
 });
 
 export const customerService = {
-  create: (data) => api.post('/customers', data),
-  update: (data) => api.put('/customers', data),
-  delete: (id) => api.delete(`/customers/${id}`),
-  fetchById: (id) => api.get(`/customers/${id}`),
-  fetchAll: () => api.get('/customers'),
+  create: (data) => api.post('/Customer', data),  // Corrigido para o caminho correto
+  update: (data) => api.put('/Customer', data),  // Corrigido para o caminho correto
+  delete: (id) => api.delete(`/Customer/${id}`),  // Corrigido para o caminho correto
+  fetchById: (id) => api.get(`/Customer/${id}`),  // Corrigido para o caminho correto
+  fetchAll: () => api.get('/Customer'),  // Corrigido para o caminho correto
+  fetchByName: (nameOrCompanyName) => api.get(`/Customer/search`, { params: { nameOrCompanyName } }),  // Novo método para busca por nome
 };

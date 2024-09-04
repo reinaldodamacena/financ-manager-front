@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Box } from '@mui/material';
-import { CustomTable } from '../../molecules/Index';
+import { Grid, Box, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, TextField, Typography } from '@mui/material';
 import { Icon, Input, Button } from '../../atoms/Index';
 import { useEnhancedProductService } from '../../../context/Product/ProductServiceProvider';
 
@@ -10,6 +9,7 @@ const ProductList = ({ onAddToCart }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [barcodeQuery, setBarcodeQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [quantities, setQuantities] = useState({}); // Gerenciar a quantidade de cada produto
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,33 +30,6 @@ const ProductList = ({ onAddToCart }) => {
     fetchData();
   }, [searchQuery, barcodeQuery, fetchByDescription, fetchByCode]);
 
-  const columns = [
-    { field: 'productId', headerName: 'ID' },
-    { field: 'manufacturerCode', headerName: 'Código' },
-    { field: 'description', headerName: 'Produto' },
-    { field: 'barcode', headerName: 'Código de Barras' },
-    { field: 'quantityInStock', headerName: 'Quantidade' },
-    { 
-      field: 'price', 
-      headerName: 'Preço', 
-      align: 'right',
-      format: (value) => value.toFixed(2),
-    },
-    {
-      field: 'actions',
-      headerName: 'Ações',
-      renderCell: (product) => (
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={() => onAddToCart(product)}
-        >
-          Adicionar
-        </Button>
-      ),
-    },
-  ];
-
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
     setBarcodeQuery(''); // Limpar a consulta de código de barras ao pesquisar por descrição
@@ -66,6 +39,20 @@ const ProductList = ({ onAddToCart }) => {
     setBarcodeQuery(event.target.value);
     setSearchQuery(''); // Limpar a consulta de descrição ao pesquisar por código de barras
   };
+
+  const handleQuantityChange = (productId, value) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [productId]: value > 0 ? value : 1,
+    }));
+  };
+
+  const handleAddToCart = (product) => {
+    const quantity = quantities[product.productId] || 1;
+    console.log("Produto adicionado ao carrinho:", { ...product, quantity });
+    onAddToCart({ ...product, quantity });
+  };
+  
 
   return (
     <Box>
@@ -92,9 +79,60 @@ const ProductList = ({ onAddToCart }) => {
         </Grid>
       </Grid>
       {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-        <CustomTable columns={columns} data={filteredProducts} title="Itens" />
+        <List>
+          {filteredProducts.map((product) => {
+            const quantity = quantities[product.productId] || 1;
+            const totalPrice = (product.price * quantity).toFixed(2);
+
+            return (
+              <ListItem key={product.productId} divider sx={{ padding: 2 }}>
+                <ListItemText
+                  primary={
+                    <Typography variant="h6" color="text.primary">
+                      {product.description} - R$ {totalPrice}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography variant="body2" color="text.secondary">
+                      Código: {product.manufacturerCode} | Estoque: {product.quantityInStock} | Preço Unitário: R$ {product.price.toFixed(2)}
+                    </Typography>
+                  }
+                />
+                <TextField
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => handleQuantityChange(product.productId, parseInt(e.target.value))}
+                  label="Quantidade"
+                  variant="outlined"
+                  sx={{ width: 100, marginRight: 10 }}
+                  InputProps={{
+                    inputProps: { min: 1 }
+                  }}
+                />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="adicionar"
+                    onClick={() => handleAddToCart(product)}
+                    sx={{
+                      backgroundColor: 'primary.main',
+                      color: 'primary.contrastText',
+                      '&:hover': {
+                        backgroundColor: 'primary.dark',
+                      },
+                    }}
+                  >
+                    <Icon name="AddShoppingCart" size="2rem" />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            );
+          })}
+        </List>
       ) : (
-        <p>Nenhum produto disponível</p>
+        <Typography variant="body1" color="text.primary">
+          Nenhum produto disponível
+        </Typography>
       )}
     </Box>
   );

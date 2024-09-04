@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
-import { Grid, Typography, Divider } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Grid, Typography, Divider, List, ListItem, ListItemText } from '@mui/material';
 import { Input, Icon } from '../../atoms/Index';
 import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider';
+import useCustomer from '../../../hooks/useCustomer/useCustomer';
 
-const ClientSection = () => {
+const ClientSection = ({ onClientSelect }) => {
   const { updateSale } = useSaleServiceContext();
-  const [cpf, setCpf] = useState('');
-  const [clientName, setClientName] = useState('');
+  const { customers, fetchCustomersByName, addCustomerToSale } = useCustomer();
+  const [name, setName] = useState('');
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
-  const handleCpfSearch = () => {
-    // Simulação de busca do cliente por CPF
-    const customer = { customerId: 1, name: 'Fulano de tal da Silva e Silva' }; // Dados mockados
-    setClientName(customer.name);
-    updateSale({ customerId: customer.customerId });
+  // Debounce para aguardar enquanto o usuário digita
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (name) {
+        fetchCustomersByName(name); // Chama a busca de clientes por nome
+      }
+    }, 500); // Aguarda 500ms antes de realizar a busca
+
+    return () => clearTimeout(delayDebounceFn); // Limpa o timeout ao desmontar ou quando o nome muda
+  }, [name, fetchCustomersByName]);
+
+  const handleCustomerSelect = async (customerId) => {
+    setSelectedCustomerId(customerId);
+    await addCustomerToSale(customerId, { updateSale });
+    onClientSelect(customerId); // Atualiza o customerId na SalesPage
   };
 
   return (
@@ -24,18 +36,36 @@ const ClientSection = () => {
       <Grid container spacing={4} alignItems="flex-start">
         <Grid item xs={12} sm={6} md={4}>
           <Input
-            label="Busca CPF"
-            mask="999.999.999-99"
-            value={cpf}
-            onChange={(e) => setCpf(e.target.value)}
+            label="Busca Nome"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             icon={() => <Icon name="Search" size="2rem" color="primary.main" />}
-            onBlur={handleCpfSearch}
           />
         </Grid>
+
+        {/* Exibir a lista dos 3 primeiros clientes encontrados */}
         <Grid item xs={12} sm={6} md={4}>
-          <Typography variant="h6" color="textPrimary">
-            {clientName || 'Cliente não selecionado'}
-          </Typography>
+
+          <List>
+            {customers.slice(0, 3).map((customer) => (
+              <ListItem
+                key={customer.customerId}
+                button
+                selected={customer.customerId === selectedCustomerId}
+                onClick={() => handleCustomerSelect(customer.customerId)}
+              >
+                <ListItemText
+                  primary={customer.nameOrCompanyName}
+                  secondary={customer.cpfOrCnpj}
+                />
+              </ListItem>
+            ))}
+          </List>
+          {customers.length > 3 && (
+            <Typography variant="body2" color="textSecondary">
+              Exibindo os 3 primeiros de {customers.length} resultados.
+            </Typography>
+          )}
         </Grid>
       </Grid>
     </div>

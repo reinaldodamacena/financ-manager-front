@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { saleService } from '../../api/saleService';
 
 export const SaleServiceContext = createContext();
@@ -8,27 +8,41 @@ export const SaleServiceProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const startSale = async (saleInfo) => {
+  const startSale = async (customerId, companyId, createdBy) => {
+    console.log("Iniciando venda com os dados:", { customerId, companyId, createdBy });
     setLoading(true);
     setError(null);
     try {
-      const result = await saleService.startSale(saleInfo);
+      const saleInfo = {
+        customerId: customerId || 0,
+        companyId: companyId || 0,
+        createdBy: createdBy || 0,
+      };
+  
+      const result = await saleService.start(saleInfo);
+      console.log("Resposta do servidor ao iniciar venda:", result);  // Log para verificar a resposta do servidor
       setSaleData(result.data);
+      return result.data;
     } catch (err) {
       setError(err);
+      console.error("Erro ao iniciar venda:", err);
+      throw err;
     } finally {
       setLoading(false);
     }
   };
+  
 
   const addSaleDetail = async (saleDetail) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await saleService.addSaleDetail(saleData.saleId, saleDetail);
+      const result = await saleService.addDetail(saleDetail); // Use 'addDetail' do saleService
       setSaleData(result.data);
+      return result.data;
     } catch (err) {
       setError(err);
+      throw err; // Propaga o erro para o componente chamador
     } finally {
       setLoading(false);
     }
@@ -38,10 +52,12 @@ export const SaleServiceProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await saleService.completeSale(saleData.saleId, saleInfo);
+      const result = await saleService.complete(saleInfo); // Use 'complete' do saleService
       setSaleData(result.data);
+      return result.data;
     } catch (err) {
       setError(err);
+      throw err; // Propaga o erro para o componente chamador
     } finally {
       setLoading(false);
     }

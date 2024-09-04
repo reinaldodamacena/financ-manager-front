@@ -37,33 +37,34 @@ const ProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const productToCreate = {
       description,
       manufacturerCode,
       barcode,
       brand,
-      categoryId,
-      price: parseFloat(price),
+      categoryId: parseInt(categoryId, 10), // Certifique-se de que seja um número
+      price: parseFloat(price), // Converte o preço para float
       createdBy: user?.userId,
       updatedBy: user?.userId,
     };
-  
+
     const priceFormationToCreate = {
       costPrice: parseFloat(costPrice),
       finalPrice: parseFloat(finalPrice),
       markupPercentage: parseFloat(markupPercentage),
       // Outros campos necessários
     };
-  
+
     try {
-      await handleSaveProduct(productToCreate, priceFormationToCreate);
-      navigate('/registroproduto');
+      // Chamando o serviço para salvar o produto
+      const productData = await handleSaveProduct(productToCreate, priceFormationToCreate);
+      console.log('Produto criado com sucesso:', productData);
+      navigate('/registroproduto'); // Redirecionar após sucesso
     } catch (err) {
       console.error('Erro ao criar o produto:', err);
     }
   };
-  
 
   const togglePriceModal = () => {
     if (isPriceModalOpen) {

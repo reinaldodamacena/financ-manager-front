@@ -9,7 +9,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const UserRegistrationForm = () => {
-  const { createData, loading, error } = useUserServiceContext(); 
+  const { create, loading, error } = useUserServiceContext(); 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
@@ -45,7 +45,7 @@ const UserRegistrationForm = () => {
     console.log("User to create:", userToCreate);
 
     try {
-      await createData(userToCreate); // Chame a função de criação de usuário aqui
+      await create(userToCreate); // Chame a função de criação de usuário aqui
       console.log("User creation successful");
       navigate('/home'); // Navega para a página inicial após o sucesso do cadastro
     } catch (err) {

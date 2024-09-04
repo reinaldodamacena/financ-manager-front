@@ -17,10 +17,9 @@ export const AuthServiceProvider = ({ children }) => {
       setUser(parsedUser);
       console.log('User loaded from localStorage:', parsedUser);
     } else {
-      console.log('No user found in localStorage. Redirecting to login.');
-      navigate('/login');
+      console.log('No user found in localStorage.');
     }
-    setLoading(false);
+    setLoading(false); // Finaliza o carregamento
   }, [navigate]);
 
   const login = async (credentials) => {
