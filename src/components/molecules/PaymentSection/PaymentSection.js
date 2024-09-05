@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Box, Typography } from '@mui/material';
-import { TransparentBox, Button, Input, Dropdown, Icon, SmallTransparentBox } from '../../atoms/Index';
+import { Grid, Typography, Input } from '@mui/material';
+import { TransparentBox, Button, Dropdown, Icon, SmallTransparentBox } from '../../atoms/Index';
 
-const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale }) => {
-  const [paymentMethod, setPaymentMethod] = useState('Dinheiro');
+const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale, paymentMethod, setPaymentMethod }) => {
   const [receivedAmount, setReceivedAmount] = useState(0);
   const [change, setChange] = useState(0);
 
@@ -12,7 +11,7 @@ const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale })
   }, [receivedAmount, totalNet]);
 
   const handlePaymentMethodChange = (event) => {
-    setPaymentMethod(event.target.value);
+    setPaymentMethod(event.target.value);  // Atualizando o método de pagamento
   };
 
   const handleReceivedAmountChange = (event) => {
@@ -55,7 +54,7 @@ const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale })
         <Grid item xs={12}>
           <Dropdown
             label="Pagamento"
-            value={paymentMethod}
+            value={paymentMethod}  // Usando o paymentMethod passado como prop
             onChange={handlePaymentMethodChange}
             options={[
               { value: 'Dinheiro', label: 'Dinheiro' },

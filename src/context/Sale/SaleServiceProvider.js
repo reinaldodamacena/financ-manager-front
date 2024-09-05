@@ -8,24 +8,37 @@ export const SaleServiceProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const startSale = async (customerId, companyId, createdBy) => {
-    console.log("Iniciando venda com os dados:", { customerId, companyId, createdBy });
+  // Iniciar uma venda
+  const startSale = async (customerId, companyId, createdBy, saleDetail = null) => {
     setLoading(true);
     setError(null);
     try {
       const saleInfo = {
-        customerId: customerId || 0,
-        companyId: companyId || 0,
-        createdBy: createdBy || 0,
+        sale: {
+          customerId: customerId || 0,
+          companyId: companyId || 0,
+          totalGrossAmount: saleDetail ? saleDetail.unitPrice * saleDetail.quantity : 0,
+          totalDiscount: saleDetail ? saleDetail.discount : 0,
+          totalNetAmount: saleDetail ? (saleDetail.unitPrice * saleDetail.quantity) - saleDetail.discount : 0,
+          paymentMethod: "", 
+          notes: "",
+          isCompleted: false,
+          createdBy: createdBy || 0,
+          updatedBy: createdBy || 0,
+          status: "Pending",
+          saleDetails: saleDetail ? [saleDetail] : [] // Se houver um saleDetail, adicioná-lo à venda
+        }
       };
   
+      console.log("Criando venda com os seguintes detalhes:", saleInfo); // Log para depurar
+  
       const result = await saleService.start(saleInfo);
-      console.log("Resposta do servidor ao iniciar venda:", result);  // Log para verificar a resposta do servidor
+      console.log("Venda criada com sucesso:", result.data); // Verificar a resposta do servidor
       setSaleData(result.data);
       return result.data;
     } catch (err) {
       setError(err);
-      console.error("Erro ao iniciar venda:", err);
+      console.error("Erro ao iniciar a venda:", err);
       throw err;
     } finally {
       setLoading(false);
@@ -33,38 +46,59 @@ export const SaleServiceProvider = ({ children }) => {
   };
   
 
-  const addSaleDetail = async (saleDetail) => {
+
+  // Adicionar detalhes da venda
+  const addSaleDetail = async (saleId, productId, quantity, createdBy) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await saleService.addDetail(saleDetail); // Use 'addDetail' do saleService
+      const saleDetail = {
+        productId,
+        quantity,
+        unitPrice: 0, // Preço unitário do produto, adicione a lógica correta
+        totalGrossAmount: 0, // Total bruto do item
+        discount: 0, // Desconto aplicado
+        totalNetAmount: 0, // Total líquido após desconto
+        createdBy: createdBy || 0,
+        updatedBy: createdBy || 0,
+      };
+
+      const result = await saleService.addDetail(saleDetail);
       setSaleData(result.data);
       return result.data;
     } catch (err) {
       setError(err);
-      throw err; // Propaga o erro para o componente chamador
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  const completeSale = async (saleInfo) => {
+  // Completar a venda
+  const completeSale = async (saleId, paymentMethod, updatedBy) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await saleService.complete(saleInfo); // Use 'complete' do saleService
+      const saleCompletionInfo = {
+        saleId,
+        paymentMethod,
+        updatedBy
+      };
+      const result = await saleService.complete(saleCompletionInfo);
       setSaleData(result.data);
       return result.data;
     } catch (err) {
       setError(err);
-      throw err; // Propaga o erro para o componente chamador
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <SaleServiceContext.Provider value={{ saleData, loading, error, startSale, addSaleDetail, completeSale }}>
+    <SaleServiceContext.Provider
+      value={{ saleData, loading, error, startSale, addSaleDetail, completeSale }}
+    >
       {children}
     </SaleServiceContext.Provider>
   );
