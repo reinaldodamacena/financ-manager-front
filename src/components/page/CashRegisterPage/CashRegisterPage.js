@@ -32,6 +32,7 @@ const CashRegisterPage = () => {
 
   const handleAbrirCaixa = useCallback(async (data) => {
     try {
+      console.log("", data);
       const result = await abrirCaixa(data);
       console.log('Caixa aberto:', result);
       await obterCaixasAbertos(); // Atualiza a lista de caixas abertos

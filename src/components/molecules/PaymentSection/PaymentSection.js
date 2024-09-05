@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Input } from '@mui/material';
 import { TransparentBox, Button, Dropdown, Icon, SmallTransparentBox } from '../../atoms/Index';
+import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider'; // Use o contexto
 
-const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale, paymentMethod, setPaymentMethod }) => {
+const PaymentSection = ({ onFinalizeSale, paymentMethod, setPaymentMethod }) => {
+  const { totals } = useSaleServiceContext();  // Obtemos os totais do contexto
   const [receivedAmount, setReceivedAmount] = useState(0);
   const [change, setChange] = useState(0);
 
   useEffect(() => {
-    setChange(receivedAmount - totalNet);
-  }, [receivedAmount, totalNet]);
+    setChange(receivedAmount - totals.totalNet); // Atualiza o troco
+  }, [receivedAmount, totals.totalNet]);
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);  // Atualizando o método de pagamento
@@ -26,7 +28,7 @@ const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale, p
           Total R$
         </Typography>
         <Typography variant="h4" color="textPrimary" align="center">
-          {totalNet.toFixed(2)}
+          {totals.totalNet.toFixed(2)} {/* Usando o valor totalNet do backend */}
         </Typography>
       </SmallTransparentBox>
       <Grid marginTop="25%" container spacing={3}>
@@ -35,7 +37,7 @@ const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale, p
             label="Desconto R$"
             variant="outlined"
             size="small"
-            value={totalDiscount.toFixed(2)}
+            value={totals.totalDiscount.toFixed(2)}  // Usando o valor totalDiscount do backend
             fullWidth
             readOnly
           />
@@ -45,7 +47,7 @@ const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale, p
             label="Total Bruto R$"
             variant="outlined"
             size="small"
-            value={totalGross.toFixed(2)}
+            value={totals.totalGross.toFixed(2)}  // Usando o valor totalGross do backend
             fullWidth
             readOnly
           />
@@ -54,7 +56,7 @@ const PaymentSection = ({ totalGross, totalDiscount, totalNet, onFinalizeSale, p
         <Grid item xs={12}>
           <Dropdown
             label="Pagamento"
-            value={paymentMethod}  // Usando o paymentMethod passado como prop
+            value={paymentMethod}
             onChange={handlePaymentMethodChange}
             options={[
               { value: 'Dinheiro', label: 'Dinheiro' },

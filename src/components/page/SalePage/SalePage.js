@@ -1,36 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Divider } from '@mui/material';
 import { Background } from '../../atoms/Index';
 import { Layout } from '../../organisms/Index';
 import { ClientSection, ProductList, PaymentSection, CartItem } from '../../molecules/Index';
 import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider';
-import { CompressOutlined } from '@mui/icons-material';
 
 const SalesPage = () => {
-  const { startSale, addSaleDetail, completeSale, saleData } = useSaleServiceContext();
+  const { startSale, addSaleDetail, completeSale, getSaleTotals, removeSaleDetail, totals } = useSaleServiceContext();
   const [cart, setCart] = useState([]);
-  const [totals, setTotals] = useState({ totalGross: 0, totalDiscount: 0, totalNet: 0 });
   const [currentSaleId, setCurrentSaleId] = useState(null);
   const [customerId, setCustomerId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Função para adicionar ao carrinho
   const handleAddToCart = async (product) => {
     const userSale = JSON.parse(localStorage.getItem('user'));
-  
+
     if (!userSale || !userSale.userId) {
       console.log("Nenhum ID de usuário encontrado.");
       return;
     }
-  
+
     if (!customerId) {
       console.log("Nenhum cliente selecionado.");
       return;
     }
-  
+
     setLoading(true); // Ativar estado de carregamento
     try {
-      // Prepara o detalhe de venda
       const saleDetail = {
         productId: product.productId,
         manufacturerCode: product.manufacturerCode,
@@ -39,51 +37,62 @@ const SalesPage = () => {
         unitPrice: product.price,
         quantity: product.quantity || 1,
         createdBy: parseInt(userSale.userId),
-        discount: 0, // Pode ajustar o valor conforme necessário
+        discount: 0,
       };
-  
+
+      console.log("Adicionando ao carrinho:", saleDetail);
+
       if (!currentSaleId) {
-        console.log("Iniciando criação da venda com detalhe de venda...");
-  
-        // Envia o saleDetail ao iniciar a venda
-        const sale = await startSale(customerId, 1, parseInt(userSale.userId), saleDetail);
-        
-        // Atualiza o SaleId após a venda ser criada
+        const sale = await startSale(customerId, 12, parseInt(userSale.userId), saleDetail);
+        console.log("Venda iniciada com SaleId:", sale.saleId);
         setCurrentSaleId(sale.saleId);
-  
-        // Atualiza o saleDetail com o SaleId e adiciona ao carrinho
-        const updatedSaleDetail = { ...saleDetail, saleId: sale.saleId }; // Aqui garantimos que o SaleId está presente
-        setCart([...cart, updatedSaleDetail]);
-  
-        console.log("Detalhe de venda adicionado à nova venda:", updatedSaleDetail);
-  
+
+        // Atualiza o carrinho com o primeiro item
+        setCart([saleDetail]);
       } else {
-        // Se a venda já foi criada, apenas adiciona o detalhe
-        const updatedSaleDetail = { ...saleDetail, saleId: currentSaleId }; // Garantindo que o SaleId está sendo passado
-  
-        console.log("Adicionando detalhe à venda existente:", updatedSaleDetail);
-  
-        await addSaleDetail(updatedSaleDetail);
-  
-        // Adiciona o saleDetail atualizado com o SaleId ao carrinho
+        const updatedSaleDetail = { ...saleDetail, saleId: currentSaleId };
+        await addSaleDetail(currentSaleId, updatedSaleDetail);
+        console.log("Detalhe de venda adicionado:", updatedSaleDetail);
+
+        // Atualiza o carrinho
         setCart([...cart, updatedSaleDetail]);
       }
-  
-      // Atualiza os totais
-      setTotals({
-        totalGross: totals.totalGross + saleDetail.unitPrice * saleDetail.quantity,
-        totalDiscount: totals.totalDiscount + saleDetail.discount,
-        totalNet: totals.totalNet + (saleDetail.unitPrice * saleDetail.quantity - saleDetail.discount)
-      });
-  
+
+      // Atualiza os totais imediatamente após adicionar um item
+      await getSaleTotals(currentSaleId);
+      console.log("Totais atualizados após adição de item.");
     } catch (error) {
       console.error("Erro ao adicionar produto:", error);
     } finally {
       setLoading(false); // Desativar estado de carregamento
     }
   };
-  
 
+  // Função para remover do carrinho
+  const handleRemoveFromCart = async (saleDetailId) => {
+    console.log("Tentando remover saleDetailId:", saleDetailId);
+    try {
+      await removeSaleDetail(currentSaleId, saleDetailId);
+      const updatedCart = cart.filter((item) => item.saleDetailId !== saleDetailId);
+      console.log("Carrinho atualizado após remoção:", updatedCart);
+
+      // Se o carrinho ficar vazio, reseta também os totais
+      if (updatedCart.length === 0) {
+        setCart([]);
+        setCurrentSaleId(null);
+      } else {
+        setCart(updatedCart);
+      }
+
+      // Atualiza os totais imediatamente após remover um item
+      await getSaleTotals(currentSaleId);
+      console.log("Totais atualizados após remoção de item.");
+    } catch (error) {
+      console.error("Erro ao remover o produto:", error);
+    }
+  };
+
+  // Função para finalizar a venda
   const handleFinalizeSale = async () => {
     const userSale = JSON.parse(localStorage.getItem('user'));
     if (!userSale || !userSale.userId) {
@@ -95,7 +104,6 @@ const SalesPage = () => {
     try {
       await completeSale(currentSaleId, paymentMethod, parseInt(userSale.userId));
       setCart([]);
-      setTotals({ totalGross: 0, totalDiscount: 0, totalNet: 0 });
       setCurrentSaleId(null);
       console.log("Venda finalizada com sucesso");
     } catch (error) {
@@ -104,6 +112,27 @@ const SalesPage = () => {
       setLoading(false); // Desativar estado de carregamento
     }
   };
+
+  // Verifica se o carrinho está vazio e reseta os totais no PaymentSection
+  useEffect(() => {
+    const fetchTotalsIfNeeded = async () => {
+      if (cart.length === 0 && currentSaleId !== null) {
+        console.log("Carrinho vazio, resetando totais.");
+
+        // Reseta os totais quando o carrinho estiver vazio e o saleId é diferente de null
+        await getSaleTotals(null);
+
+        // Só redefine o carrinho e o SaleId se necessário
+        if (currentSaleId !== null) {
+          setCurrentSaleId(null);
+        }
+      }
+    };
+
+    fetchTotalsIfNeeded();
+  }, [cart, currentSaleId]); // Certifique-se de que o useEffect dependa também de currentSaleId
+
+
 
   return (
     <Background>
@@ -130,23 +159,24 @@ const SalesPage = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            {cart.map(item => (
+            {cart.map((saleDetail) => (
               <CartItem
-                key={item.productId}
-                product={item}
+                key={saleDetail.saleDetailId}  // Use um identificador único, como saleDetailId
+                saleDetail={saleDetail}        // Passe o saleDetail correto
                 onQuantityChange={(id, quantity) => {
-                  const updatedCart = cart.map(product =>
-                    product.productId === id ? { ...product, quantity } : product
+                  const updatedCart = cart.map((item) =>
+                    item.saleDetailId === id ? { ...item, quantity } : item
                   );
                   setCart(updatedCart);
                 }}
                 onRemove={(id) => {
-                  const updatedCart = cart.filter(product => product.productId !== id);
+                  const updatedCart = cart.filter(item => item.saleDetailId !== id);
                   setCart(updatedCart);
                 }}
               />
             ))}
           </Grid>
+
         </Grid>
       </Layout>
     </Background>
