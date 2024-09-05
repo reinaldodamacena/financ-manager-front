@@ -17,16 +17,14 @@ export const SaleServiceProvider = ({ children }) => {
         sale: {
           customerId: customerId || 0,
           companyId: companyId || 0,
-          totalGrossAmount: saleDetail ? saleDetail.unitPrice * saleDetail.quantity : 0,
-          totalDiscount: saleDetail ? saleDetail.discount : 0,
-          totalNetAmount: saleDetail ? (saleDetail.unitPrice * saleDetail.quantity) - saleDetail.discount : 0,
           paymentMethod: "", 
           notes: "",
           isCompleted: false,
           createdBy: createdBy || 0,
           updatedBy: createdBy || 0,
           status: "Pending",
-          saleDetails: saleDetail ? [saleDetail] : [] // Se houver um saleDetail, adicioná-lo à venda
+          // Se houver um saleDetail, adicioná-lo à venda; caso contrário, um array vazio
+          saleDetails: saleDetail ? [saleDetail] : [] 
         }
       };
   
@@ -45,29 +43,18 @@ export const SaleServiceProvider = ({ children }) => {
     }
   };
   
-
-
-  // Adicionar detalhes da venda
-  const addSaleDetail = async (saleId, productId, quantity, createdBy) => {
+  // Adicionar detalhes à venda existente
+  const addSaleDetail = async (saleDetail) => {
     setLoading(true);
     setError(null);
     try {
-      const saleDetail = {
-        productId,
-        quantity,
-        unitPrice: 0, // Preço unitário do produto, adicione a lógica correta
-        totalGrossAmount: 0, // Total bruto do item
-        discount: 0, // Desconto aplicado
-        totalNetAmount: 0, // Total líquido após desconto
-        createdBy: createdBy || 0,
-        updatedBy: createdBy || 0,
-      };
-
+      console.log("Enviando detalhe de venda:", saleDetail); // Verificação de dados
       const result = await saleService.addDetail(saleDetail);
       setSaleData(result.data);
       return result.data;
     } catch (err) {
       setError(err);
+      console.error("Erro ao adicionar detalhe de venda:", err);
       throw err;
     } finally {
       setLoading(false);

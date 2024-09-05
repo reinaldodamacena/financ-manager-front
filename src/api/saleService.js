@@ -10,7 +10,15 @@ export const saleService = {
   start: (data) => api.post('/Sale/start', data),
 
   // Adicionar um detalhe à venda
-  addDetail: (data) => api.post('/Sale/add-detail', data),
+  addDetail: (data) => {
+    console.log("Enviando detalhe de venda:", data);  // Verifique se esse log aparece
+    return api.post('/Sale/add-detail', data).then((response) => {
+      console.log("Resposta do backend ao adicionar detalhe:", response);
+      return response;
+    }).catch((error) => {
+      console.error("Erro ao adicionar detalhe de venda:", error);
+    });
+  },
 
   // Completar uma venda existente
   complete: (data) => api.post('/Sale/complete', data),

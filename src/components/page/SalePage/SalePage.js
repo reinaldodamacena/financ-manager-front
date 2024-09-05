@@ -4,6 +4,7 @@ import { Background } from '../../atoms/Index';
 import { Layout } from '../../organisms/Index';
 import { ClientSection, ProductList, PaymentSection, CartItem } from '../../molecules/Index';
 import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider';
+import { CompressOutlined } from '@mui/icons-material';
 
 const SalesPage = () => {
   const { startSale, addSaleDetail, completeSale, saleData } = useSaleServiceContext();
@@ -16,17 +17,17 @@ const SalesPage = () => {
 
   const handleAddToCart = async (product) => {
     const userSale = JSON.parse(localStorage.getItem('user'));
-
+  
     if (!userSale || !userSale.userId) {
       console.log("Nenhum ID de usuário encontrado.");
       return;
     }
-
+  
     if (!customerId) {
       console.log("Nenhum cliente selecionado.");
       return;
     }
-
+  
     setLoading(true); // Ativar estado de carregamento
     try {
       // Prepara o detalhe de venda
@@ -40,36 +41,48 @@ const SalesPage = () => {
         createdBy: parseInt(userSale.userId),
         discount: 0, // Pode ajustar o valor conforme necessário
       };
-
-      // Se ainda não existe um SaleId, cria a venda com o detalhe
+  
       if (!currentSaleId) {
         console.log("Iniciando criação da venda com detalhe de venda...");
+  
+        // Envia o saleDetail ao iniciar a venda
         const sale = await startSale(customerId, 1, parseInt(userSale.userId), saleDetail);
+        
+        // Atualiza o SaleId após a venda ser criada
         setCurrentSaleId(sale.saleId);
+  
+        // Atualiza o saleDetail com o SaleId e adiciona ao carrinho
+        const updatedSaleDetail = { ...saleDetail, saleId: sale.saleId }; // Aqui garantimos que o SaleId está presente
+        setCart([...cart, updatedSaleDetail]);
+  
+        console.log("Detalhe de venda adicionado à nova venda:", updatedSaleDetail);
+  
       } else {
         // Se a venda já foi criada, apenas adiciona o detalhe
-        console.log("Adicionando detalhe à venda existente:", saleDetail);
-        await addSaleDetail({
-          saleId: currentSaleId,
-          ...saleDetail
-        });
+        const updatedSaleDetail = { ...saleDetail, saleId: currentSaleId }; // Garantindo que o SaleId está sendo passado
+  
+        console.log("Adicionando detalhe à venda existente:", updatedSaleDetail);
+  
+        await addSaleDetail(updatedSaleDetail);
+  
+        // Adiciona o saleDetail atualizado com o SaleId ao carrinho
+        setCart([...cart, updatedSaleDetail]);
       }
-
-      // Atualiza o carrinho e os totais
-      setCart([...cart, saleDetail]);
+  
+      // Atualiza os totais
       setTotals({
         totalGross: totals.totalGross + saleDetail.unitPrice * saleDetail.quantity,
         totalDiscount: totals.totalDiscount + saleDetail.discount,
         totalNet: totals.totalNet + (saleDetail.unitPrice * saleDetail.quantity - saleDetail.discount)
       });
-
+  
     } catch (error) {
       console.error("Erro ao adicionar produto:", error);
     } finally {
       setLoading(false); // Desativar estado de carregamento
     }
   };
-
+  
 
   const handleFinalizeSale = async () => {
     const userSale = JSON.parse(localStorage.getItem('user'));
