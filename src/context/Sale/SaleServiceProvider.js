@@ -141,12 +141,26 @@ export const SaleServiceProvider = ({ children }) => {
     }
   };
   
+  const fetchSaleDetails = async (saleId) => {
+    try {
+      console.log(`Buscando detalhes da venda para SaleId: ${saleId}`);  // Log SaleId
+      const response = await saleService.getSaleDetails(saleId);
+      console.log("Resposta completa do backend ao buscar detalhes da venda:", response);  // Log do conteúdo completo retornado
+      return response.saleDetails || [];  // Certifique-se de retornar apenas `saleDetails`
+    } catch (error) {
+      console.error("Erro ao buscar detalhes da venda:", error);
+      return [];
+    }
+  };
+  
+  
+  
   
   
 
   return (
     <SaleServiceContext.Provider
-      value={{ saleData, loading, error, startSale, addSaleDetail, completeSale, totals, getSaleTotals, removeSaleDetail }}
+      value={{ saleData, loading, error, fetchSaleDetails, startSale, addSaleDetail, completeSale, totals, getSaleTotals, removeSaleDetail }}
     >
       {children}
     </SaleServiceContext.Provider>

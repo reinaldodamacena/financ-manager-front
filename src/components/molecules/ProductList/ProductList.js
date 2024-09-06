@@ -47,12 +47,11 @@ const ProductList = ({ onAddToCart }) => {
     }));
   };
 
-  const handleAddToCart = (product) => {
+  const handleAddToCartClick = (product) => {
     const quantity = quantities[product.productId] || 1;
-    console.log("Produto adicionado ao carrinho:", { ...product, quantity });
-    onAddToCart({ ...product, quantity });
+    // Passa o produto e a quantidade diretamente para o `onAddToCart` que é definido pelo `hook`
+    onAddToCart(product, quantity);
   };
-  
 
   return (
     <Box>
@@ -113,7 +112,7 @@ const ProductList = ({ onAddToCart }) => {
                   <IconButton
                     edge="end"
                     aria-label="adicionar"
-                    onClick={() => handleAddToCart(product)}
+                    onClick={() => handleAddToCartClick(product)} // Agora chama o `handleAddToCartClick`
                     sx={{
                       backgroundColor: 'primary.main',
                       color: 'primary.contrastText',
