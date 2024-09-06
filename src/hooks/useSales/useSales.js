@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 export const useSales = (useSaleServiceContext) => {
-    const { startSale, addSaleDetail, getSaleTotals, removeSaleDetail, fetchSaleDetails } = useSaleServiceContext();
+    const { startSale, addSaleDetail, getSaleTotals, removeSaleDetail, fetchSaleDetails, completeSale, updateSaleDetail } = useSaleServiceContext();  // Adiciona completeSale
     const [cart, setCart] = useState([]);
     const [currentSaleId, setCurrentSaleId] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -9,12 +9,14 @@ export const useSales = (useSaleServiceContext) => {
         totalGross: 0,
         totalDiscount: 0,
         totalNet: 0,
-      });
-      
+    });
+    const [error, setError] = useState(null);
 
-    const handleAddToCart = async (product, customerId, userSale) => {
+    // Função para adicionar um item ao carrinho
+    const handleAddToCart = async (product, customerId, userSale, quantity) => {
         console.log("Iniciando processo de adicionar ao carrinho...");
         console.log("Produto recebido:", product);
+        console.log("Quantidade recebida:", quantity); 
         console.log("Cliente ID:", customerId);
         console.log("Usuário logado:", userSale);
 
@@ -26,7 +28,7 @@ export const useSales = (useSaleServiceContext) => {
                 productDescription: product.description,
                 unit: product.unitOfExit,
                 unitPrice: product.price,
-                quantity: product.quantity || 1,
+                quantity: quantity || 1,  // Use a quantidade recebida
                 createdBy: parseInt(userSale.userId),
                 discount: 0,
             };
@@ -36,7 +38,7 @@ export const useSales = (useSaleServiceContext) => {
             if (!currentSaleId) {
                 // Inicia uma nova venda
                 console.log("Nenhuma venda em andamento, iniciando nova venda...");
-                const sale = await startSale(customerId, 1, parseInt(userSale.userId), saleDetail);
+                const sale = await startSale(customerId, 12, parseInt(userSale.userId), saleDetail);
                 console.log("Venda iniciada com sucesso. SaleId:", sale.saleId);
 
                 setCurrentSaleId(sale.saleId);
@@ -65,30 +67,33 @@ export const useSales = (useSaleServiceContext) => {
             // Atualizar os totais após adicionar o item
             const saleTotals = await getSaleTotals(currentSaleId);
             console.log("Totais atualizados da venda:", saleTotals);
+            setTotals(saleTotals);
         } catch (error) {
             console.error('Erro ao adicionar produto:', error);
+            setError(error);
         } finally {
             setLoading(false);
         }
     };
 
-
-
+    // Função para remover um item do carrinho
     const handleRemoveFromCart = async (saleDetailId) => {
         try {
-          await removeSaleDetail(currentSaleId, saleDetailId);
+            await removeSaleDetail(currentSaleId, saleDetailId);
           
-          // Atualiza o carrinho removendo o item
-          const updatedCart = cart.filter((item) => item.saleDetailId !== saleDetailId);
-          setCart(updatedCart);
+            // Atualiza o carrinho removendo o item
+            const updatedCart = cart.filter((item) => item.saleDetailId !== saleDetailId);
+            setCart(updatedCart);
           
-          // Atualizar os totais logo após remover o item
-          await getSaleTotals(currentSaleId);
+            // Atualizar os totais logo após remover o item
+            const saleTotals = await getSaleTotals(currentSaleId);
+            console.error('Totais atualizados após remover:', saleTotals);
+            setTotals(saleTotals);
         } catch (error) {
-          console.error('Erro ao remover produto:', error);
+            console.error('Erro ao remover produto:', error);
+            setError(error);
         }
-      };
-      
+    };
 
     // Função para atualizar a quantidade de um item no carrinho
     const updateCartQuantity = (saleDetailId, newQuantity) => {
@@ -98,13 +103,54 @@ export const useSales = (useSaleServiceContext) => {
         setCart(updatedCart);
     };
 
+    // Função para completar a venda
+    const handleCompleteSale = async (paymentMethod, updatedBy) => {
+        try {
+            setLoading(true);
+            setError(null);
+            console.log(`Finalizando venda com SaleId=${currentSaleId}, PaymentMethod=${paymentMethod}`);
+            const result = await completeSale(currentSaleId, paymentMethod, updatedBy);
+            console.log("Venda finalizada com sucesso:", result);
+
+            // Resetar o carrinho após completar a venda
+            setCart([]);
+            setCurrentSaleId(null);
+            setTotals({
+                totalGross: 0,
+                totalDiscount: 0,
+                totalNet: 0,
+            });
+        } catch (error) {
+            console.error('Erro ao finalizar a venda:', error);
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateCartDetails = async (saleDetailId, updatedDetail) => {
+        try {
+          await updateSaleDetail(saleDetailId, updatedDetail);  // Atualiza no backend
+          const updatedCart = cart.map((item) =>
+            item.saleDetailId === saleDetailId ? { ...item, ...updatedDetail } : item
+          );
+          setCart(updatedCart);  // Atualiza o estado localmente
+        } catch (error) {
+          console.error('Erro ao atualizar o detalhe da venda:', error);
+        }
+      };
+      
+
     return {
         cart,
         currentSaleId,
         loading,
         totals,
+        error,
         handleAddToCart,
         handleRemoveFromCart,
-        updateCartQuantity, // Adicionar essa função ao retorno
+        updateCartQuantity,
+        handleCompleteSale,
+        updateCartDetails,  // Adiciona a função para completar a venda
     };
 };

@@ -8,7 +8,7 @@ import { useSales } from '../../../hooks/useSales/useSales';
 import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider';
 
 const SalesPage = () => {
-  const { handleAddToCart, handleRemoveFromCart, cart, totals, loading, updateCartQuantity } = useSales(useSaleServiceContext); // Adicionar updateCartQuantity
+  const { handleAddToCart, handleRemoveFromCart, cart, totals, loading, updateCartQuantity, updateCartDetails ,handleCompleteSale } = useSales(useSaleServiceContext); // Adicionar updateCartQuantity
   const [customerId, setCustomerId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('');
 
@@ -26,14 +26,17 @@ const SalesPage = () => {
           </Grid>
           <Grid item xs={12} md={8}>
             <ProductList
-              onAddToCart={(product) => {
+              onAddToCart={(product, quantity) => {
                 console.log("Produto enviado para o carrinho:", product);
-                handleAddToCart(product, customerId, userSale);
+                console.log("Quantidade enviada para o carrinho:", quantity);  // Verifique se a quantidade está sendo passada corretamente
+                handleAddToCart(product, customerId, userSale, quantity);  // Passa a quantidade corretamente
               }}
             />
+
           </Grid>
           <Grid item xs={12} md={4}>
             <PaymentSection
+              onFinalizeSale={() => handleCompleteSale(paymentMethod, userSale.userId)}
               totalGross={totals?.totalGross || 0}
               totalDiscount={totals?.totalDiscount || 0}
               totalNet={totals?.totalNet || 0}
@@ -44,20 +47,19 @@ const SalesPage = () => {
 
           </Grid>
           <CartSection
-            cart={cart}  // Certifique-se de passar os dados corretamente
+            cart={cart}
             onQuantityChange={(id, quantity) => {
               console.log(`Alterando quantidade do item com SaleDetailId: ${id} para ${quantity}`);
-              const updatedCart = cart.map((item) =>
-                item.saleDetailId === id ? { ...item, quantity } : item
-              );
-              console.log("Carrinho atualizado após mudança de quantidade:", updatedCart);
-              setCart(updatedCart);
+              updateCartQuantity(id, quantity);  // Chama diretamente a função do hook para atualizar
             }}
+            onDetailUpdate={updateCartDetails}  // Nova função para atualizar detalhes como nome e preço
             onRemove={(id) => {
               console.log(`Removendo item com SaleDetailId: ${id} do carrinho.`);
-              handleRemoveFromCart(id);
+              handleRemoveFromCart(id);  // Função para remover o item do carrinho
             }}
           />
+
+
         </Grid>
       </Layout>
     </Background>

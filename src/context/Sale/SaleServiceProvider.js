@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { saleService } from '../../api/saleService';
+import { saleDetailService } from '../../api/saleDetailService';
 
 export const SaleServiceContext = createContext();
 
@@ -62,7 +63,7 @@ export const SaleServiceProvider = ({ children }) => {
 
       console.log("Enviando detalhe de venda:", saleDetailInfo); // Verificação de dados
 
-      const result = await saleService.addDetail(saleDetailInfo);
+      const result = await saleDetailService.addDetail(saleDetailInfo);
       console.log("Detalhe de venda adicionado com sucesso:", result.data); // Verificar a resposta do servidor
 
       setSaleData(result.data);
@@ -126,7 +127,7 @@ export const SaleServiceProvider = ({ children }) => {
     setError(null);
     try {
       console.log(`Removendo SaleDetail com saleId=${saleId} e saleDetailId=${saleDetailId}`); // Log para verificar os parâmetros enviados
-      await saleService.removeDetail(saleId, saleDetailId); // Verifica se os IDs estão sendo passados corretamente
+      await saleDetailService.removeDetail(saleId, saleDetailId); // Verifica se os IDs estão sendo passados corretamente
       const updatedSaleData = {
         ...saleData,
         saleDetails: saleData.saleDetails.filter((detail) => detail.saleDetailId !== saleDetailId),
@@ -144,7 +145,7 @@ export const SaleServiceProvider = ({ children }) => {
   const fetchSaleDetails = async (saleId) => {
     try {
       console.log(`Buscando detalhes da venda para SaleId: ${saleId}`);  // Log SaleId
-      const response = await saleService.getSaleDetails(saleId);
+      const response = await saleDetailService.getSaleDetails(saleId);
       console.log("Resposta completa do backend ao buscar detalhes da venda:", response);  // Log do conteúdo completo retornado
       return response.saleDetails || [];  // Certifique-se de retornar apenas `saleDetails`
     } catch (error) {
@@ -154,13 +155,59 @@ export const SaleServiceProvider = ({ children }) => {
   };
   
   
+  // No SaleServiceProvider
+  const updateSaleDetail = async (saleDetailId, updatedData) => {
+    setLoading(true);
+    setError(null);
   
+    try {
+      // Remover campos que não precisam ser enviados à API
+      const sanitizedData = {
+        saleDetailDto: {
+        saleDetailId,
+        saleId: updatedData.saleId,
+        productId: updatedData.productId,
+        manufacturerCode: updatedData.manufacturerCode,
+        productDescription: updatedData.productDescription,
+        quantity: updatedData.quantity,
+        unit: updatedData.unit,
+        unitPrice: updatedData.unitPrice,
+        discount: updatedData.discount
+      }
+      };
+  
+      console.log(`Atualizando SaleDetail com saleDetailId=${saleDetailId} com dados:`, sanitizedData);
+  
+      const result = await saleDetailService.updateDetail( sanitizedData);
+      console.log("Detalhe de venda atualizado com sucesso:", result);
+  
+      // Atualiza o estado local com o detalhe atualizado
+      const updatedSaleData = {
+        ...saleData,
+        saleDetails: saleData.saleDetails.map((detail) =>
+          detail.saleDetailId === saleDetailId ? { ...detail, ...sanitizedData } : detail
+        ),
+      };
+  
+      setSaleData(updatedSaleData);
+      return result;
+  
+    } catch (err) {
+      setError(err);
+      console.error("Erro ao atualizar detalhe de venda:", err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   
   
 
   return (
     <SaleServiceContext.Provider
-      value={{ saleData, loading, error, fetchSaleDetails, startSale, addSaleDetail, completeSale, totals, getSaleTotals, removeSaleDetail }}
+      value={{ saleData, loading, error, fetchSaleDetails, startSale, addSaleDetail, updateSaleDetail ,completeSale, totals, getSaleTotals, removeSaleDetail }}
     >
       {children}
     </SaleServiceContext.Provider>

@@ -48,10 +48,10 @@ const ProductList = ({ onAddToCart }) => {
   };
 
   const handleAddToCartClick = (product) => {
-    const quantity = quantities[product.productId] || 1;
-    // Passa o produto e a quantidade diretamente para o `onAddToCart` que é definido pelo `hook`
-    onAddToCart(product, quantity);
-  };
+    const quantity = quantities[product.productId] || 1;  // Pega a quantidade definida, ou 1 por padrão
+    onAddToCart(product, quantity);  // Passa o produto e a quantidade para o handleAddToCart
+};
+
 
   return (
     <Box>
