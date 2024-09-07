@@ -51,22 +51,20 @@ export const saleDetailService = {
   
 
 // Atualizar um detalhe de venda
-updateDetail: (saleDetailId, updatedData) => {
-  console.log(`Atualizando Ser vice SaleDetailId=${saleDetailId}:`, updatedData);
-  return api.put('/SaleDetails/update', {
-    //saleDetailId,  // Inclui o SaleDetailId no corpo
-    ...updatedData  // Inclui os outros dados atualizados
-  })
-  .then((response) => {
-    console.log("Detalhe de venda atualizado com sucesso:", response.data);
-    return response.data;
-  })
-  .catch((error) => {
-    console.error("Erro ao atualizar detalhe de venda:", error.response?.data || error.message);
-    throw error;
-  });
-}
+updateDetail: (updatedData) => {
+  console.log(`Atualizando SaleDetail com dados:`, updatedData);
 
+  // Fazendo a chamada para a API com o payload no formato esperado
+  return api.put('/SaleDetails/update', updatedData)  // Enviando o objeto completo `updatedData`
+    .then((response) => {
+      console.log("Detalhe de venda atualizado com sucesso:", response.data);
+      return response.data;
+    })
+    .catch((error) => {
+      console.error("Erro ao atualizar detalhe de venda:", error.response?.data || error.message);
+      throw error;
+    });
+}
 
 
   

@@ -2,21 +2,19 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import { CartItem } from '../../molecules/Index';
 
-const CartSection = ({ cart = [], onQuantityChange, onRemove, onDetailUpdate }) => {
-  // Verificar se o carrinho está vazio
+const CartSection = ({ cart = [], onUpdateDetail, onRemove }) => {
   if (!Array.isArray(cart) || cart.length === 0) {
     return <p>Carrinho vazio</p>;
   }
 
   return (
-    <Grid container spacing={2}>
+    <Grid container>
       {cart.map((saleDetail) => (
         <CartItem
           key={saleDetail.saleDetailId}
           saleDetail={saleDetail}
-          onQuantityChange={onQuantityChange}
+          onUpdateDetail={onUpdateDetail}  // Certifique-se de que onUpdateDetail está sendo passado corretamente
           onRemove={onRemove}
-          onDetailUpdate={onDetailUpdate} // Passa a função de atualização dos detalhes
         />
       ))}
     </Grid>

@@ -8,7 +8,7 @@ import { useSales } from '../../../hooks/useSales/useSales';
 import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider';
 
 const SalesPage = () => {
-  const { handleAddToCart, handleRemoveFromCart, cart, totals, loading, updateCartQuantity, updateCartDetails ,handleCompleteSale } = useSales(useSaleServiceContext); // Adicionar updateCartQuantity
+  const { handleAddToCart, handleRemoveFromCart, cart, totals, loading, updateCartQuantity, updateCartDetails, handleCompleteSale } = useSales(useSaleServiceContext); // Adicionar updateCartQuantity
   const [customerId, setCustomerId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('');
 
@@ -48,17 +48,12 @@ const SalesPage = () => {
           </Grid>
           <CartSection
             cart={cart}
-            onQuantityChange={(id, quantity) => {
-              console.log(`Alterando quantidade do item com SaleDetailId: ${id} para ${quantity}`);
-              updateCartQuantity(id, quantity);  // Chama diretamente a função do hook para atualizar
-            }}
-            onDetailUpdate={updateCartDetails}  // Nova função para atualizar detalhes como nome e preço
-            onRemove={(id) => {
-              console.log(`Removendo item com SaleDetailId: ${id} do carrinho.`);
-              handleRemoveFromCart(id);  // Função para remover o item do carrinho
+            onUpdateDetail={updateCartDetails}  // Use a função do hook para atualizar os detalhes
+            onRemove={(saleDetailId) => {
+              console.log(`Removendo item com SaleDetailId: ${saleDetailId}`);
+              handleRemoveFromCart(saleDetailId);  // Função que remove o item do carrinho
             }}
           />
-
 
         </Grid>
       </Layout>
