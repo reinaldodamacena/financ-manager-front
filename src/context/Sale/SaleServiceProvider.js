@@ -5,7 +5,9 @@ import { saleDetailService } from '../../api/saleDetailService';
 export const SaleServiceContext = createContext();
 
 export const SaleServiceProvider = ({ children }) => {
-  const [saleData, setSaleData] = useState(null);
+  const [saleData, setSaleData] = useState({
+    saleDetails: []  // Inicialize como array vazio para evitar erros
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [totals, setTotals] = useState({
@@ -164,32 +166,42 @@ export const SaleServiceProvider = ({ children }) => {
       // Remover campos que não precisam ser enviados à API
       const sanitizedData = {
         saleDetailDto: {
-        saleDetailId,
-        saleId: updatedData.saleId,
-        productId: updatedData.productId,
-        manufacturerCode: updatedData.manufacturerCode,
-        productDescription: updatedData.productDescription,
-        quantity: updatedData.quantity,
-        unit: updatedData.unit,
-        unitPrice: updatedData.unitPrice,
-        discount: updatedData.discount
-      }
+          saleDetailId,
+          saleId: updatedData.saleId,
+          productId: updatedData.productId,
+          manufacturerCode: updatedData.manufacturerCode,
+          productDescription: updatedData.productDescription,
+          quantity: updatedData.quantity,
+          unit: updatedData.unit,
+          unitPrice: updatedData.unitPrice,
+          discount: updatedData.discount
+        }
       };
   
       console.log(`Atualizando SaleDetail com saleDetailId=${saleDetailId} com dados:`, sanitizedData);
   
-      const result = await saleDetailService.updateDetail( sanitizedData);
-      console.log("Detalhe de venda atualizado com sucesso:", result);
+      const result = await saleDetailService.updateDetail(sanitizedData);
   
-      // Atualiza o estado local com o detalhe atualizado
-      const updatedSaleData = {
-        ...saleData,
-        saleDetails: saleData.saleDetails.map((detail) =>
-          detail.saleDetailId === saleDetailId ? { ...detail, ...sanitizedData } : detail
-        ),
-      };
+      // Verifique se saleDetails existe e é um array antes de mapear
+      if (saleData && Array.isArray(saleData.saleDetails)) {
+        // Atualiza o estado local com o detalhe atualizado
+        const updatedSaleData = {
+          ...saleData,
+          saleDetails: saleData.saleDetails.map((detail) =>
+            detail.saleDetailId === saleDetailId ? { ...detail, ...sanitizedData.saleDetailDto } : detail
+          ),
+        };
   
-      setSaleData(updatedSaleData);
+        setSaleData(updatedSaleData);
+      } else {
+        console.error("Erro: saleDetails está indefinido ou não é um array.");
+        // Aqui, você pode tomar uma ação corretiva, como re-inicializar saleDetails
+        setSaleData({
+          ...saleData,
+          saleDetails: []  // Inicialize como array vazio
+        });
+      }
+  
       return result;
   
     } catch (err) {
@@ -200,6 +212,8 @@ export const SaleServiceProvider = ({ children }) => {
       setLoading(false);
     }
   };
+  
+  
   
 
   

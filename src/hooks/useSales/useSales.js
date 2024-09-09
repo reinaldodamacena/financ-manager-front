@@ -38,7 +38,7 @@ export const useSales = (useSaleServiceContext) => {
             if (!currentSaleId) {
                 // Inicia uma nova venda
                 console.log("Nenhuma venda em andamento, iniciando nova venda...");
-                const sale = await startSale(customerId, 12, parseInt(userSale.userId), saleDetail);
+                const sale = await startSale(customerId, 1, parseInt(userSale.userId), saleDetail);
                 console.log("Venda iniciada com sucesso. SaleId:", sale.saleId);
 
                 setCurrentSaleId(sale.saleId);
@@ -95,13 +95,7 @@ export const useSales = (useSaleServiceContext) => {
         }
     };
 
-    // Função para atualizar a quantidade de um item no carrinho
-    const updateCartQuantity = (saleDetailId, newQuantity) => {
-        const updatedCart = cart.map((item) =>
-            item.saleDetailId === saleDetailId ? { ...item, quantity: newQuantity } : item
-        );
-        setCart(updatedCart);
-    };
+   
 
     // Função para completar a venda
     const handleCompleteSale = async (paymentMethod, updatedBy) => {
@@ -131,14 +125,20 @@ export const useSales = (useSaleServiceContext) => {
     const updateCartDetails = async (saleDetailId, updatedDetail) => {
         try {
           await updateSaleDetail(saleDetailId, updatedDetail);  // Atualiza no backend
+      
+          // Atualiza o estado localmente após o retorno do backend
           const updatedCart = cart.map((item) =>
             item.saleDetailId === saleDetailId ? { ...item, ...updatedDetail } : item
           );
-          setCart(updatedCart);  // Atualiza o estado localmente
+          setCart(updatedCart);
+          const saleTotals = await getSaleTotals(currentSaleId);
+            console.error('Totais atualizados após remover:', saleTotals);
+            setTotals(saleTotals);
         } catch (error) {
           console.error('Erro ao atualizar o detalhe da venda:', error);
         }
       };
+      
       
 
     return {
@@ -149,7 +149,6 @@ export const useSales = (useSaleServiceContext) => {
         error,
         handleAddToCart,
         handleRemoveFromCart,
-        updateCartQuantity,
         handleCompleteSale,
         updateCartDetails,  // Adiciona a função para completar a venda
     };

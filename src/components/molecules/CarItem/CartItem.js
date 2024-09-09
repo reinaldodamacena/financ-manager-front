@@ -1,25 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, TextField, Typography, IconButton } from '@mui/material';
 import { Icon } from '../../atoms/Index';
 
 const CartItem = ({ saleDetail, onUpdateDetail, onRemove }) => {
-  const [localQuantity, setLocalQuantity] = useState(saleDetail.quantity);
-  const [localUnitPrice, setLocalUnitPrice] = useState(saleDetail.unitPrice);
-  const [localDescription, setLocalDescription] = useState(saleDetail.productDescription);
+  const [localSaleDetail, setLocalSaleDetail] = useState(saleDetail);
+
+  // Atualiza o estado local quando o saleDetail muda
+  useEffect(() => {
+    setLocalSaleDetail(saleDetail);
+  }, [saleDetail]);
 
   // Unificar o comportamento de atualização de qualquer campo
   const triggerUpdate = (updatedFields) => {
     const updatedData = {
-      ...saleDetail,
+      ...localSaleDetail,
       ...updatedFields,
     };
-    onUpdateDetail(saleDetail.saleDetailId, updatedData);
+    setLocalSaleDetail(updatedData);
+    onUpdateDetail(updatedData.saleDetailId, updatedData);
   };
 
   const handleQuantityChange = (event) => {
     const newQuantity = parseInt(event.target.value, 10);
     if (newQuantity > 0) {
-      setLocalQuantity(newQuantity);
       triggerUpdate({ quantity: newQuantity });
     }
   };
@@ -27,14 +30,12 @@ const CartItem = ({ saleDetail, onUpdateDetail, onRemove }) => {
   const handlePriceChange = (event) => {
     const newPrice = parseFloat(event.target.value);
     if (newPrice >= 0) {
-      setLocalUnitPrice(newPrice);
       triggerUpdate({ unitPrice: newPrice });
     }
   };
 
   const handleDescriptionChange = (event) => {
     const newDescription = event.target.value;
-    setLocalDescription(newDescription);
     triggerUpdate({ productDescription: newDescription });
   };
 
@@ -43,7 +44,7 @@ const CartItem = ({ saleDetail, onUpdateDetail, onRemove }) => {
       <Grid item xs={4}>
         <TextField
           label="Descrição"
-          value={localDescription}
+          value={localSaleDetail.productDescription}
           onChange={handleDescriptionChange}
           fullWidth
         />
@@ -52,7 +53,7 @@ const CartItem = ({ saleDetail, onUpdateDetail, onRemove }) => {
         <TextField
           type="number"
           label="Quantidade"
-          value={localQuantity}
+          value={localSaleDetail.quantity}
           onChange={handleQuantityChange}
           inputProps={{ min: 1 }}
         />
@@ -61,16 +62,16 @@ const CartItem = ({ saleDetail, onUpdateDetail, onRemove }) => {
         <TextField
           type="number"
           label="Preço Unitário"
-          value={localUnitPrice}
+          value={localSaleDetail.unitPrice}
           onChange={handlePriceChange}
           inputProps={{ min: 0 }}
         />
       </Grid>
       <Grid item xs={2}>
-        <Typography variant="body1">{(localUnitPrice * localQuantity).toFixed(2)}</Typography>
+        <Typography variant="body1">{(localSaleDetail.unitPrice * localSaleDetail.quantity).toFixed(2)}</Typography>
       </Grid>
       <Grid item xs={2}>
-        <IconButton color="secondary" onClick={() => onRemove(saleDetail.saleDetailId)}>
+        <IconButton color="secondary" onClick={() => onRemove(localSaleDetail.saleDetailId)}>
           <Icon name="Delete" />
         </IconButton>
       </Grid>
