@@ -18,6 +18,7 @@ const CashRegisterService = {
   
     obterCaixaPorId: async (id) => {
       const response = await api.get(`/CashRegister/${id}`);
+      console.log(response.data);
       return response.data;
     },
   
@@ -28,8 +29,18 @@ const CashRegisterService = {
   
     obterCaixasAbertos: async () => {
       const response = await api.get('/CashRegister/open');
+      console.log(response.data); // Veja se isso está retornando um array
       return response.data;
     },
+    
+
+    registrarOperacao: async (data) => {
+      const response = await api.post('/CashRegister/register', data);
+      console.log(response.data); // Veja se isso está retornando um array
+      return response.data;
+    },
+
+
   };
   
   export default CashRegisterService;

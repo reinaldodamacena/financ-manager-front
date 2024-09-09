@@ -5,12 +5,12 @@ import { CustomTable } from '../../molecules/Index';
 
 const CashRegisterDetails = ({ cashRegisterId }) => {
   const [detalhes, setDetalhes] = useState([]);
-  const { obterDetalhamentoCaixa } = useCashRegisterContext();
+  const { obterAuditoriasPorCaixaId, loading, error } = useCashRegisterContext(); // Mudança aqui
 
   useEffect(() => {
     const fetchDetalhes = async () => {
       try {
-        const data = await obterDetalhamentoCaixa(cashRegisterId);
+        const data = await obterAuditoriasPorCaixaId(cashRegisterId); // Mudança aqui
         setDetalhes(data);
       } catch (err) {
         console.error('Erro ao obter o detalhamento do caixa:', err);
@@ -18,7 +18,7 @@ const CashRegisterDetails = ({ cashRegisterId }) => {
     };
 
     fetchDetalhes();
-  }, [cashRegisterId, obterDetalhamentoCaixa]);
+  }, [cashRegisterId, obterAuditoriasPorCaixaId]);
 
   const columns = [
     { field: 'Operation', headerName: 'Operação', align: 'center' },
@@ -35,6 +35,14 @@ const CashRegisterDetails = ({ cashRegisterId }) => {
     OperatorName: detalhe.OperatorName,
     AuditId: detalhe.AuditId,
   }));
+
+  if (loading) {
+    return <Typography>Carregando dados do caixa...</Typography>;
+  }
+
+  if (error) {
+    return <Typography>Erro ao carregar dados do caixa: {error.message}</Typography>;
+  }
 
   return (
     <Box sx={{ padding: 3 }}>

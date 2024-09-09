@@ -1,112 +1,90 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
-import { CashRegisterForm, CashRegisterDetails } from '../../molecules/Index';
-import { Layout } from 'components/organisms/Index';
-import { Button } from '../../atoms/Index';
-import useCashRegisterActions from '../../../hooks/useCashRegisterActions/useCashRegisterActions';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Button } from '@mui/material';
+import { useCashRegister } from '../../../hooks/useCashRegister/useCashRegister';
+import { useCashRegisterContext } from '../../../context/CashRegister/CashRegisterServiceProvider';
+import { Layout } from '../../organisms/Index';
+import { Background } from '../../atoms/Index';
+import { CashRegisterForm, CashRegisterDetails, CashRegisterOperationForm } from '../../molecules/Index';
 
 const CashRegisterPage = () => {
   const {
-    data: caixasAbertos,
+    caixasAbertos,
+    selectedCaixaId,
     loading,
     error,
-    abrirCaixa,
-    fecharCaixa,
-    obterCaixasAbertos
-  } = useCashRegisterActions();
+    handleAbrirCaixa,
+    handleFecharCaixa,
+    handleRegistrarOperacao,
+  } = useCashRegister(useCashRegisterContext);
 
-  const [selectedCaixaId, setSelectedCaixaId] = useState(null);
+  const [usercash, setUsercash] = useState(null);
+  const [cashRegisterVigente, setCashRegisterVigente] = useState(null);
 
-  // Fetch open cash registers on component mount
   useEffect(() => {
-    console.log('Fetching open cash registers...');
-    obterCaixasAbertos();  // Busca a lista de caixas abertos ao carregar a página
-  }, [obterCaixasAbertos]);
+    // Carrega o usuário autenticado uma vez ao montar o componente
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    setUsercash(storedUser ? storedUser : { userId: 1 }); // Fallback para o operador 1
+  }, []);
 
-  // Log loaded open cash registers
   useEffect(() => {
-    if (caixasAbertos && caixasAbertos.length > 0) {
-      console.log('Caixas abertos carregados:', caixasAbertos);
+    if (caixasAbertos.length > 0) {
+      // Se houver caixas abertos, pegue o primeiro caixa como o vigente
+      setCashRegisterVigente(caixasAbertos[0].cashRegisterId);
     }
   }, [caixasAbertos]);
 
-  const handleAbrirCaixa = useCallback(async (data) => {
-    try {
-      console.log("", data);
-      const result = await abrirCaixa(data);
-      console.log('Caixa aberto:', result);
-      await obterCaixasAbertos(); // Atualiza a lista de caixas abertos
-      setSelectedCaixaId(result.cashRegisterId); // Exibe os detalhes do caixa recém-aberto
-    } catch (err) {
-      console.error('Erro ao abrir caixa:', err);
-    }
-  }, [abrirCaixa, obterCaixasAbertos]);
-
-  const handleFecharCaixa = useCallback(async (cashRegisterId) => {
-    try {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      const operatorId = storedUser ? storedUser.userId : null;
-
-      if (!operatorId) {
-        throw new Error("Erro: Usuário não autenticado. Por favor, faça login novamente.");
-      }
-
-      const result = await fecharCaixa({ cashRegisterId, operatorId }); // Não precisa mais passar closingBalance
-      console.log('Caixa fechado:', result);
-      await obterCaixasAbertos();
-      if (selectedCaixaId === cashRegisterId) setSelectedCaixaId(null);
-    } catch (err) {
-      console.error('Erro ao fechar caixa:', err);
-    }
-  }, [fecharCaixa, selectedCaixaId, obterCaixasAbertos]);
-
-
-  const handleVerDetalhes = (id) => {
-    setSelectedCaixaId(id);
+  const handleFormSubmit = (data) => {
+    handleAbrirCaixa(data.openingBalance, data.operatorId);
   };
 
-  if (loading) return <Typography>Carregando...</Typography>;
-  if (error) return <Typography>Erro: {error.message}</Typography>;
+  const handleOperationSubmit = (operationData) => {
+    // Use o `cashRegisterVigente` como o caixa para registrar a operação
+    handleRegistrarOperacao(
+      cashRegisterVigente, // Pega o ID do caixa vigente
+      operationData.amount,
+      operationData.description,
+      operationData.operationType,
+      usercash?.userId || 1
+    );
+  };
 
   return (
-    <Layout>
-      <Box sx={{ padding: 3 }}>
-        <Typography variant="h4">Gestão de Caixa</Typography>
-
-        {!caixasAbertos || caixasAbertos.length === 0 ? (
-          <Box sx={{ marginY: 4 }}>
-            <CashRegisterForm onSubmit={handleAbrirCaixa} action="open" />
-          </Box>
-        ) : (
-          <Box>
-            <Typography variant="h6">Caixas Abertos</Typography>
-            {caixasAbertos.map(caixa => (
-              <Box key={caixa.cashRegisterId} sx={{ marginY: 2 }}>
-                <Typography>ID: {caixa.cashRegisterId}</Typography>
-                <Typography>Operador: {caixa.operatorName}</Typography>
-                <Typography>Status: {caixa.status}</Typography>
+    <Background>
+      <Layout>
+        <Box sx={{ padding: 3 }}>
+          <Typography variant="h4">Gestão de Caixa</Typography>
+          {loading ? (
+            <Typography>Carregando...</Typography>
+          ) : error ? (
+            <Typography>Erro: {error.message}</Typography>
+          ) : caixasAbertos.length === 0 ? (
+            <CashRegisterForm onSubmit={handleFormSubmit} action="open" />
+          ) : (
+            caixasAbertos.map((caixa) => (
+              <Box key={caixa.cashRegisterId}>
+                <Typography>ID do Caixa: {caixa.cashRegisterId}</Typography>
+                <Typography>Operador: {caixa.operatorId}</Typography>
                 <Button
-                  variant="primary"
-                  onClick={() => handleFecharCaixa(caixa.cashRegisterId)}
-                  disabled={loading}
+                  onClick={() => handleFecharCaixa(caixa.cashRegisterId, usercash?.userId || 1)}
+                  sx={{ marginRight: 2 }}
                 >
                   Fechar Caixa
                 </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => handleVerDetalhes(caixa.cashRegisterId)}
-                  disabled={loading}
-                >
-                  Ver Detalhes
-                </Button>
-              </Box>
-            ))}
-          </Box>
-        )}
 
-        {selectedCaixaId && <CashRegisterDetails cashRegisterId={selectedCaixaId} />}
-      </Box>
-    </Layout>
+                {/* Formulário para registrar operação */}
+                <CashRegisterOperationForm
+                  cashRegisterId={caixa.cashRegisterId} // Passa o ID do caixa selecionado
+                  onSubmit={handleOperationSubmit} // Função para registrar a operação
+                />
+              </Box>
+            ))
+          )}
+
+          {/* Exibir detalhes do caixa se houver um selecionado */}
+          {selectedCaixaId && <CashRegisterDetails cashRegisterId={selectedCaixaId} />}
+        </Box>
+      </Layout>
+    </Background>
   );
 };
 
