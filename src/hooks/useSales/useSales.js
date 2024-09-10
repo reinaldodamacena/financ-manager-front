@@ -38,7 +38,7 @@ export const useSales = (useSaleServiceContext) => {
             if (!currentSaleId) {
                 // Inicia uma nova venda
                 console.log("Nenhuma venda em andamento, iniciando nova venda...");
-                const sale = await startSale(customerId, 1, parseInt(userSale.userId), saleDetail);
+                const sale = await startSale(customerId, parseInt(userSale.userId), parseInt(userSale.userId), saleDetail);
                 console.log("Venda iniciada com sucesso. SaleId:", sale.saleId);
 
                 setCurrentSaleId(sale.saleId);

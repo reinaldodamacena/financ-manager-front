@@ -40,7 +40,32 @@ const CashRegisterService = {
       return response.data;
     },
 
+    obterTodosOsCaixas: async () => {
+      try {
+        const response = await api.get('/CashRegister');
+        return response.data;
+      } catch (error) {
+        console.error('Erro ao obter os caixas:', error);
+        throw error;
+      }
+    },
+
+    // Função para obter o relatório de um caixa específico
+  obterRelatorioCaixa: async (cashRegisterId) => {
+    try {
+      const response = await api.get(`/CashRegister/${cashRegisterId}/report`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao obter o relatório do caixa:', error);
+      throw error;
+    }
+  },
+
+  
+
 
   };
+
+
   
   export default CashRegisterService;

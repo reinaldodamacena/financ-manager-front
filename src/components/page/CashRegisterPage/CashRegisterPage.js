@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { useCashRegister } from '../../../hooks/useCashRegister/useCashRegister';
 import { useCashRegisterContext } from '../../../context/CashRegister/CashRegisterServiceProvider';
-import { Layout } from '../../organisms/Index';
+import { Layout, CashRegisterReportSection} from '../../organisms/Index';
 import { Background } from '../../atoms/Index';
-import { CashRegisterForm, CashRegisterDetails, CashRegisterOperationForm } from '../../molecules/Index';
+import { CashRegisterForm, CashRegisterDetails,  } from '../../molecules/Index';
 
 const CashRegisterPage = () => {
   const {
@@ -13,8 +13,6 @@ const CashRegisterPage = () => {
     loading,
     error,
     handleAbrirCaixa,
-    handleFecharCaixa,
-    handleRegistrarOperacao,
   } = useCashRegister(useCashRegisterContext);
 
   const [usercash, setUsercash] = useState(null);
@@ -37,16 +35,6 @@ const CashRegisterPage = () => {
     handleAbrirCaixa(data.openingBalance, data.operatorId);
   };
 
-  const handleOperationSubmit = (operationData) => {
-    // Use o `cashRegisterVigente` como o caixa para registrar a operação
-    handleRegistrarOperacao(
-      cashRegisterVigente, // Pega o ID do caixa vigente
-      operationData.amount,
-      operationData.description,
-      operationData.operationType,
-      usercash?.userId || 1
-    );
-  };
 
   return (
     <Background>
@@ -64,22 +52,10 @@ const CashRegisterPage = () => {
               <Box key={caixa.cashRegisterId}>
                 <Typography>ID do Caixa: {caixa.cashRegisterId}</Typography>
                 <Typography>Operador: {caixa.operatorId}</Typography>
-                <Button
-                  onClick={() => handleFecharCaixa(caixa.cashRegisterId, usercash?.userId || 1)}
-                  sx={{ marginRight: 2 }}
-                >
-                  Fechar Caixa
-                </Button>
-
-                {/* Formulário para registrar operação */}
-                <CashRegisterOperationForm
-                  cashRegisterId={caixa.cashRegisterId} // Passa o ID do caixa selecionado
-                  onSubmit={handleOperationSubmit} // Função para registrar a operação
-                />
               </Box>
             ))
           )}
-
+          <CashRegisterReportSection />
           {/* Exibir detalhes do caixa se houver um selecionado */}
           {selectedCaixaId && <CashRegisterDetails cashRegisterId={selectedCaixaId} />}
         </Box>

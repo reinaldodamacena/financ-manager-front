@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import { LoginPage, UserRegistrationPage, HomePage, SalePage, ProductPage,ProductRegistrationPage,CashRegisterPage } from './page/Index';
+import { LoginPage, UserRegistrationPage, HomePage, SalePage, ProductPage,ProductRegistrationPage,CashRegisterPage, CashRegisterMovementsPage, CashRegisterClosingPage } from './page/Index';
+import { CashRegisterReportSection } from './organisms/Index';
 import ProtectedRoute from './ProtectedRoute'; // Importe o componente ProtectedRoute
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
       <Route path="/produto" element={<ProtectedRoute><ProductPage /></ProtectedRoute>} />
       <Route path="/registroproduto" element={<ProtectedRoute><ProductRegistrationPage /></ProtectedRoute>} />
       <Route path="/caixa" element={<ProtectedRoute><CashRegisterPage /></ProtectedRoute>} />
+      <Route path="/caixa/movimentacoes" element={<ProtectedRoute><CashRegisterMovementsPage /></ProtectedRoute>} />
+      <Route path="/caixa/fechamento" element={<ProtectedRoute><CashRegisterClosingPage /></ProtectedRoute>} />
+      <Route path="/caixa/relatorio" element={<ProtectedRoute><CashRegisterReportSection /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/home" replace />} />
     </Routes>
   );
