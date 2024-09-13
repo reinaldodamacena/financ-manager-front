@@ -1,3 +1,5 @@
+import CalendarNavigation from './CalendarNavigation/CalendarNavigation';
+
 export { default as Button } from './Button/Index';
 export { default as Input } from './Input/Index';
 export { default as Background } from './Background/Index';
@@ -14,3 +16,5 @@ export { default as IconButton } from './IconButton/Index';
 export { default as Divider } from './Divider/Index';
 export { default as UserNameDisplay } from './UserNameDisplay/Index';
 export { default as UserIconNavBar} from './UserIconNavBar/Index';
+export { default as CalendarBody} from "./CalendarBody/Index";
+export { default as CalendarNavigation} from "./CalendarNavigation/Index";

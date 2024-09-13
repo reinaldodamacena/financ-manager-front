@@ -13,3 +13,5 @@ export { default as CashRegisterForm} from "./CashRegisterForm/Index";
 export { default as CashRegisterDetails} from "./CashRegisterDetails/Index";
 export { default as CartItem } from "./CarItem/Index";
 export { default as CashRegisterOperationForm} from "./CashRegisterOperationForm/Index";
+export { default as CustomCalendar } from "./Calendar/Index";
+export { default as SalesFilter}    from "./SalesFilter/Index";

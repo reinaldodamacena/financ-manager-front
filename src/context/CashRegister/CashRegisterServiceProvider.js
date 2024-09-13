@@ -13,6 +13,7 @@ export const CashRegisterServiceProvider = ({ children }) => {
     setError(null);
     try {
       const result = await CashRegisterService.obterCaixasAbertos();
+      console.log("caixa aberto" ,result);
       return result;
     } catch (err) {
       setError(err);
@@ -44,6 +45,7 @@ export const CashRegisterServiceProvider = ({ children }) => {
     setError(null);
     try {
       const result = await CashRegisterService.obterRelatorioCaixa(cashRegisterId); // Chamada à função da API
+      console.log("Detalhamento",result);
       return result;
     } catch (err) {
       setError(err);

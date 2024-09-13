@@ -7,3 +7,4 @@ export { default as ProductRegistrationPage} from "./ProductRegistrationPage/Ind
 export { default as CashRegisterPage } from "./CashRegisterPage/Index";
 export { default as CashRegisterMovementsPage } from "./CashRegisterMovementsPage/Index";
 export { default as CashRegisterClosingPage } from "./CashRegisterClosingPage/Index";
+export { default as SalesFilterPage} from "./SaleFIlterPage/Index";

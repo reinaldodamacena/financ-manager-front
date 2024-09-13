@@ -10,6 +10,7 @@ export const SaleServiceProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [salesHistory, setSalesHistory] = useState([]);
   const [totals, setTotals] = useState({
     totalGross: 0,
     totalDiscount: 0,
@@ -155,7 +156,22 @@ export const SaleServiceProvider = ({ children }) => {
       return [];
     }
   };
-  
+  // Função para buscar o histórico de vendas
+  const fetchSalesHistory = async (startDate, endDate) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const sales = await saleService.getSalesHistory(startDate, endDate);
+      setSalesHistory(sales);  // Atualiza o estado com o histórico de vendas recebido
+      return sales;
+    } catch (err) {
+      setError(err);
+      console.error("Erro ao buscar o histórico de vendas:", err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
   
   // No SaleServiceProvider
   const updateSaleDetail = async (saleDetailId, updatedData) => {
@@ -177,7 +193,7 @@ export const SaleServiceProvider = ({ children }) => {
           discount: updatedData.discount
         }
       };
-  
+      
       console.log(`Atualizando SaleDetail com saleDetailId=${saleDetailId} com dados:`, sanitizedData);
   
       const result = await saleDetailService.updateDetail(sanitizedData);
@@ -221,7 +237,20 @@ export const SaleServiceProvider = ({ children }) => {
 
   return (
     <SaleServiceContext.Provider
-      value={{ saleData, loading, error, fetchSaleDetails, startSale, addSaleDetail, updateSaleDetail ,completeSale, totals, getSaleTotals, removeSaleDetail }}
+      value={{ 
+        saleData, 
+        loading, 
+        error,
+        salesHistory, // Disponibiliza o histórico de vendas no contexto
+        totals, 
+        fetchSaleDetails, 
+        startSale, 
+        addSaleDetail, 
+        updateSaleDetail,
+        completeSale, 
+        getSaleTotals,
+        fetchSalesHistory,  // Disponibiliza a função de busca no contexto 
+        removeSaleDetail }}
     >
       {children}
     </SaleServiceContext.Provider>

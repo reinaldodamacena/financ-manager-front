@@ -1,7 +1,16 @@
 import { useState } from 'react';
 
 export const useSales = (useSaleServiceContext) => {
-    const { startSale, addSaleDetail, getSaleTotals, removeSaleDetail, fetchSaleDetails, completeSale, updateSaleDetail } = useSaleServiceContext();  // Adiciona completeSale
+    const {
+        startSale,
+        addSaleDetail,
+        getSaleTotals,
+        removeSaleDetail,
+        fetchSaleDetails,
+        completeSale,
+        updateSaleDetail,
+        fetchSalesHistory,  // Adiciona a função para buscar o histórico de vendas
+        salesHistory } = useSaleServiceContext();  // Adiciona completeSale
     const [cart, setCart] = useState([]);
     const [currentSaleId, setCurrentSaleId] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -16,7 +25,7 @@ export const useSales = (useSaleServiceContext) => {
     const handleAddToCart = async (product, customerId, userSale, quantity) => {
         console.log("Iniciando processo de adicionar ao carrinho...");
         console.log("Produto recebido:", product);
-        console.log("Quantidade recebida:", quantity); 
+        console.log("Quantidade recebida:", quantity);
         console.log("Cliente ID:", customerId);
         console.log("Usuário logado:", userSale);
 
@@ -80,11 +89,11 @@ export const useSales = (useSaleServiceContext) => {
     const handleRemoveFromCart = async (saleDetailId) => {
         try {
             await removeSaleDetail(currentSaleId, saleDetailId);
-          
+
             // Atualiza o carrinho removendo o item
             const updatedCart = cart.filter((item) => item.saleDetailId !== saleDetailId);
             setCart(updatedCart);
-          
+
             // Atualizar os totais logo após remover o item
             const saleTotals = await getSaleTotals(currentSaleId);
             console.error('Totais atualizados após remover:', saleTotals);
@@ -95,7 +104,7 @@ export const useSales = (useSaleServiceContext) => {
         }
     };
 
-   
+
 
     // Função para completar a venda
     const handleCompleteSale = async (paymentMethod, updatedBy) => {
@@ -124,22 +133,37 @@ export const useSales = (useSaleServiceContext) => {
 
     const updateCartDetails = async (saleDetailId, updatedDetail) => {
         try {
-          await updateSaleDetail(saleDetailId, updatedDetail);  // Atualiza no backend
-      
-          // Atualiza o estado localmente após o retorno do backend
-          const updatedCart = cart.map((item) =>
-            item.saleDetailId === saleDetailId ? { ...item, ...updatedDetail } : item
-          );
-          setCart(updatedCart);
-          const saleTotals = await getSaleTotals(currentSaleId);
+            await updateSaleDetail(saleDetailId, updatedDetail);  // Atualiza no backend
+
+            // Atualiza o estado localmente após o retorno do backend
+            const updatedCart = cart.map((item) =>
+                item.saleDetailId === saleDetailId ? { ...item, ...updatedDetail } : item
+            );
+            setCart(updatedCart);
+            const saleTotals = await getSaleTotals(currentSaleId);
             console.error('Totais atualizados após remover:', saleTotals);
             setTotals(saleTotals);
         } catch (error) {
-          console.error('Erro ao atualizar o detalhe da venda:', error);
+            console.error('Erro ao atualizar o detalhe da venda:', error);
         }
-      };
-      
-      
+
+    };
+    // Função para buscar o histórico de vendas
+    const handleFetchSalesHistory = async (startDate, endDate) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const history = await fetchSalesHistory(startDate, endDate);
+            console.log("Histórico de vendas buscado com sucesso:", history);
+        } catch (err) {
+            console.error('Erro ao buscar histórico de vendas:', err);
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
 
     return {
         cart,
@@ -147,6 +171,8 @@ export const useSales = (useSaleServiceContext) => {
         loading,
         totals,
         error,
+        salesHistory,  // Disponibiliza o histórico de vendas
+        handleFetchSalesHistory,
         handleAddToCart,
         handleRemoveFromCart,
         handleCompleteSale,

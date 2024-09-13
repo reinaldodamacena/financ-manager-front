@@ -17,7 +17,6 @@ export const useCashRegister = (useCashRegisterContext) => {
   const [expandedId, setExpandedId] = useState(null); // Para controlar o caixa expandido
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
 
   // Função para carregar caixas abertos
   const carregarCaixasAbertos = async () => {
@@ -95,45 +94,43 @@ export const useCashRegister = (useCashRegisterContext) => {
     }
   };
 
-  // Função para buscar o relatório detalhado de um caixa específico
+                                                          
+  // Função para obter o relatório detalhado de um caixa
   const handleExpandClick = async (cashRegisterId) => {
     if (expandedId === cashRegisterId) {
-      // Se o mesmo caixa for clicado novamente, fechar a section
       setExpandedId(null);
       setDetailedReport(null);
     } else {
       try {
-        setLoading(true);
-        setError(null);
         setExpandedId(cashRegisterId);
-        const report = await getCashRegisterReportById(cashRegisterId); // Carregar o relatório
+        const report = await getCashRegisterReportById(cashRegisterId);
         setDetailedReport(report);
       } catch (error) {
-        console.error('Erro ao obter o relatório do caixa:', error);
-        setError(error);
-      } finally {
-        setLoading(false);
+        setError(error.message || 'Erro ao obter relatório do caixa.');
       }
     }
   };
 
-  // Carregar caixas abertos e todos os caixas ao montar o componente
+
+
+  // Carrega caixas ao montar o componente
   useEffect(() => {
     carregarCaixasAbertos();
-    carregarTodosCaixas(); // Carrega todos os caixas (abertos e fechados)
+    carregarTodosCaixas();
   }, []);
 
   return {
     caixasAbertos,
-    todosCaixas, // Retorna todos os caixas
-    selectedCaixaId,
+    todosCaixas,
+    selectedCaixaId, // ID do caixa selecionado automaticamente
     expandedId,
     detailedReport,
-    loading,
-    error,
+    loading,  // Usa o estado loading do contexto
+    error,  // Inclui o erro da operação, se houver
     handleAbrirCaixa,
     handleFecharCaixa,
     handleRegistrarOperacao,
-    handleExpandClick, // Adiciona o manipulador de clique para expandir/fechar o relatório
+    handleExpandClick,
+
   };
 };

@@ -206,7 +206,7 @@ const CustomTable = ({ columns, data = [], loading, onRowClick, selectable, keyF
                       )}
                       {columns.map((column) => (
                         <TableCell key={`${index}-${column.field}`} align={column.align || 'left'}>
-                          {column.renderCell ? column.renderCell(row) : row[column.field]}
+                          {column.renderCell ? column.renderCell({ row }) : row[column.field]}
                         </TableCell>
                       ))}
                     </StyledTableRow>

@@ -7,8 +7,8 @@ const api = axios.create({
 
 export const saleService = {
   // Iniciar uma nova venda
-  start: (data) => api.post('/Sale/start', data),  
-  
+  start: (data) => api.post('/Sale/start', data),
+
   // Completar uma venda existente
   complete: (data) => api.post('/Sale/complete', data),
 
@@ -17,7 +17,7 @@ export const saleService = {
 
   // Buscar os totais da venda por ID
   getSaleTotals: (saleId) => {
-    console.log("Buscando Totais da venda para SaleId:", saleId);  
+    console.log("Buscando Totais da venda para SaleId:", saleId);
     return api.get(`/Sale/${saleId}/totals`)
       .then((response) => {
         console.log("Resposta do backend ao buscar totais:", response.data);
@@ -28,5 +28,21 @@ export const saleService = {
         throw error; // Lança o erro para ser tratado
       });
   },
-
+  // **Novo método para listar o histórico de vendas**
+  getSalesHistory: (startDate, endDate) => {
+    return api.get(`/Sale/sales-history-report`, {
+      params: {
+        startDate,
+        endDate
+      }
+    })
+      .then((response) => {
+        console.log("Histórico de vendas recebido:", response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar o histórico de vendas:", error);
+        throw error;  // Lança o erro para ser tratado
+      });
+  },
 };

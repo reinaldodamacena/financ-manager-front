@@ -1,37 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, IconButton, Collapse } from '@mui/material';
 import { CustomTable } from '../../molecules/Index';
+import {CashRegisterDetails} from '../../molecules/Index'; 
 import { useCashRegister } from '../../../hooks/useCashRegister/useCashRegister';
 import { useCashRegisterContext } from '../../../context/CashRegister/CashRegisterServiceProvider';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 const CashRegisterReportSection = () => {
   const {
-    caixasAbertos = [], // Garante que seja um array, mesmo que vazio
-    allCashRegisters = [], // Dados de todos os caixas (abertos e fechados)
-    expandedId,
-    detailedReport,
+    todosCaixas = [], // Dados de todos os caixas (abertos e fechados)
     loading,
     error,
-    handleExpandClick,
-    carregarCaixasAbertos, // Função para carregar caixas abertos
-    carregarTodosCaixas, // Função para carregar todos os caixas
-  } = useCashRegister(useCashRegisterContext); // Usando o hook
+  } = useCashRegister(useCashRegisterContext);
 
-  // Carregar dados dos caixas quando o componente é montado
-  useEffect(() => {
-    const fetchCashRegisters = async () => {
-      console.log('Carregando caixas abertos...');
-      //await carregarCaixasAbertos();
-      console.log('Caixas abertos carregados:', caixasAbertos);
+  const [expandedId, setExpandedId] = useState(null); 
 
-      console.log('Carregando todos os caixas (abertos e fechados)...');
-     // await carregarTodosCaixas();
-      console.log('Todos os caixas carregados:', allCashRegisters);
-    };
-
-    fetchCashRegisters();
-  }, [caixasAbertos, allCashRegisters]); // Dependências vazias para executar apenas na montagem
+  const handleExpandClick = (cashRegisterId) => {
+    setExpandedId(expandedId === cashRegisterId ? null : cashRegisterId); 
+  };
 
   const columns = [
     { field: 'cashRegisterId', headerName: 'ID do Caixa' },
@@ -51,12 +39,12 @@ const CashRegisterReportSection = () => {
     },
   ];
 
-  const formattedCashRegisters = allCashRegisters.map((register) => ({
+  const formattedCashRegisters = todosCaixas.map((register) => ({
     cashRegisterId: register.cashRegisterId,
     operatorId: register.operatorId || 'N/A',
-    openingBalance: register.openingBalance.toFixed(2),
+    openingBalance: register.openingBalance?.toFixed(2) || 'N/A',
     closingBalance: register.closingBalance?.toFixed(2) || 'Aberto',
-    openingDateTime: new Date(register.openingDateTime).toLocaleString(),
+    openingDateTime: register.openingDateTime ? new Date(register.openingDateTime).toLocaleString() : 'N/A',
     closingDateTime: register.closingDateTime ? new Date(register.closingDateTime).toLocaleString() : 'Aberto',
   }));
 
@@ -69,50 +57,25 @@ const CashRegisterReportSection = () => {
   }
 
   return (
-    <Box sx={{ padding: 3 }}>
-      <Typography variant="h4">Relatórios de Caixa</Typography>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Box sx={{ padding: 3 }}>
+        <Typography variant="h4">Relatórios de Caixa</Typography>
 
-      {formattedCashRegisters.length > 0 ? (
-        <CustomTable columns={columns} data={formattedCashRegisters} />
-      ) : (
-        <Typography>Nenhum caixa encontrado.</Typography>
-      )}
+        {formattedCashRegisters.length > 0 ? (
+          <Box>
+            <CustomTable columns={columns} data={formattedCashRegisters} />
 
-      {expandedId && detailedReport && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5">Relatório Detalhado do Caixa {detailedReport.cashRegisterId}</Typography>
-          <Typography>Operador: {detailedReport.operatorName || 'N/A'}</Typography>
-          <Typography>Saldo de Abertura: {detailedReport.openingBalance.toFixed(2)}</Typography>
-          <Typography>Saldo de Fechamento: {detailedReport.closingBalance?.toFixed(2)}</Typography>
-          <Typography>Total de Vendas: {detailedReport.totalSales.toFixed(2)}</Typography>
-          <Typography>Recebimentos: {detailedReport.totalReceipts.toFixed(2)}</Typography>
-          <Typography>Pagamentos: {detailedReport.totalPayments.toFixed(2)}</Typography>
-          <Typography>Retiradas: {detailedReport.totalWithdrawals.toFixed(2)}</Typography>
-          <Typography>Abertura: {new Date(detailedReport.openingDateTime).toLocaleString()}</Typography>
-          <Typography>Fechamento: {detailedReport.closingDateTime ? new Date(detailedReport.closingDateTime).toLocaleString() : 'Em aberto'}</Typography>
-
-          <Typography variant="h6" sx={{ mt: 2 }}>Operações no Caixa</Typography>
-          {detailedReport.operations.map((operation) => (
-            <Box key={operation.cashOperationId}>
-              <Typography>Operação: {operation.operationType}</Typography>
-              <Typography>Quantia: {operation.amount.toFixed(2)}</Typography>
-              <Typography>Descrição: {operation.description}</Typography>
-              <Typography>Data: {new Date(operation.dateTime).toLocaleString()}</Typography>
-            </Box>
-          ))}
-
-          <Typography variant="h6" sx={{ mt: 2 }}>Vendas</Typography>
-          {detailedReport.sales.map((sale) => (
-            <Box key={sale.saleId}>
-              <Typography>ID da Venda: {sale.saleId}</Typography>
-              <Typography>Cliente: {sale.customerName}</Typography>
-              <Typography>Data: {new Date(sale.saleDate).toLocaleString()}</Typography>
-              <Typography>Total: {sale.totalNetAmount.toFixed(2)}</Typography>
-            </Box>
-          ))}
-        </Box>
-      )}
-    </Box>
+            {formattedCashRegisters.map((register) => (
+              <Collapse in={expandedId === register.cashRegisterId} timeout="auto" unmountOnExit key={register.cashRegisterId}>
+                <CashRegisterDetails cashRegisterId={register.cashRegisterId} />
+              </Collapse>
+            ))}
+          </Box>
+        ) : (
+          <Typography>Nenhum caixa encontrado.</Typography>
+        )}
+      </Box>
+    </LocalizationProvider>
   );
 };
 
