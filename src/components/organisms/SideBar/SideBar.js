@@ -19,7 +19,6 @@ const SideBar = ({ collapsed, toggleCollapsed }) => {
       items: [
         { label: 'Realizar Venda', icon: 'AttachMoney', onClick: () => navigate('/vendas') },
         { label: 'Histórico de Vendas', icon: 'History', onClick: () => navigate('/vendas/historico') },
-        { label: 'Auditoria de Vendas', icon: 'FactCheck', onClick: () => navigate('/vendas/auditoria') },
       ],
     },
     {

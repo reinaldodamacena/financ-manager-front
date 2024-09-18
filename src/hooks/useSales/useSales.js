@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { format } from 'date-fns'; // Para formatar as datas
 
 export const useSales = (useSaleServiceContext) => {
     const {
@@ -20,6 +21,8 @@ export const useSales = (useSaleServiceContext) => {
         totalNet: 0,
     });
     const [error, setError] = useState(null);
+    const [startDate, setStartDate] = useState('');  // Estado para a data de início
+    const [endDate, setEndDate] = useState('');      // Estado para a data de fim
 
     // Função para adicionar um item ao carrinho
     const handleAddToCart = async (product, customerId, userSale, quantity) => {
@@ -148,16 +151,34 @@ export const useSales = (useSaleServiceContext) => {
         }
 
     };
-    // Função para buscar o histórico de vendas
-    const handleFetchSalesHistory = async (startDate, endDate) => {
+
+
+    // Função para formatar as datas no padrão MM/dd/yyyy
+    const formatDate = (date) => {
+        return format(new Date(date), 'MM/dd/yyyy');
+    };
+
+    // Validação das datas
+    const isValidDateRange = startDate && endDate && new Date(startDate) <= new Date(endDate);
+
+    // Função para buscar o histórico de vendas (passada ao SalesFilter)
+    const handleFetchSalesHistory = async () => {
+        if (!isValidDateRange) {
+            setError('A data de início não pode ser maior que a data de fim.');
+            return;
+        }
+
         try {
             setLoading(true);
             setError(null);
-            const history = await fetchSalesHistory(startDate, endDate);
-            console.log("Histórico de vendas buscado com sucesso:", history);
+            const formattedStartDate = formatDate(startDate);  // Formatar a data de início
+            const formattedEndDate = formatDate(endDate);      // Formatar a data de fim
+
+            const history = await fetchSalesHistory(formattedStartDate, formattedEndDate);  // Chamada da API
+            console.log('Histórico de vendas buscado com sucesso:', history);
         } catch (err) {
             console.error('Erro ao buscar histórico de vendas:', err);
-            setError(err);
+            setError('Ocorreu um erro ao buscar o histórico de vendas.');
         } finally {
             setLoading(false);
         }
@@ -166,6 +187,10 @@ export const useSales = (useSaleServiceContext) => {
 
 
     return {
+        startDate,
+        setStartDate,  // Retornar a função para atualizar a data de início
+        endDate,
+        setEndDate,
         cart,
         currentSaleId,
         loading,
@@ -177,5 +202,6 @@ export const useSales = (useSaleServiceContext) => {
         handleRemoveFromCart,
         handleCompleteSale,
         updateCartDetails,  // Adiciona a função para completar a venda
+
     };
 };

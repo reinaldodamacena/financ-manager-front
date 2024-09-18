@@ -30,11 +30,14 @@ export const saleService = {
   },
   // **Novo método para listar o histórico de vendas**
   getSalesHistory: (startDate, endDate) => {
+    console.log(startDate, endDate);
     return api.get(`/Sale/sales-history-report`, {
       params: {
         startDate,
         endDate
+        
       }
+      
     })
       .then((response) => {
         console.log("Histórico de vendas recebido:", response.data);

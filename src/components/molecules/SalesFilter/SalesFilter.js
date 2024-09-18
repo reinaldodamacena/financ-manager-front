@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
 import { Button, Icon, Input } from '../../atoms/Index';
 import { Box, CircularProgress } from '@mui/material';
+import { SalesList } from '../Index';  // Importa o componente SalesList
+import { useSales } from '../../../hooks/useSales/useSales';  // Importar o hook
+import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider';
 
-const SalesFilter = ({ onFilter }) => {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [loading, setLoading] = useState(false);  // Estado para controlar o spinner de carregamento
-  const [error, setError] = useState(null);  // Estado para armazenar erros de validação de data
+const SalesFilter = () => {
+  const {
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    handleFetchSalesHistory,
+    loading,
+    salesHistory,  // Aqui está o histórico de vendas filtrado
+    error,
+  } = useSales(useSaleServiceContext);  // Usar o hook para controlar as datas e a função de filtro
 
-  // Validação para garantir que a data de início não seja maior que a de fim
-  const isValidDateRange = startDate && endDate && new Date(startDate) <= new Date(endDate);
+  // Função para editar uma venda
+  const handleEditSale = (saleId) => {
+    console.log(`Editando venda com ID: ${saleId}`);
+    // Lógica de edição da venda aqui
+  };
 
-  const handleFilter = async () => {
-    if (!isValidDateRange) {
-      setError('A data de início não pode ser maior que a data de fim.');
-      return;
-    }
-
-    setLoading(true);  // Exibe o spinner durante o carregamento
-    setError(null);
-    try {
-      await onFilter(startDate, endDate);
-    } catch (err) {
-      console.error('Erro ao filtrar:', err);
-      setError('Ocorreu um erro ao filtrar as vendas.');
-    } finally {
-      setLoading(false);  // Oculta o spinner após o término do filtro
-    }
+  // Função para excluir uma venda
+  const handleDeleteSale = (saleId) => {
+    console.log(`Excluindo venda com ID: ${saleId}`);
+    // Lógica de exclusão da venda aqui
   };
 
   return (
@@ -47,21 +47,20 @@ const SalesFilter = ({ onFilter }) => {
         },
       }}
     >
-
       {/* Inputs de Data */}
       <Input
         label="Data de Início"
         type="date"
         value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        icon={() => <Icon name="Event" />}  // Ícone de calendário ao lado do input
+        onChange={(e) => setStartDate(e.target.value)}  // Atualiza o estado de data de início
+        icon={() => <Icon name="Event" />}
       />
       <Input
         label="Data de Fim"
         type="date"
         value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
-        icon={() => <Icon name="Event" />}  // Ícone de calendário ao lado do input
+        onChange={(e) => setEndDate(e.target.value)}  // Atualiza o estado de data de fim
+        icon={() => <Icon name="Event" />}
       />
 
       {/* Exibir mensagem de erro se as datas forem inválidas */}
@@ -81,8 +80,8 @@ const SalesFilter = ({ onFilter }) => {
       {/* Botão de Filtrar com spinner */}
       <Button
         variant="primary"
-        onClick={handleFilter}
-        disabled={loading || !isValidDateRange}
+        onClick={handleFetchSalesHistory}  // Chama a função de busca do histórico
+        disabled={loading || !startDate || !endDate}
         sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -102,6 +101,16 @@ const SalesFilter = ({ onFilter }) => {
           </>
         )}
       </Button>
+
+      {/* Exibir a tabela com os resultados filtrados */}
+      <Box sx={{ marginTop: '2rem' }}>
+        <SalesList
+          salesData={salesHistory}  // Passa os dados filtrados de vendas
+          onEditSale={handleEditSale}  // Função de edição
+          onDeleteSale={handleDeleteSale}  // Função de exclusão
+          loading={loading}  // Passa o estado de loading
+        />
+      </Box>
     </Box>
   );
 };

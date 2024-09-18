@@ -18,3 +18,6 @@ export { default as UserNameDisplay } from './UserNameDisplay/Index';
 export { default as UserIconNavBar} from './UserIconNavBar/Index';
 export { default as CalendarBody} from "./CalendarBody/Index";
 export { default as CalendarNavigation} from "./CalendarNavigation/Index";
+export { default as StockStatus } from "./StockStatus/Index";
+export { default as QuantityInput}  from "./QuantityInput/Index";
+export { default as Price} from "./Price/Index";
