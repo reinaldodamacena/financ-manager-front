@@ -107,22 +107,33 @@ export const SaleServiceProvider = ({ children }) => {
       setLoading(true);
       const result = await saleService.getSaleTotals(saleId);
       if (result) {
-        setTotals({
+        const totals = {
           totalGross: result.totalGrossAmount || 0,
           totalDiscount: result.totalDiscount || 0,
           totalNet: result.totalNetAmount || 0,
-        });
+        };
+  
+        console.log("Atualizando os totais com os seguintes valores:", totals);
+        setTotals(totals);  // Atualiza o estado com os valores recebidos
+        return totals;  // Retorna os totais para serem utilizados onde necessário
       } else {
-        // Resetar caso não haja totais disponíveis
+        console.error("Erro: Totais retornados são indefinidos");
         setTotals({ totalGross: 0, totalDiscount: 0, totalNet: 0 });
+        return { totalGross: 0, totalDiscount: 0, totalNet: 0 };
       }
     } catch (err) {
       setError(err);
+      console.error("Erro ao buscar os totais da venda:", err);
+      return undefined;  // Retorna undefined explicitamente se houver erro
     } finally {
       setLoading(false);
+      console.log("Finalizando o processo de busca dos totais.");
     }
   };
   
+  
+
+
 
   // Remover um detalhe de venda
   const removeSaleDetail = async (saleId, saleDetailId) => {
@@ -144,7 +155,7 @@ export const SaleServiceProvider = ({ children }) => {
       setLoading(false);
     }
   };
-  
+
   const fetchSaleDetails = async (saleId) => {
     try {
       console.log(`Buscando detalhes da venda para SaleId: ${saleId}`);  // Log SaleId
@@ -172,12 +183,12 @@ export const SaleServiceProvider = ({ children }) => {
       setLoading(false);
     }
   };
-  
+
   // No SaleServiceProvider
   const updateSaleDetail = async (saleDetailId, updatedData) => {
     setLoading(true);
     setError(null);
-  
+
     try {
       // Remover campos que não precisam ser enviados à API
       const sanitizedData = {
@@ -193,11 +204,11 @@ export const SaleServiceProvider = ({ children }) => {
           discount: updatedData.discount
         }
       };
-      
+
       console.log(`Atualizando SaleDetail com saleDetailId=${saleDetailId} com dados:`, sanitizedData);
-  
+
       const result = await saleDetailService.updateDetail(sanitizedData);
-  
+
       // Verifique se saleDetails existe e é um array antes de mapear
       if (saleData && Array.isArray(saleData.saleDetails)) {
         // Atualiza o estado local com o detalhe atualizado
@@ -207,7 +218,7 @@ export const SaleServiceProvider = ({ children }) => {
             detail.saleDetailId === saleDetailId ? { ...detail, ...sanitizedData.saleDetailDto } : detail
           ),
         };
-  
+
         setSaleData(updatedSaleData);
       } else {
         console.error("Erro: saleDetails está indefinido ou não é um array.");
@@ -217,9 +228,9 @@ export const SaleServiceProvider = ({ children }) => {
           saleDetails: []  // Inicialize como array vazio
         });
       }
-  
+
       return result;
-  
+
     } catch (err) {
       setError(err);
       console.error("Erro ao atualizar detalhe de venda:", err);
@@ -228,29 +239,66 @@ export const SaleServiceProvider = ({ children }) => {
       setLoading(false);
     }
   };
-  
-  
-  
 
-  
-  
+  // **Novo método para ajustar o percentual de desconto**
+  const adjustDiscountPercentage = async (saleId, discountPercentage) => {
+    try {
+      setLoading(true);
+      const result = await saleService.adjustDiscountPercentage(saleId, discountPercentage);
+      setSaleData(result);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // **Novo método para ajustar o novo total líquido**
+  const adjustNewTotal = async (saleId, newTotalNetAmount) => {
+    try {
+      setLoading(true);
+      const result = await saleService.adjustNewTotal(saleId, newTotalNetAmount);
+      setSaleData(result);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // **Novo método para ajustar o total de desconto**
+  const adjustTotalDiscount = async (saleId, totalDiscount) => {
+    try {
+      setLoading(true);
+      const result = await saleService.adjustTotalDiscount(saleId, totalDiscount);
+      setSaleData(result);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SaleServiceContext.Provider
-      value={{ 
-        saleData, 
-        loading, 
+      value={{
+        saleData,
+        loading,
         error,
         salesHistory, // Disponibiliza o histórico de vendas no contexto
-        totals, 
-        fetchSaleDetails, 
-        startSale, 
-        addSaleDetail, 
+        totals,
+        fetchSaleDetails,
+        startSale,
+        addSaleDetail,
         updateSaleDetail,
-        completeSale, 
+        completeSale,
         getSaleTotals,
         fetchSalesHistory,  // Disponibiliza a função de busca no contexto 
-        removeSaleDetail }}
+        removeSaleDetail,
+        adjustDiscountPercentage,  // Disponibiliza o ajuste de percentual de desconto
+        adjustNewTotal,            // Disponibiliza o ajuste do novo total líquido
+        adjustTotalDiscount        // Disponibiliza o ajuste do total de desconto
+      }}
     >
       {children}
     </SaleServiceContext.Provider>

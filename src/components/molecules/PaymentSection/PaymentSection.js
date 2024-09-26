@@ -1,66 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, InputAdornment, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Button as MuiButton } from '@mui/material';
 import { TransparentBox, Button, Dropdown, Icon, SmallTransparentBox } from '../../atoms/Index';
-import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider'; // Use o contexto
 
-const PaymentSection = ({ onFinalizeSale, paymentMethod, setPaymentMethod }) => {
-  const { totals } = useSaleServiceContext();  // Obtemos os totais do contexto
-  const [receivedAmount, setReceivedAmount] = useState(''); // Inicializar como string vazia para aceitar entrada de texto
+const PaymentSection = ({ 
+  onFinalizeSale, 
+  totals, 
+  paymentMethod, 
+  setPaymentMethod, 
+  loading, 
+  onDiscountChange,         // Função para ajuste de desconto
+  onNewTotalChange,         // Função para ajuste de novo total líquido
+  onTotalDiscountChange     // Função para ajuste de total de desconto
+}) => {
+  const [receivedAmount, setReceivedAmount] = useState('');
+  const [discountPercentage, setDiscountPercentage] = useState(0);
   const [change, setChange] = useState(0);
-  const [openConfirmation, setOpenConfirmation] = useState(false); // Estado para controlar o modal de confirmação
-  const [errorMessage, setErrorMessage] = useState(''); // Mensagem de erro para validação
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Atualiza o troco com base no valor recebido
   useEffect(() => {
     const parsedReceivedAmount = parseFloat(receivedAmount.replace(',', '.')) || 0;
-    setChange(parsedReceivedAmount - totals.totalNet);
-  }, [receivedAmount, totals.totalNet]);
+    setChange(parsedReceivedAmount - (totals?.totalNet || 0));
+  }, [receivedAmount, totals?.totalNet]);
 
-  // Atualiza o método de pagamento selecionado
+  // Lida com a alteração no método de pagamento
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
-    setErrorMessage(''); // Limpa a mensagem de erro ao mudar o método de pagamento
+    setErrorMessage('');
   };
 
-  // Atualiza o valor recebido, permitindo que o usuário digite com ponto ou vírgula
+  // Lida com a alteração no valor recebido
   const handleReceivedAmountChange = (event) => {
-    const value = event.target.value;
-    setReceivedAmount(value); // Permitir digitação livre de números e vírgulas
+    setReceivedAmount(event.target.value);
   };
 
-  // Verifica se o pagamento é em dinheiro para habilitar/desabilitar o campo de troco
+  // Lida com a alteração no desconto e chama o handler correspondente
+  const handleDiscountChange = async (event) => {
+    const discount = parseFloat(event.target.value) || 0;
+    setDiscountPercentage(discount);
+    if (totals?.saleId) {
+      await onDiscountChange(discount);  // Chama a função de ajuste de desconto no SalesPage
+    }
+  };
+
+  // Verifica se o pagamento é em dinheiro
   const isCashPayment = paymentMethod === 'Dinheiro';
 
-  // Valida se todos os campos estão corretos antes de finalizar a venda
+  // Valida os campos antes de finalizar a venda
   const validateFields = () => {
     if (!paymentMethod) {
       setErrorMessage('Selecione um método de pagamento.');
       return false;
     }
-    if (isCashPayment && parseFloat(receivedAmount.replace(',', '.')) < totals.totalNet) {
+    if (isCashPayment && parseFloat(receivedAmount.replace(',', '.')) < totals?.totalNet) {
       setErrorMessage('O valor recebido não pode ser menor que o valor total.');
       return false;
     }
     return true;
   };
 
-  // Função para mostrar o modal de confirmação
+  // Lida com a finalização da venda
   const handleFinalizeSale = () => {
     if (validateFields()) {
-      setOpenConfirmation(true); // Exibe o modal de confirmação
+      setOpenConfirmation(true);
     }
   };
 
-  // Função que confirma a venda e reseta os campos
+  // Confirma e finaliza a venda
   const confirmSale = () => {
-    onFinalizeSale();  // Chama a função de finalização original
-    setOpenConfirmation(false); // Fecha o modal
-    setReceivedAmount(''); // Limpa o valor recebido
-    setPaymentMethod(''); // Limpa o método de pagamento
-    setErrorMessage(''); // Limpa a mensagem de erro
+    onFinalizeSale();  // Chama a função de finalização no SalesPage
+    setOpenConfirmation(false);
+    setReceivedAmount('');
+    setPaymentMethod('');
+    setErrorMessage('');
   };
 
-  // Função que fecha o modal sem finalizar a venda
+  // Fecha o modal de confirmação
   const handleCloseConfirmation = () => {
     setOpenConfirmation(false);
   };
@@ -85,34 +101,37 @@ const PaymentSection = ({ onFinalizeSale, paymentMethod, setPaymentMethod }) => 
           Total R$
         </Typography>
         <Typography variant="h4" color="textPrimary" align="center">
-          {totals.totalNet.toFixed(2)} {/* Total líquido formatado */}
+          {totals?.totalNet ? totals.totalNet.toFixed(2) : '0.00'}
         </Typography>
       </SmallTransparentBox>
 
+      {/* Grid com os campos de pagamento e desconto */}
       <Grid container spacing={3} marginTop="25%">
-        {/* Campos de desconto e total bruto */}
         <Grid item xs={6}>
           <TextField
-            label="Desconto R$"
+            label="Desconto (%)"
             variant="outlined"
             size="small"
-            value={totals.totalDiscount.toFixed(2)}  // Valor de desconto formatado
+            value={discountPercentage}
+            onChange={handleDiscountChange}  // Chama a função ao alterar o desconto
             fullWidth
-            InputProps={{ readOnly: true, startAdornment: <InputAdornment position="start">R$</InputAdornment> }}
+            InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> }}
+            error={!!errorMessage}
+            helperText={errorMessage}
           />
         </Grid>
+
         <Grid item xs={6}>
           <TextField
             label="Total Bruto R$"
             variant="outlined"
             size="small"
-            value={totals.totalGross.toFixed(2)}  // Valor total bruto formatado
+            value={totals?.totalGross?.toFixed(2) || '0.00'}
             fullWidth
             InputProps={{ readOnly: true, startAdornment: <InputAdornment position="start">R$</InputAdornment> }}
           />
         </Grid>
 
-        {/* Dropdown para selecionar método de pagamento */}
         <Grid item xs={12}>
           <Dropdown
             label="Pagamento"
@@ -125,14 +144,12 @@ const PaymentSection = ({ onFinalizeSale, paymentMethod, setPaymentMethod }) => 
               { value: 'Pix', label: 'Pix' },
             ]}
             fullWidth
-            error={!!errorMessage} // Exibe erro se houver
+            error={!!errorMessage}
           />
         </Grid>
 
-        {/* Exibe campos de "Valor Recebido" e "Troco" apenas se o pagamento for em dinheiro */}
         {isCashPayment && (
           <>
-            {/* Campo de valor recebido */}
             <Grid item xs={6}>
               <TextField
                 label="Valor Recebido R$"
@@ -142,47 +159,34 @@ const PaymentSection = ({ onFinalizeSale, paymentMethod, setPaymentMethod }) => 
                 onChange={handleReceivedAmountChange}
                 fullWidth
                 InputProps={{ startAdornment: <InputAdornment position="start">R$</InputAdornment> }}
-                error={!!errorMessage} // Exibe erro se houver
+                error={!!errorMessage}
                 helperText={errorMessage && isCashPayment ? errorMessage : ''}
               />
             </Grid>
 
-            {/* Campo de troco */}
             <Grid item xs={6}>
               <TextField
                 label="Troco R$"
                 variant="outlined"
                 size="small"
-                value={change.toFixed(2).replace('.', ',')} // Troco formatado
+                value={change.toFixed(2).replace('.', ',')}
                 fullWidth
-                InputProps={{
-                  readOnly: true,
-                  startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-                }}
+                InputProps={{ readOnly: true, startAdornment: <InputAdornment position="start">R$</InputAdornment> }}
               />
             </Grid>
           </>
         )}
 
-        {/* Botões para finalizar e cancelar a venda */}
         <Grid item xs={12}>
           <Button
             variant="contained"
             color="primary"
             fullWidth
             endIcon={<Icon name="CheckCircle" />}
-            sx={{ marginBottom: 2 }}
-            onClick={handleFinalizeSale} // Chama a função que valida e exibe o modal
+            onClick={handleFinalizeSale}
+            disabled={loading}
           >
             Finalizar venda
-          </Button>
-          <Button
-            variant="text"
-            color="secondary"
-            fullWidth
-            endIcon={<Icon name="Cancel" />}
-          >
-            Cancelar
           </Button>
         </Grid>
       </Grid>

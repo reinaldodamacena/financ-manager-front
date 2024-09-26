@@ -1,33 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Divider, CircularProgress, Typography } from '@mui/material';
 import { Background } from '../../atoms/Index';
 import { Layout } from '../../organisms/Index';
 import { ClientSection, ProductList, PaymentSection } from '../../molecules/Index';
 import { CartSection } from '../../organisms/Index';
 import { useSales } from '../../../hooks/useSales/useSales';
-import { useSaleServiceContext } from '../../../context/Sale/SaleServiceProvider';
+import { useSaleServiceContext } from 'context/Sale/SaleServiceProvider';
 
 const SalesPage = () => {
-  const { handleAddToCart, handleRemoveFromCart, cart, totals, loading, updateCartDetails, handleCompleteSale } = useSales(useSaleServiceContext);
+  const { 
+    handleAddToCart, 
+    handleRemoveFromCart, 
+    cart, 
+    totals, 
+    loading, 
+    updateCartDetails, 
+    handleCompleteSale,
+    handleAdjustDiscountPercentage,  // Nova função de ajuste de desconto
+    handleAdjustNewTotal,            // Nova função de ajuste de novo total
+    handleAdjustTotalDiscount        // Nova função de ajuste de total de desconto
+  } = useSales(useSaleServiceContext);  
+
   const [customerId, setCustomerId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('');
-  const [saleComplete, setSaleComplete] = useState(false); // Estado para verificar se a venda foi finalizada
+  const [saleComplete, setSaleComplete] = useState(false); 
   const userSale = JSON.parse(localStorage.getItem('user'));
+
+  // Atualiza os totais sempre que o carrinho for modificado
+  useEffect(() => {
+    if (cart.length > 0 && totals) {
+      console.log("Carrinho atualizado, totais:", totals);
+    }
+  }, [cart, totals]);
 
   // Função para resetar todos os estados e componentes da página
   const resetPage = () => {
-    setCustomerId(null);  // Resetar cliente
-    setPaymentMethod('');  // Resetar método de pagamento
-    setSaleComplete(false);  // Resetar o status da venda
+    setCustomerId(null);  
+    setPaymentMethod('');  
+    setSaleComplete(false);  
   };
 
   // Função que será chamada quando a venda for finalizada
   const finalizeSale = async () => {
     await handleCompleteSale(paymentMethod, userSale.userId);
-    setSaleComplete(true); // Marca que a venda foi finalizada
+    setSaleComplete(true);  
     setTimeout(() => {
-      resetPage(); // Reseta a página após a venda ser finalizada
-    }, 3000); // Aguarda 3 segundos para mostrar o feedback de venda finalizada
+      resetPage();  
+    }, 3000);  
+  };
+
+  // Handler para ajustar o percentual de desconto
+  const adjustDiscountPercentage = async (discount) => {
+    if (cart.length > 0 && cart[0].saleId) {
+      await handleAdjustDiscountPercentage(cart[0].saleId, discount);
+    }
+  };
+
+  // Handler para ajustar o novo total líquido
+  const adjustNewTotal = async (newTotalNetAmount) => {
+    if (cart.length > 0 && cart[0].saleId) {
+      await handleAdjustNewTotal(cart[0].saleId, newTotalNetAmount);
+    }
+  };
+
+  // Handler para ajustar o total de desconto
+  const adjustTotalDiscount = async (totalDiscount) => {
+    if (cart.length > 0 && cart[0].saleId) {
+      await handleAdjustTotalDiscount(cart[0].saleId, totalDiscount);
+    }
   };
 
   return (
@@ -67,16 +107,17 @@ const SalesPage = () => {
               <Grid item xs={12} md={4}>
                 <PaymentSection
                   onFinalizeSale={finalizeSale}
-                  totalGross={totals?.totalGross || 0}
-                  totalDiscount={totals?.totalDiscount || 0}
-                  totalNet={totals?.totalNet || 0}
+                  totals={totals}  
                   setPaymentMethod={setPaymentMethod}
                   paymentMethod={paymentMethod}
                   loading={loading}
+                  onDiscountChange={adjustDiscountPercentage}  
+                  onNewTotalChange={adjustNewTotal}    
+                  onTotalDiscountChange={adjustTotalDiscount} 
                 />
               </Grid>
 
-              {/* Seção do carrinho dentro de um Grid */}
+              {/* Seção do carrinho */}
               <Grid item xs={12}>
                 <CartSection
                   cart={cart}
