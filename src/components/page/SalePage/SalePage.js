@@ -16,9 +16,9 @@ const SalesPage = () => {
     loading, 
     updateCartDetails, 
     handleCompleteSale,
-    handleAdjustDiscountPercentage,  // Nova função de ajuste de desconto
-    handleAdjustNewTotal,            // Nova função de ajuste de novo total
-    handleAdjustTotalDiscount        // Nova função de ajuste de total de desconto
+    handleAdjustDiscountPercentage,  
+    handleAdjustNewTotal,            
+    handleAdjustTotalDiscount        
   } = useSales(useSaleServiceContext);  
 
   const [customerId, setCustomerId] = useState(null);
@@ -26,46 +26,51 @@ const SalesPage = () => {
   const [saleComplete, setSaleComplete] = useState(false); 
   const userSale = JSON.parse(localStorage.getItem('user'));
 
-  // Atualiza os totais sempre que o carrinho for modificado
+  // Atualiza os totais sempre que o carrinho ou métodos de pagamento mudam
   useEffect(() => {
     if (cart.length > 0 && totals) {
       console.log("Carrinho atualizado, totais:", totals);
     }
   }, [cart, totals]);
 
-  // Função para resetar todos os estados e componentes da página
+  // Função para resetar todos os estados e componentes da página após finalização
   const resetPage = () => {
     setCustomerId(null);  
     setPaymentMethod('');  
     setSaleComplete(false);  
   };
 
-  // Função que será chamada quando a venda for finalizada
+  // Finaliza a venda e reseta a página após sucesso
   const finalizeSale = async () => {
-    await handleCompleteSale(paymentMethod, userSale.userId);
-    setSaleComplete(true);  
-    setTimeout(() => {
-      resetPage();  
-    }, 3000);  
+    if (paymentMethod && customerId) {  // Certifica que os campos essenciais estão preenchidos
+      await handleCompleteSale(paymentMethod, userSale.userId);
+      setSaleComplete(true);  
+      setTimeout(() => {
+        resetPage();  
+      }, 3000);  
+    } else {
+      alert("Selecione um método de pagamento e cliente.");
+    }
   };
 
-  // Handler para ajustar o percentual de desconto
+  // Ajusta o percentual de desconto
   const adjustDiscountPercentage = async (discount) => {
     if (cart.length > 0 && cart[0].saleId) {
+      console.log("Ajustando desconto no SalesPage:", discount);
       await handleAdjustDiscountPercentage(cart[0].saleId, discount);
     }
   };
-
-  // Handler para ajustar o novo total líquido
+  
   const adjustNewTotal = async (newTotalNetAmount) => {
     if (cart.length > 0 && cart[0].saleId) {
+      console.log("Ajustando novo total no SalesPage:", newTotalNetAmount);
       await handleAdjustNewTotal(cart[0].saleId, newTotalNetAmount);
     }
   };
-
-  // Handler para ajustar o total de desconto
+  
   const adjustTotalDiscount = async (totalDiscount) => {
     if (cart.length > 0 && cart[0].saleId) {
+      console.log("Ajustando total de desconto no SalesPage:", totalDiscount);
       await handleAdjustTotalDiscount(cart[0].saleId, totalDiscount);
     }
   };

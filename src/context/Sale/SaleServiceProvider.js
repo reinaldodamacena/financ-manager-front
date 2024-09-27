@@ -106,30 +106,44 @@ export const SaleServiceProvider = ({ children }) => {
     try {
       setLoading(true);
       const result = await saleService.getSaleTotals(saleId);
+  
       if (result) {
+        // Estrutura dos dados com todos os valores recebidos do backend
         const totals = {
           totalGross: result.totalGrossAmount || 0,
           totalDiscount: result.totalDiscount || 0,
           totalNet: result.totalNetAmount || 0,
+          discountPercentage: result.discountPercentage || 0, // Adiciona o desconto percentual
         };
   
         console.log("Atualizando os totais com os seguintes valores:", totals);
-        setTotals(totals);  // Atualiza o estado com os valores recebidos
-        return totals;  // Retorna os totais para serem utilizados onde necessário
+        setTotals(totals); // Atualiza o estado com os valores recebidos
+        return totals; // Retorna os totais para serem utilizados onde necessário
       } else {
         console.error("Erro: Totais retornados são indefinidos");
-        setTotals({ totalGross: 0, totalDiscount: 0, totalNet: 0 });
-        return { totalGross: 0, totalDiscount: 0, totalNet: 0 };
+        setTotals({
+          totalGross: 0,
+          totalDiscount: 0,
+          totalNet: 0,
+          discountPercentage: 0, // Define valor padrão para discountPercentage
+        });
+        return {
+          totalGross: 0,
+          totalDiscount: 0,
+          totalNet: 0,
+          discountPercentage: 0, // Define valor padrão para discountPercentage
+        };
       }
     } catch (err) {
       setError(err);
       console.error("Erro ao buscar os totais da venda:", err);
-      return undefined;  // Retorna undefined explicitamente se houver erro
+      return undefined; // Retorna undefined explicitamente se houver erro
     } finally {
       setLoading(false);
       console.log("Finalizando o processo de busca dos totais.");
     }
   };
+  
   
   
 
