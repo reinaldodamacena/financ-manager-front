@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: gcr.io/finance-manager-437520/frontend:latest  # Substitua pelo ID do projeto no GCP
+        ports:
+        - containerPort: 80
+        resources:  # Adicione esta seção para definir os recursos
+          requests:
+            cpu: "250m"  # Solicitar 250 milicores de CPU
+            memory: "512Mi"  # Solicitar 512Mi de memória
+          limits:
+            cpu: "500m"  # Limite máximo de 500 milicores de CPU
+            memory: "1Gi"  # Limite máximo de 1Gi de memória
