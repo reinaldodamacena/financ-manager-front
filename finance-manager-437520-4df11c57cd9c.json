@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "finance-manager-437520",
+  "private_key_id": "4df11c57cd9c42bd26fbcdce2042afe104cf7e62",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCZhZiEHsuAk+ee\nZlStdswbp5ZVwhiN8B1I1Xe/hMxnFrZFGa9fwSykTbVO0kGVm9wXxgP1slNvSukg\nO5LG3OBHdOLwcNeHHshCgLGehrW0/IB9k4ed6mWwWnXZ8N4ZUmfJASJ16ZZUEion\nNiq38E/0fJHPnk9iZOeMUlJGkWrfisnu4l/l6UARCDMBNRvvdzeKNWbIwLkJ5bAY\nB5nUkjV82/mJ5c9eoqsfMCKnia5FgjzvAIGMsTx0Ir8k0xNrHOPJJluYqnRshQGY\nPhtme13slPh2O7oXARftZ0wt7P6beCnYtbFH7ks7eKpvXoeOq4kQyU1+6DdVERUn\naUkChFk/AgMBAAECggEABsUXZqwc+TyMeDW3Ajc85PNM89ctUgUGpZGUSEPI57re\nqslpLGXOXCh5GFK5Ramr2PiIcCs+9qdtBFjcLhzLXxtObp/rQTAgUJ5wNrdmB+ci\nm2cIEfSmK1Kx47x1btRtczWzmVOFp4tthHElDRtxyyw7Gda3VXVxqIRw0F/VQKpC\nnk7/o4rYjqdE9wXpyfRQfmVjdtS0hXs6ndl0tkPK+jguNySgK88CjY3SDOiZM5IH\n8DsBjkjSke55H79eZmRxgNgtwb85n1bpMr7neesbKKDzv/mgkJ2RTYZtAKdIGjKX\n9ZluAcGwqa2+A/n0jH+mZSAB11OW/N3XQBIo69VVsQKBgQDRrdbiDD6Q23Z9kMb6\nCanILEPeQ9A6iHxVtJhlczehlHX1EJbwl6YpckCzb9PJYf7klLJTrV3AyynY0v41\nYC8VU+ow5JjwCpxUoL0+2XS8s9T6YccvYbok4HulvktYTVdRQMexp8Gj7xmBJ1+p\nLHTwrcYGUcNucolIl+QZuuo+2wKBgQC7b9mJUWK/YBqDGV2VmLpDA2x/HDioH0kZ\nzkHNHoTPQZX9coBb/igOeEjvxeoltxz9F0EWjLwcR54ZUqx2EcN5TkmT8c+rIY02\nTFrt1wc+NhUsl28Af/CAVFdResR71RCIf7Zng9rxwzZDhra3i3l7y4DM/j76GH3e\nG4fucFOibQKBgQC3OsiK5NRP1dhnxfp7SbJ6YGQ2eOAgJmEwrA54qQS2SHwD2alt\nObhUg6kSpOhYFTCfI2nqQZeqAF/jQA4xKoo6gwgmDb2wFjWipox5vaGLvUKiQovD\nVg1KaHjkz7QbyApD0O4wyz4mOaz59iRcO6M9Jz3jC9RSUfix3TnRWkuU/QKBgFgK\nNnSwfKCFhI51mKaOwVZ+wjSGTfpyD4UGg5PUNO+gz9HnOXF8VNZPG3s8TDoA46Xh\niVoNKsJhxVoBoi4nM9jDs/3AxBmOveR2QvOaX7WR86opSyNB9PZiJ02HS8kakBR9\nYHEI1wtd9RwMp8BYy+wg71PaTDxuyphL+DJAIpiVAoGAXhw7xxZ358UPb2LzeFiI\n6b/Qe5BmIBiraM69C2HtEJoHWBpJRZq6LF9m/vCJ51Qt+uWc0SHOTHqZIrFjWqZv\nQ9csrd9/UDGwL6FwwB74D+QqZ+sWLfjch1H9hE3CS/IWthq0YcMfHXr04UZTRyuk\nlSUrSpIttft84gmSkwQXeJw=\n-----END PRIVATE KEY-----\n",
+  "client_email": "finance-manager-acount@finance-manager-437520.iam.gserviceaccount.com",
+  "client_id": "111750668678492571260",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/finance-manager-acount%40finance-manager-437520.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
