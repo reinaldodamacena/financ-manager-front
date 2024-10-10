@@ -1,69 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Box } from '@mui/material';
-import { CustomTable } from '../../molecules/Index';
-import { Icon, Input } from '../../atoms/Index';
+import { Grid, Box, CircularProgress, Typography } from '@mui/material';
+import { Input, Icon } from '../../atoms/Index';
+import { useEnhancedProductService } from '../../../context/Product/ProductServiceProvider';
+import { useTheme } from '@mui/material/styles';
+import { ProductCard } from '../Index'; // Importando o ProductCard
 
-const ProductList = ({ products = [] }) => {
+const ProductList = ({ onAddToCart }) => {
+  const theme = useTheme(); // Usando o tema personalizado
+  const { fetchByDescription, fetchByCode } = useEnhancedProductService();
   const [searchQuery, setSearchQuery] = useState('');
   const [barcodeQuery, setBarcodeQuery] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [quantities, setQuantities] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [debouncedQuery, setDebouncedQuery] = useState(''); // Debounce state
 
-  const columns = [
-    { field: 'item', headerName: 'Item' },
-    { field: 'code', headerName: 'Código' },
-    { field: 'name', headerName: 'Produto' },
-    { field: 'quantity', headerName: 'Quantidade' },
-    { 
-      field: 'unitPrice', 
-      headerName: 'Unitário', 
-      align: 'right',
-      format: (value) => value.toFixed(2),
-    },
-    { 
-      field: 'offerPrice', 
-      headerName: 'Oferta', 
-      align: 'right',
-      format: (value) => value.toFixed(2),
-    },
-    { 
-      field: 'totalPrice', 
-      headerName: 'Total', 
-      align: 'right',
-      format: (value) => value.toFixed(2),
-    },
-  ];
+  // Função para buscar produtos
+  const fetchData = async (queryType, queryValue) => {
+    setLoading(true);
+    setError(null);
+    try {
+      let products = [];
+      if (queryType === 'description' && queryValue) {
+        products = await fetchByDescription(queryValue);
+      } else if (queryType === 'barcode' && queryValue) {
+        products = await fetchByCode(queryValue);
+      }
+      setFilteredProducts(products);
+    } catch (error) {
+      console.error('Erro ao buscar produtos:', error);
+      setError('Erro ao buscar produtos. Tente novamente.');
+      setFilteredProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const formattedData = products.map((product) => ({
-    ...product,
-    unitPrice: columns.find(col => col.field === 'unitPrice').format(product.unitPrice),
-    offerPrice: columns.find(col => col.field === 'offerPrice').format(product.offerPrice),
-    totalPrice: columns.find(col => col.field === 'totalPrice').format(product.totalPrice),
-  }));
+  // Debounce para evitar requisições a cada caractere digitado
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setDebouncedQuery(searchQuery || barcodeQuery);
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, barcodeQuery]);
+
+  // Executa a busca apenas quando o debounce finalizar
+  useEffect(() => {
+    if (debouncedQuery) {
+      if (searchQuery) {
+        fetchData('description', searchQuery);
+      } else if (barcodeQuery) {
+        fetchData('barcode', barcodeQuery);
+      }
+    }
+  }, [debouncedQuery, searchQuery, barcodeQuery]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+    setBarcodeQuery(''); // Limpar a consulta de código de barras ao pesquisar por descrição
   };
 
   const handleBarcodeChange = (event) => {
     setBarcodeQuery(event.target.value);
+    setSearchQuery(''); // Limpar a consulta de descrição ao pesquisar por código de barras
   };
 
-  const filteredData = formattedData.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    product.code.includes(barcodeQuery)
-  );
+  const handleQuantityChange = (productId, value) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [productId]: value > 0 ? value : 1,
+    }));
+  };
+
+  const handleAddToCartClick = (product) => {
+    const quantity = quantities[product.productId] || 1;
+    onAddToCart(product, quantity);
+  };
 
   return (
     <Box>
-      <Grid container spacing={2} sx={{ marginBottom: 3, justifyContent: 'space-between' }}>
+      {/* Barra de pesquisa */}
+      <Grid container spacing={2} sx={{ marginBottom: theme.spacing(3), justifyContent: 'space-between' }}>
         <Grid item xs={12} sm={6}>
           <Input
-            label="Pesquisar por nome ou código"
+            label="Pesquisar por nome"
             variant="outlined"
             fullWidth
             value={searchQuery}
             onChange={handleSearchChange}
-            icon={() => <Icon name="PersonSearch" size="2rem" color="primary.main" />} 
+            placeholder="Digite o nome do produto"
+            icon={() => <Icon name="PersonSearch" size="2rem" color={theme.palette.primary.main} />}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -73,17 +102,51 @@ const ProductList = ({ products = [] }) => {
             fullWidth
             value={barcodeQuery}
             onChange={handleBarcodeChange}
-            icon={() => <Icon name="Barcode" size="2rem" color="primary.main" />} 
+            placeholder="Digite o código de barras"
+            icon={() => <Icon name="Barcode" size="2rem" color={theme.palette.primary.main} />}
           />
         </Grid>
       </Grid>
-      <CustomTable columns={columns} data={filteredData} title="Itens" />
+
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" height={200}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Typography variant="body1" color="error" align="center">
+          {error}
+        </Typography>
+      ) : filteredProducts.length > 0 ? (
+        <Grid container spacing={1}>
+          {filteredProducts.slice(0, 3).map((product) => { // Limitando a exibição para 3 produtos
+            if (!product) return null; // Ignora produtos indefinidos ou nulos
+
+            const quantity = quantities[product.productId] || 1;
+
+            return (
+              <Grid item xs={12} key={product.productId}>
+                <ProductCard
+                  product={product}
+                  quantity={quantity}
+                  onQuantityChange={handleQuantityChange}
+                  onAddToCart={handleAddToCartClick}
+                  isForSalePage={true}
+                />
+              </Grid>
+            );
+          })}
+        </Grid>
+      ) : (
+        <Typography variant="body1" color="text.primary" align="center">
+          Nenhum produto encontrado
+        </Typography>
+      )}
     </Box>
   );
 };
 
 ProductList.propTypes = {
-  products: PropTypes.arrayOf(PropTypes.object),
+  onAddToCart: PropTypes.func.isRequired,
 };
 
 export default ProductList;

@@ -6,9 +6,18 @@ const api = axios.create({
 });
 
 export const userService = {
-  create: (data) => api.post('/users', data),
-  update: (data) => api.put('/users', data),
-  delete: (id) => api.delete(`/users/${id}`),
-  fetchById: (id) => api.get(`/users/${id}`),
-  fetchAll: () => api.get('/users'),
+  create: (data) => {
+    console.log(`Sending POST request to: ${config.API_BASE_URL}/users with data:`, data);
+    return api.post('/User', data);
+  },
+  
+  update: (data) => api.put('/User', data),
+  delete: (id) => api.delete(`/User/${id}`),
+  fetchById: (id) => api.get(`/User/${id}`),
+  fetchAll: () => api.get('/User'),
+  fetchByKeycloakId: (keycloakUserId) => {
+    return api.get(`/User/getByKeycloakId`, {
+      params: { keycloakUserId },
+    });
+  },
 };

@@ -42,24 +42,6 @@ const ProductPage = () => {
         <Box sx={{ padding: '2rem', backgroundColor: 'background.paper', borderRadius: 2, boxShadow: 3 }}>
           <Grid container spacing={4}>
             <Grid item xs={12} md={4}>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                endIcon={<Icon name="AddCircle" />}
-                sx={{
-                  marginBottom: 2,
-                  backgroundColor: 'primary.main',
-                  color: 'primary.contrastText',
-                  '&:hover': {
-                    backgroundColor: 'primary.dark',
-                  },
-                  boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
-                }}
-                onClick={handleAddProduct}
-              >
-                Adicionar Produto
-              </Button>
             </Grid>
             <Grid item xs={12}>
               <Divider sx={{ borderColor: 'primary.main', marginBottom: 2, width: '100%' }} />
@@ -72,16 +54,6 @@ const ProductPage = () => {
                     onEdit={handleEditProduct} 
                     onDelete={handleDeleteProduct} 
                   />
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  {isFormOpen && (
-                    <ProductForm 
-                      product={editingProduct} 
-                      onSave={handleSaveProduct} 
-                      onCancel={() => setIsFormOpen(false)} 
-                      open={isFormOpen}
-                    />
-                  )}
                 </Grid>
               </Grid>
             </Grid>

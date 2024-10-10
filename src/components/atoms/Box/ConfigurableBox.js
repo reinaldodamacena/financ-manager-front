@@ -19,18 +19,18 @@ const ConfigurableBoxWrapper = styled('div')(
     padding,
     position,
   }) => ({
-    position: position || 'relative', // Valor padrão para a posição
+    position: position || 'relative', 
     top: top || 'auto',
     left: left || theme.spacing(0),
     right: right || theme.spacing(0),
     bottom: bottom || 'auto',
-    width: width || 'auto',
+    width: width || '100%',  // Garantir que a largura seja 100% do container pai
     height: height || 'auto',
-    padding: padding || theme.spacing(0), // Usando o spacing do tema por padrão
+    padding: padding || theme.spacing(2),  // Definir padding padrão mais espaçoso
     backgroundColor: backgroundColor || theme.palette.background.paper,
     boxShadow: boxShadow || 'none',
     borderRadius: borderRadius || theme.shape.borderRadius,
-    boxSizing: 'border-box',
+    boxSizing: 'border-box', // Garante que padding e borders estão dentro da largura/altura
     display: 'flex',
     flexDirection: 'column',
     justifyContent: justifyContent || 'flex-start',
@@ -38,9 +38,10 @@ const ConfigurableBoxWrapper = styled('div')(
     transition: theme.transitions.create(['width', 'height', 'padding'], {
       duration: theme.transitions.duration.standard,
       easing: theme.transitions.easing.easeInOut,
-    }), // Adicionando transições suaves
+    }),
   })
 );
+
 
 const ConfigurableBox = ({
   children,

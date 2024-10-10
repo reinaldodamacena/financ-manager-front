@@ -1,7 +1,7 @@
 import React from 'react';
 import { PageBackground } from 'components/molecules/Index';
 import { LoginForm } from '../../organisms/Index';
-import { useAuthContext } from '../../../context/authContext'; // Certifique-se de que o caminho esteja correto
+import { useAuthContext } from '../../../context/Auth/AuthServiceProvider'; // Certifique-se de que o caminho esteja correto
 import { Typography } from '@mui/material';
 
 const LoginPage = () => {

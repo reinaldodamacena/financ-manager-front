@@ -1,13 +1,10 @@
 import React from 'react';
-import { useTheme } from '@mui/material/styles'; // Importa o tema
+import { useTheme } from '@mui/material/styles'; // Importe o useTheme
 import { Background } from '../../atoms/Index';
-import useFetch from '../../../hooks/useFetch.js';
 import { Layout, StatsSection, SalesSection } from '../../organisms/Index';
 
 const HomePage = () => {
-  const theme = useTheme(); // Acessa o tema para uso nos estilos
-
-  const { data, loading } = useFetch('https://jsonplaceholder.typicode.com/posts');
+  const theme = useTheme(); // Use o hook useTheme para acessar o tema
 
   const salesData = [
     { date: '01/08/2024', product: 'Celular', quantity: 1, total: 'R$ 3.000,00', client: 'João' },

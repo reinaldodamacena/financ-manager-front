@@ -5,8 +5,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import App from './components/App';
 import theme from './theme';
-import { AuthProvider } from './context/authContext'; // Certifique-se de que este é o caminho correto
 import GlobalStyles from './GlobalStyles';
+import AppProviders from './appProviders'; // Importa o AppProviders
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,10 +14,10 @@ root.render(
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <AuthProvider>
+        <AppProviders>
           <GlobalStyles />
           <App />
-        </AuthProvider>
+        </AppProviders>
       </Router>
     </ThemeProvider>
   </React.StrictMode>

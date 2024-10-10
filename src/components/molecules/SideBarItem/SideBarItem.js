@@ -1,3 +1,4 @@
+// SideBarItem.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
@@ -7,7 +8,7 @@ import { Icon } from '../../atoms/Index';
 const SideBarItemWrapper = styled('div')(({ theme, collapsed }) => ({
   display: 'flex',
   alignItems: 'center',
-  padding: theme.spacing(1.5),
+  padding: theme.spacing(1.25),
   color: theme.palette.text.primary,
   cursor: 'pointer',
   transition: theme.transitions.create(['background-color', 'justify-content'], {
@@ -21,13 +22,18 @@ const SideBarItemWrapper = styled('div')(({ theme, collapsed }) => ({
 
 const SideBarText = styled(Typography)(({ theme, collapsed }) => ({
   marginLeft: theme.spacing(2),
-  fontSize: theme.typography.pxToRem(14),
+  fontSize: theme.typography.pxToRem(11),
   display: collapsed ? 'none' : 'block',
 }));
 
 const SideBarItem = ({ label, icon, color, onClick, collapsed }) => (
   <SideBarItemWrapper onClick={onClick} collapsed={collapsed} aria-label={label}>
-    <Icon name={icon} size="24px" color={color || 'inherit'} />
+    <Icon name={icon} size="24px" sx={{
+            color: 'primary.main',
+            '&:hover': {
+              color: 'primary.dark',
+            },
+          }} />
     <SideBarText collapsed={collapsed}>{label}</SideBarText>
   </SideBarItemWrapper>
 );

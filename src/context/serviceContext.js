@@ -1,14 +1,14 @@
 import React, { createContext, useContext } from 'react';
-import useService from '../hooks/useService';
+import useService from '../hooks/useService'; // Importa o hook useService
 
 export const createServiceContext = (service) => {
   const ServiceContext = createContext();
 
   const ServiceProvider = ({ children }) => {
-    const serviceData = useService(service);
+    const serviceMethods = useService(service); // Usar o hook useService
 
     return (
-      <ServiceContext.Provider value={serviceData}>
+      <ServiceContext.Provider value={serviceMethods}>
         {children}
       </ServiceContext.Provider>
     );
@@ -17,7 +17,7 @@ export const createServiceContext = (service) => {
   const useServiceContext = () => {
     const context = useContext(ServiceContext);
     if (!context) {
-      throw new Error('useServiceContext must be used within a ServiceProvider');
+      throw new Error('useServiceContext deve ser usado dentro de um ServiceProvider');
     }
     return context;
   };

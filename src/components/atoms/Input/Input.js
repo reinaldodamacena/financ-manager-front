@@ -10,9 +10,9 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[1],
     borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(0, 2),
+    padding: theme.spacing(0, 0.5), // Ajuste de padding para mais compactação
     fontFamily: theme.typography.fontFamily,
-    fontSize: '3.5vh',
+    fontSize: '1rem', // Diminui o tamanho da fonte
     color: theme.palette.text.primary,
     width: '100%',
     transition: theme.transitions.create(['box-shadow', 'transform'], {
@@ -21,14 +21,14 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     }),
     '&:hover': {
       boxShadow: theme.shadows[2],
-      transform: 'scale(1.01)',
+      transform: 'scale(1.0)',
     },
     '&.Mui-focused': {
       boxShadow: theme.shadows[3],
     },
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1.6vh',
-      padding: theme.spacing(0, 1.5),
+      fontSize: '0.875rem', // Fonte ainda menor para telas pequenas
+      padding: theme.spacing(0, 0.75),
     },
   },
   '& .MuiOutlinedInput-root': {
@@ -45,66 +45,71 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
   },
   '& .MuiInputAdornment-root': {
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(0.5), // Menor espaço para adornos
     color: theme.palette.primary.main,
     transition: theme.transitions.create('color', {
       duration: theme.transitions.duration.short,
       easing: theme.transitions.easing.easeInOut,
     }),
-    fontSize: '2.5vh',
+    fontSize: '1.25rem', // Diminui o tamanho do ícone
     [theme.breakpoints.down('sm')]: {
-      fontSize: '2vh',
+      fontSize: '1rem', // Tamanho do ícone menor para telas pequenas
     },
   },
   '& .MuiInputLabel-root': {
     fontFamily: theme.typography.fontFamily,
     top: 'auto', // Posição centralizada inicial
-    left: theme.spacing(1.5), // Distância da borda esquerda
-    transform: 'translate(0, -115%) scale(1.25)', // Mantém o label centralizado verticalmente
-    transformOrigin: 'top left',
+    left: theme.spacing(1), // Ajuste de espaçamento
+    transform: 'translate(0, -115%) scale(1)', // Escala reduzida
     transition: theme.transitions.create(['color', 'transform'], {
       duration: theme.transitions.duration.shorter,
       easing: theme.transitions.easing.easeInOut,
     }),
-    fontSize: '2vh',
+    fontSize: '0.875rem', // Tamanho da label ajustado
     color: theme.palette.text.secondary,
     [theme.breakpoints.down('sm')]: {
-      fontSize: '2vh',
-      left: theme.spacing(1.5),
+      fontSize: '0.75rem', // Reduz ainda mais em telas pequenas
     },
     '&.Mui-focused': {
       color: theme.palette.primary.main,
     },
     '&.MuiInputLabel-shrink': {
-      top: theme.spacing(1.5), // Posição ao encolher (label sobe)
-      fontSize: '2vh',
+      top: theme.spacing(1.5),
+      fontSize: '0.875rem',
       color: theme.palette.primary.main,
     },
   },
 }));
 
 const Input = ({ label, mask, icon: IconComponent, value, onChange, type }) => {
-  return (
-    <InputMask mask={mask} value={value} onChange={onChange}>
-      {() => (
-        <StyledTextField
-          label={label}
-          variant="outlined"
-          type={type}
-          value={value}
-          onChange={onChange}
-          InputProps={{
-            startAdornment: IconComponent ? (
-              <InputAdornment position="start" aria-label={label}>
-                <IconComponent />
-              </InputAdornment>
-            ) : null,
-          }}
-          aria-label={label}
-        />
-      )}
-    </InputMask>
+  const renderTextField = (inputProps) => (
+    <StyledTextField
+      {...inputProps}
+      label={label}
+      variant="outlined"
+      type={type}
+      InputProps={{
+        startAdornment: IconComponent ? (
+          <InputAdornment position="start" aria-label={label}>
+            <IconComponent />
+          </InputAdornment>
+        ) : null,
+      }}
+      aria-label={label}
+    />
   );
+
+  // Se uma máscara foi fornecida, usar InputMask
+  if (mask) {
+    return (
+      <InputMask mask={mask} value={value} onChange={onChange}>
+        {(inputProps) => renderTextField(inputProps)}
+      </InputMask>
+    );
+  }
+
+  // Caso contrário, renderizar o TextField diretamente
+  return renderTextField({ value, onChange });
 };
 
 Input.propTypes = {
