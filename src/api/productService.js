@@ -12,11 +12,8 @@ export const productService = {
   fetchById: (id) => api.get(`/Product/${id}`),
   fetchAll: () => api.get('/Product'),
   fetchByCode: ( barcode) => {
-    const params = {};
-    if (barcode) params.barcode = barcode;
-
-    return api.get('/Product/search', { params });
-  },
+    return api.get('/Product/search', { params: { barcode } });
+},
   fetchByDescription: (description) => {
     return api.get('/Product/search-by-description', {
       params: { description },
