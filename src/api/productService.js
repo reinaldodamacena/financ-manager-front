@@ -11,9 +11,8 @@ export const productService = {
   delete: (id) => api.delete(`/Product/${id}`),
   fetchById: (id) => api.get(`/Product/${id}`),
   fetchAll: () => api.get('/Product'),
-  fetchByCode: (manufacturerCode, barcode) => {
+  fetchByCode: ( barcode) => {
     const params = {};
-    if (manufacturerCode) params.manufacturerCode = manufacturerCode;
     if (barcode) params.barcode = barcode;
 
     return api.get('/Product/search', { params });

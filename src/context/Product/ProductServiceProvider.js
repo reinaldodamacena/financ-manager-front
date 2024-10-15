@@ -47,7 +47,7 @@ const { ServiceProvider: ProductServiceProvider, useServiceContext: useProductSe
 
   const fetchByCode = async (barcode) => {
     try {
-      const response = await productService.fetchByCode({ barcode });
+      const response = await productService.fetchByCode( barcode );
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar produtos por código:', error);
